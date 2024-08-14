@@ -4,6 +4,7 @@ import Footer from './components/Footer';
 import Title from './components/Title';
 import Section from './components/Section';
 import PrelineScript from "./components/PrelineScript";
+import Explanation from "./components/Explanation";
 
 const Home: React.FC = () => {
   return (
@@ -15,6 +16,7 @@ const Home: React.FC = () => {
       <main className="flex-grow">
         <Title />
         <Section />
+        <Explanation />
       </main>
       <Footer />
       <PrelineScript />
