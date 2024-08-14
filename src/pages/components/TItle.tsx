@@ -1,11 +1,18 @@
 import React from 'react';
 
+import {Oswald} from "next/font/google";
+
+const RampartOneFont = Oswald({
+  weight: "400",
+  subsets: ["latin"],
+});
+
 const Title: React.FC = () => {
   return (
     <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
 
     <div className="absolute inset-0 z-10 flex items-center justify-center">
-        <h1 className="font-bold text-white opacity-100 text-9xl animate-tracking-in-expand">Fashion Folder</h1>
+        <h1 className={`${RampartOneFont.className} font-bold text-white opacity-100 text-9xl animate-tracking-in-expand`}>Fashion Folder</h1>
     </div>
       
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
