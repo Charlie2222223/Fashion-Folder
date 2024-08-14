@@ -17,7 +17,8 @@ const config: Config = {
       animation: {
         "tracking-in-expand": "tracking-in-expand 3s cubic-bezier(0.215, 0.610, 0.355, 1.000) both",        //タイトルのアニメーション
         'slide-in-left': 'slideInLeft 1.5s ease-out forwards',                                              //Sectionのアニメーション
-        "slide-in-fwd-center": "slide-in-fwd-center 1.5s cubic-bezier(0.250, 0.460, 0.450, 0.940)   both",
+        "slide-in-fwd-center": "slide-in-fwd-center 1.5s cubic-bezier(0.250, 0.460, 0.450, 0.940)   both",  //Sectionの画像のアニメーション
+        'fade-in-background': 'fadeInBackground 2s ease-out forwards',                                      //Gaideのアニメーション
       },
       keyframes: {
         "tracking-in-expand": {
@@ -51,7 +52,17 @@ const config: Config = {
             transform: "translateZ(0)",
             opacity: "1"
           }
-        }
+        },
+        fadeInBackground: {
+          '0%': {
+            transform: 'scale(1.2)',
+            opacity: "0",
+          },
+          '100%': {
+            transform: 'scale(1)',
+            opacity: "1",
+          },
+        },
       },
     },
   },

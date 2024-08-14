@@ -5,6 +5,8 @@ import Title from './components/Title';
 import Section from './components/Section';
 import PrelineScript from "./components/PrelineScript";
 import Explanation from "./components/Explanation";
+import Gaide from "./components/Gaide";
+
 
 const Home: React.FC = () => {
   return (
@@ -17,6 +19,7 @@ const Home: React.FC = () => {
         <Title />
         <Section />
         <Explanation />
+        <Gaide />
       </main>
       <Footer />
       <PrelineScript />
