@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import Header from './components/Herder';
+import Herder from './components/Herder';
 import Footer from './components/Footer';
 import Title from './components/Title';
 import Section from './components/Section';
@@ -14,7 +14,7 @@ const Home: React.FC = () => {
       <Head>
         <title>My Fashion App</title>
       </Head>
-      <Header />
+      <Herder />
       <main className="flex-grow">
         <Title />
         <Section />
