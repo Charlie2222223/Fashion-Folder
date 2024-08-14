@@ -16,10 +16,10 @@ const Gaide: React.FC = () => {
 >
   <div className="mx-auto max-w-2xl mb-8 lg:mb-14 text-center">
     <h2 className="text-3xl lg:text-4xl text-gray-800 font-bold dark:text-neutral-200">
-      Explore tools
+      一歩先のファッションへ
     </h2>
     <p className="mt-3 text-gray-800 dark:text-neutral-200">
-      The powerful and flexible theme for all kinds of businesses.
+      今までのアナログな管理をやめて新しいファッションの形に変化
     </p>
   </div>
   <div className="mx-auto max-w-3xl grid grid-cols-12 gap-6 lg:gap-8">
