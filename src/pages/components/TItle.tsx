@@ -19,12 +19,12 @@ const Title: React.FC = () => {
         <img className="object-cover w-full h-auto opacity-50" src="/img/Wear_5.jpg" alt="Gallery Masonry Image" />
         </div>
         <div className="space-y-2">
-          <img className="object-cover w-full h-auto opacity-50" src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=560&q=80" alt="Gallery Masonry Image" />
-          <img className="object-cover w-full h-auto opacity-50" src="https://images.unsplash.com/photo-1586232702178-f044c5f4d4b7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=560&q=80" alt="Gallery Masonry Image" />
-          <img className="object-cover w-full h-auto opacity-50" src="https://images.unsplash.com/photo-1542125387-c71274d94f0a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=560&q=80" alt="Gallery Masonry Image" />
+          <img className="object-cover w-full h-auto opacity-50" src="/img/Wear_6.jpg" alt="Gallery Masonry Image" />
+          <img className="object-cover w-full h-auto opacity-50" src="/img/Wear_7.jpg" alt="Gallery Masonry Image" />
+          <img className="object-cover w-full h-auto opacity-50" src="/img/Wear_9.jpg" alt="Gallery Masonry Image" />
         </div>
         <div className="space-y-2">
-          <img className="object-cover w-full h-auto opacity-50" src="https://images.unsplash.com/photo-1668869713519-9bcbb0da7171?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=560&q=80" alt="Gallery Masonry Image" />
+          <img className="object-cover w-full h-auto opacity-50" src="/img/Wear_8.jpg" />
           <img className="object-cover w-full h-auto opacity-50" src="https://images.unsplash.com/photo-1668584054035-f5ba7d426401?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=560&q=80" alt="Gallery Masonry Image" />
         </div>
       </div>

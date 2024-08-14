@@ -2,6 +2,8 @@ import Head from 'next/head';
 import Header from './components/Herder';
 import Footer from './components/Footer';
 import Title from './components/Title';
+import Section from './components/Section';
+import PrelineScript from "./components/PrelineScript";
 
 const Home: React.FC = () => {
   return (
@@ -12,8 +14,10 @@ const Home: React.FC = () => {
       <Header />
       <main className="flex-grow">
         <Title />
+        <Section />
       </main>
       <Footer />
+      <PrelineScript />
     </div>
   );
 };
