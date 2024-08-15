@@ -15,7 +15,7 @@ const SignInForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
           Sign in
         </h1>
         <p className="text-sm text-gray-600 dark:text-neutral-400 text-center mb-6">
-          Don't have an account yet?{" "}
+          Don&apos;t have an account yet?{" "}
           <a className="text-blue-600 decoration-2 hover:underline dark:text-blue-500" href="#">
             Sign up here
           </a>
