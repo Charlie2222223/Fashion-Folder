@@ -14,12 +14,12 @@ const Home: React.FC = () => {
   console.log("isSignInFormVisible state:", isSignInFormVisible);
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen space-y-8"> {/* 全体に余白を追加 */}
       <Header onUserClick={() => {
         console.log("Setting form visibility to true");
         setSignInFormVisible(true);  // 状態を更新
       }} />
-      <main className="flex-grow">
+      <main className="flex-grow space-y-16"> {/* メイン部分に余白を追加 */}
         <Title />
         <Section />
         <Explanation />
@@ -36,6 +36,5 @@ const Home: React.FC = () => {
     </div>
   );
 };
-
 
 export default Home;
