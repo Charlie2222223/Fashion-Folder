@@ -4,7 +4,7 @@ import { FcGoogle } from 'react-icons/fc';
 const SignInForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white border border-gray-200 rounded-xl shadow-sm dark:bg-neutral-900 dark:border-neutral-700 p-8 relative">
+      <div className="bg-white border border-gray-200 rounded-xl shadow-sm dark:bg-neutral-900 dark:border-neutral-700 p-8 relative w-full max-w-md mx-4 sm:mx-8 md:mx-16 lg:mx-24 xl:mx-32">
         <button 
           onClick={onClose} 
           className="absolute top-2 right-2 text-gray-600 hover:text-gray-900"
