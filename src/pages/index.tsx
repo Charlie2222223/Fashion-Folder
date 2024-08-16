@@ -7,7 +7,6 @@ import PrelineScript from "./components/PrelineScript";
 import Explanation from "./components/Explanation";
 import Gaide from "./components/Gaide";
 import LoginForm from './components/LoginForm';
-import background from './components/Background'
 
 
 const Home: React.FC = () => {
@@ -16,14 +15,15 @@ const Home: React.FC = () => {
   return (
     <div className="flex flex-col min-h-screen space-y-8"> {/* 全体に余白を追加 */}
       <Header onUserClick={() => {
-        console.log("Setting form visibility to true");
         setSignInFormVisible(true);  // 状態を更新
       }} />
       <main className="flex-grow space-y-16"> {/* メイン部分に余白を追加 */}
         <Title />
         <Section />
         <Explanation />
-        <Gaide />
+        <Gaide onUserClick={() => {
+        setSignInFormVisible(true);  // 状態を更新
+        }}/>
         {isSignInFormVisible && (
           <LoginForm onClose={() => {
             console.log("Closing the sign-in form");

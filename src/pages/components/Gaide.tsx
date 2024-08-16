@@ -1,11 +1,19 @@
 import React from 'react';
 import { useInView } from 'react-intersection-observer';
+import { useRouter } from 'next/router';
 
-const Gaide: React.FC = () => {
+const Gaide: React.FC <{ onUserClick: () => void }> = ({ onUserClick }) => {
     const { ref, inView } = useInView({
         rootMargin: '-100px',
         triggerOnce: true,
     });
+
+    const router = useRouter();
+
+    const handleClick = () => {
+      // `/about` ページに遷移する
+      router.push('/SignIn');
+    };
 
     return (
         <div
@@ -23,10 +31,10 @@ const Gaide: React.FC = () => {
             </div>
 
             <div className="flex justify-center mt-10 space-x-10">
-                <button className="px-10 py-4 text-white bg-blue-500 rounded-md hover:bg-blue-600">
+                <button className="px-10 py-4 text-white bg-blue-500 rounded-md hover:bg-blue-600" onClick={() =>{onUserClick()}}>
                     Login
                 </button>
-                <button className="px-10 py-4 text-white bg-blue-500 rounded-md hover:bg-blue-600">
+                <button className="px-10 py-4 text-white bg-blue-500 rounded-md hover:bg-blue-600" onClick={handleClick}>
                     Signup
                 </button>
             </div>
