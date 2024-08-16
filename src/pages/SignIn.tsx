@@ -1,9 +1,13 @@
 import React from 'react'
 import Background from './components/Background'
+import SigninForm from './components/SigninForm'
 
 const SignIn: React.FC = () => {
   return (
-    <Background />
+    <main>
+      <Background />
+      <SigninForm />
+    </main>
   )
 }
 
