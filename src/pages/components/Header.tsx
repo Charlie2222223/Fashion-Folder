@@ -22,10 +22,6 @@ const Header: React.FC<{ onUserClick: () => void }> = ({ onUserClick }) => {
           <FaHome size={20} /> 
           <span className="ml-2">Home</span> 
         </a>
-        <a href="#cart" className="flex items-center ml-4 text-white hover:text-gray-400">
-          <FaCamera size={20} />
-          <span className="ml-2">写真</span> 
-        </a>
       </div>
       </nav>
     </header>

@@ -10,8 +10,11 @@
     "heroku-postbuild": "next build"
   },
   "dependencies": {
+    "@react-oauth/google": "^0.12.1",
+    "axios": "^1.7.4",
     "framer-motion": "^11.3.27",
     "next": "14.2.5",
+    "next-auth": "^4.24.7",
     "preline": "^2.4.1",
     "react": "^18",
     "react-dom": "^18",
@@ -31,7 +34,7 @@
     "typescript": "^5"
   },
   "engines": {
-  "node": ">=18.17.0"
+    "node": ">=18.17.0"
   },
   "cacheDirectories": [],
   "description": "This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).",

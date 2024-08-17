@@ -7,6 +7,7 @@ use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class SocialController extends Controller
 {
@@ -40,6 +41,7 @@ class SocialController extends Controller
                     'provider_id' => $googleUser->getId(),
                     'avatar' => $googleUser->getAvatar(),
                     'provider' => 'google',
+                    'password' => bcrypt(Str::random(16)), // ダミーパスワードを設定
                 ]
             );
 
@@ -49,13 +51,20 @@ class SocialController extends Controller
             // トークンを生成
             $token = $user->createToken('user')->plainTextToken;
 
-            // フロントエンドのURLにリダイレクト（.envからURLを取得）
-            $frontendUrl = env('FRONTEND_URL', 'http://localhost:3000');
-            return redirect()->to($frontendUrl . '/auth/callback?token=' . $token);
+            // ソーシャルコントローラのリダイレクト部分
+            $frontendUrl = env('FRONTEND_URL', 'http://localhost:3000'); // 環境変数からURLを取得
+            return redirect()->to($frontendUrl . '/auth/callback?token=' . $token); // フロントエンドにリダイレクト
 
-        } catch (\Throwable $e) {
-            // エラーログを出力し、ログイン画面にリダイレクト
+        }catch (\Throwable $e) {
             Log::error('Google login error: ' . $e->getMessage());
+            Log::info('Google user data: ', ['user' => $googleUser ?? null]);
+
+            // 例外のスタックトレースをログに記録
+            Log::error('Stack trace: ' . $e->getTraceAsString());
+
+            // デバッグ用に例外を表示
+            dd($e);
+
             return redirect('/login')->withErrors(['error' => 'Unable to login using Google. Please try again.']);
         }
     }

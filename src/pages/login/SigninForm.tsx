@@ -1,15 +1,24 @@
-import React from 'react'
-import { FcGoogle } from 'react-icons/fc'
+import React from 'react';
+import axios from 'axios'; // axiosライブラリを使用
+import { FcGoogle } from 'react-icons/fc';
 
 const SigninForm: React.FC = () => {
+
+  const handleGoogleLogin = () => {
+    window.location.href = 'http://localhost:8000/auth/google';
+  };
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white border border-gray-200 rounded-xl shadow-sm dark:bg-neutral-900 dark:border-neutral-700 h-128 p-20 relative w-full max-w-3xl mx-4 sm:mx-8 md:mx-16 lg:mx-24 xl:mx-32">
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-white text-center mb-8 ">
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-white text-center mb-8">
           アカウント作成
         </h1>
-        <div className="grid gap-y-7"> {/* gap-y-9 を適用するグリッド要素 */}
-          <button className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800">
+        <div className="grid gap-y-7">
+          <button
+            onClick={handleGoogleLogin}
+            className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800"
+          >
             <FcGoogle className="mr-2 text-2xl" />
             Googleでアカウントを作成
           </button>
@@ -58,7 +67,7 @@ const SigninForm: React.FC = () => {
               </div>
               <div>
                 <div className="flex justify-between items-center">
-                  <label className="block text-sm mb-2 dark:text-white" htmlFor="password">
+                  <label className="block text-sm mb-2 dark:text-white" htmlFor="password_check">
                     パスワード(確認)
                   </label>
                 </div>
@@ -77,14 +86,14 @@ const SigninForm: React.FC = () => {
                 </label>
               </div>
               <button className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700">
-                サインイン
+                作成する
               </button>
             </div>
           </form>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default SigninForm
+export default SigninForm;
