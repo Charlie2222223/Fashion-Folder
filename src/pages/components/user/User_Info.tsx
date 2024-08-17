@@ -25,7 +25,7 @@ const User_Info: React.FC <{ onClose: () => void }> = ({ onClose }) =>{
     </button>
     <h1 className="text-2xl font-bold text-gray-800 dark:text-white text-center mb-4">
       {/* サインインの見出し: 中央揃え、ダークモード対応 */}
-      サインインaaaa
+      サインインaaaaa
     </h1>
     <p className="text-sm text-gray-600 dark:text-neutral-400 text-center mb-6">
       {/* サインアップリンクを含む説明文: 中央揃え、ダークモード対応 */}
