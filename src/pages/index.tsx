@@ -17,7 +17,7 @@ const Home: React.FC = () => {
   return (
     <div className="flex flex-col min-h-screen space-y-8"> {/* 全体に余白を追加 */}
       <Header onUserClick={() => {
-        setUserFormVisible(true);  // 状態を更新
+        isUserFormVisible ? setUserFormVisible(false) : setUserFormVisible(true);
       }} />
       <main className="flex-grow space-y-16"> {/* メイン部分に余白を追加 */}
         <Title />
@@ -28,7 +28,8 @@ const Home: React.FC = () => {
         }}/>
 
         {isUserFormVisible && (
-          <User_Info onClose={() => {
+          <User_Info onUserClick={() => {
+            setSignInFormVisible(true);
             setUserFormVisible(false);
           }} />
         )}
