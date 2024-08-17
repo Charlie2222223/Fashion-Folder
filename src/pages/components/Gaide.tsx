@@ -1,11 +1,19 @@
 import React from 'react';
 import { useInView } from 'react-intersection-observer';
+import { useRouter } from 'next/router';
 
-const Gaide: React.FC = () => {
+const Gaide: React.FC <{ onUserClick: () => void }> = ({ onUserClick }) => {
     const { ref, inView } = useInView({
         rootMargin: '-100px',
         triggerOnce: true,
     });
+
+    const router = useRouter();
+
+    const handleClick = () => {
+      // `/about` ページに遷移する
+      router.push('/SignIn');
+    };
 
     return (
         <div
@@ -14,7 +22,7 @@ const Gaide: React.FC = () => {
             className={`max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto ${inView ? 'animate-fade-in-background' : 'opacity-0'}`}
         >
             <div className="mx-auto max-w-2xl mb-8 lg:mb-14 text-center">
-                <h2 className="text-3xl lg:text-4xl text-gray-800 font-bold dark:text-neutral-200">
+                <h2 className="text-3xl lg:text-4xl text-gray-800 font-bold dark:text-neutral-200 mb-7">
                     一歩先のファッションへ
                 </h2>
                 <p className="mt-５ text-gray-800 dark:text-neutral-200">
@@ -23,10 +31,10 @@ const Gaide: React.FC = () => {
             </div>
 
             <div className="flex justify-center mt-10 space-x-10">
-                <button className="px-10 py-4 text-white bg-blue-500 rounded-md hover:bg-blue-600">
+                <button className="px-10 py-4 text-white bg-blue-500 rounded-md hover:bg-blue-600" onClick={() =>{onUserClick()}}>
                     Login
                 </button>
-                <button className="px-10 py-4 text-white bg-blue-500 rounded-md hover:bg-blue-600">
+                <button className="px-10 py-4 text-white bg-blue-500 rounded-md hover:bg-blue-600" onClick={handleClick}>
                     Signup
                 </button>
             </div>

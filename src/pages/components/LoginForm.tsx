@@ -1,7 +1,16 @@
+import { useRouter } from 'next/router';
 import React from 'react';
 import { FcGoogle } from 'react-icons/fc';
 
 const SignInForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
+
+  const router = useRouter();
+
+  const handleClick = () => {
+    // `/about` ページに遷移する
+    router.push('/SignIn');
+  };
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white border border-gray-200 rounded-xl shadow-sm dark:bg-neutral-900 dark:border-neutral-700 p-8 relative w-full max-w-md mx-4 sm:mx-8 md:mx-16 lg:mx-24 xl:mx-32">
@@ -16,7 +25,7 @@ const SignInForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         </h1>
         <p className="text-sm text-gray-600 dark:text-neutral-400 text-center mb-6">
           まだアカウントをお持ちでないですか？{" "}
-          <a className="text-blue-600 decoration-2 hover:underline dark:text-blue-500" href="#">
+          <a className="text-blue-600 decoration-2 hover:underline dark:text-blue-500" href="#"　onClick={handleClick}>
             こちらで登録
           </a>
         </p>
