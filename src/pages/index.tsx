@@ -53,7 +53,9 @@ const Home: React.FC = () => {
           <User_Info onUserClick={() => {
             setSignInFormVisible(true);
             setUserFormVisible(false);
-          }} />
+          } } onClose={() => {
+            setUserFormVisible(false)
+          } } />
         )}
 
         {isSignInFormVisible && (
@@ -61,7 +63,6 @@ const Home: React.FC = () => {
             onClose={() => {
               setSignInFormVisible(false);  // 状態を更新
             }}
-            onLogin={handleLogin}  // ログイン時にトークンを受け取るコールバックを設定
           />
         )}
       </main>

@@ -1,13 +1,38 @@
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 
-const User_Info: React.FC<{ onUserClick: () => void }> = ({ onUserClick }) => {
+const User_Info: React.FC<{ onUserClick: () => void , onClose: () => void}> = ({ onUserClick , onClose}) => {
     const router = useRouter();
     const [userData, setUserData] = useState<any>(null);
 
     const handleClick = () => {
         // サインインページに遷移する
         router.push('/SignIn');
+    };
+
+    const handleLogout = async () => {
+        const token = localStorage.getItem('token');
+    
+        if (token) {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+    
+                if (response.ok) {
+                    localStorage.removeItem('token'); // ローカルストレージからトークンを削除
+                    window.location.href = '/';  // ログインページにリダイレクト
+                } else {
+                    console.error('Failed to log out');
+                }
+            } catch (error) {
+                console.error('Error logging out:', error);
+            }
+        }
     };
 
     useEffect(() => {
@@ -89,15 +114,25 @@ const User_Info: React.FC<{ onUserClick: () => void }> = ({ onUserClick }) => {
                         className="w-20 h-20 rounded-full object-cover"
                     />
                 </div>
-                <p className="text-xs md:text-sm text-gray-600 dark:text-neutral-400 text-center mb-3">
+                <p className="text-xs md:text-sm text-gray-600 dark:text-neutral-400 text-center mb-7">
                     {userData.email}
+                </p>
+                <p className="text-xs md:text-sm text-white text-left hover:bg-blue-600 mb-3">
+                    MyClosetへ進む
+                </p>
+                <p className="text-xs md:text-sm text-white text-left hover:bg-blue-600 mb-3">
+                    プロフィールを設定する
+                </p>
+                <p className="text-xs md:text-sm text-white text-left hover:bg-blue-600 mb-3"
+                    onClick={handleLogout}>
+                    ログアウト
                 </p>
                 <div className="flex justify-center mt-10 space-x-5">
                     <button
                         className="px-5 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600"
-                        onClick={() => { onUserClick(); }}
+                        onClick={() => { onClose(); }}
                     >
-                        Closes
+                        閉じる
                     </button>
                 </div>
             </div>
