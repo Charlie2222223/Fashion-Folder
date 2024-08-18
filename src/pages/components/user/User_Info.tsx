@@ -97,7 +97,7 @@ const User_Info: React.FC<{ onUserClick: () => void }> = ({ onUserClick }) => {
                         className="px-5 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600"
                         onClick={() => { onUserClick(); }}
                     >
-                        Close
+                        Closes
                     </button>
                 </div>
             </div>
