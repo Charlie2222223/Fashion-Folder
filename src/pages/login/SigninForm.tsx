@@ -8,6 +8,27 @@ const SigninForm: React.FC = () => {
     window.location.href = 'http://localhost:8000/auth/google';
   };
 
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    const formData = {
+      name: event.target.name.value,
+      email: event.target.email.value,
+      password: event.target.password.value,
+      password_confirmation: event.target.password_check.value,
+      remember: event.target['remember-me'].checked,
+    };
+
+    try {
+      const response = await axios.post('http://localhost:8000/api/register', formData);
+      console.log('Registration successful:', response.data);
+      // メール送信成功メッセージなどの処理をここに追加できます
+    } catch (error) {
+      console.error('Registration failed:', error.response.data);
+      // エラーメッセージなどの処理をここに追加できます
+    }
+  };
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white border border-gray-200 rounded-xl shadow-sm dark:bg-neutral-900 dark:border-neutral-700 h-128 p-20 relative w-full max-w-3xl mx-4 sm:mx-8 md:mx-16 lg:mx-24 xl:mx-32">
@@ -25,7 +46,7 @@ const SigninForm: React.FC = () => {
           <div className="py-3 flex items-center text-xs text-gray-400 uppercase before:flex-1 before:border-t before:border-gray-200 before:me-6 after:flex-1 after:border-t after:border-gray-200 after:ms-6 dark:text-neutral-500 dark:before:border-neutral-600 dark:after:border-neutral-600">
             または
           </div>
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="grid gap-y-7">
               <div>
                 <label className="block text-sm mb-2 dark:text-white" htmlFor="name">
