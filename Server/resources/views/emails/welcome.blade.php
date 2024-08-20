@@ -3,7 +3,8 @@
 <head>
     <title>Welcome</title>
 </head>
-<body>
-<p>こんにちは、{{ $user['name'] }}さん！</p>    <p>Thank you for registering!</p>
+<body>  
+<h1>仮メールのご案内</h1>
+<p>あなたのパスワードは{{$temporary_password}}です</p>
 </body>
 </html>
