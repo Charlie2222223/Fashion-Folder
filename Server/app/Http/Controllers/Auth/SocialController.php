@@ -62,9 +62,6 @@ class SocialController extends Controller
             // 例外のスタックトレースをログに記録
             Log::error('Stack trace: ' . $e->getTraceAsString());
 
-            // デバッグ用に例外を表示
-            dd($e);
-
             return redirect('/login')->withErrors(['error' => 'Unable to login using Google. Please try again.']);
         }
     }
