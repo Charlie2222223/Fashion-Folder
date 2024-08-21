@@ -11,6 +11,10 @@ const SignInForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     router.push('/SignIn');
   };
 
+  const handleGoogleLogin = () => {
+    window.location.href = 'http://localhost:8000/auth/google';
+  };
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white border border-gray-200 rounded-xl shadow-sm dark:bg-neutral-900 dark:border-neutral-700 p-8 relative w-full max-w-md mx-4 sm:mx-8 md:mx-16 lg:mx-24 xl:mx-32">
@@ -29,7 +33,9 @@ const SignInForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             こちらで登録
           </a>
         </p>
-        <button className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800">
+        <button 
+        onClick={handleGoogleLogin}
+        className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800">
           <FcGoogle className="mr-2 text-2xl" />
           Googleでサインイン
         </button>
