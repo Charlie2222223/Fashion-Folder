@@ -3,7 +3,7 @@ import axios from 'axios'; // axiosライブラリを使用
 import { FcGoogle } from 'react-icons/fc';
 
 const SigninForm: React.FC = () => {
-
+  
   const handleGoogleLogin = () => {
     window.location.href = 'http://localhost:8000/auth/google';
   };

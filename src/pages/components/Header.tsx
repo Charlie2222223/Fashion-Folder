@@ -18,7 +18,7 @@ const Header: React.FC<{ onUserClick: () => void }> = ({ onUserClick }) => {
     <header className="flex items-center justify-between p-3 text-white bg-gray-800">
       <div className="flex items-center" onClick={IconClick}>
         <img 
-          className="object-cover w-20 h-20 opacity-75 cursor-pointer"  
+          className="object-cover w-16 h-16 opacity-75 cursor-pointer"  
           src="/img/Icon2.png" 
           alt="Gallery Masonry Image" 
         />
