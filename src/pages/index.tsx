@@ -19,8 +19,10 @@ const Home: React.FC = () => {
   useEffect(() => {
     // コンポーネントがマウントされたときに、localStorageからトークンを取得してステートに設定
     const savedToken = localStorage.getItem('authToken');
-    if (savedToken) {
+    if (typeof savedToken === 'string') {
       setToken(savedToken);
+    } else {
+      setToken(null); // savedToken が null の場合には明示的に null を設定
     }
   }, []);
 
