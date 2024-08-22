@@ -12,5 +12,3 @@ location: any;
 }
   
 declare var localStorage: LocalStorage;
-
-  

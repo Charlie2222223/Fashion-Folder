@@ -1,10 +1,11 @@
-import React from 'react';
-import axios from 'axios'; // axiosライブラリを使用
+import React, { useState } from 'react';
+import axios from 'axios';
 import { FcGoogle } from 'react-icons/fc';
 import router from 'next/router';
 
 const SigninForm: React.FC = () => {
-  
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
   const handleGoogleLogin = () => {
     window.location.href = 'http://localhost:8000/auth/google';
   };
@@ -13,27 +14,36 @@ const SigninForm: React.FC = () => {
     event.preventDefault();
 
     const formData = {
-      name: event.target.name.value,
-      email: event.target.email.value,
-      password: event.target.password.value,
-      password_confirmation: event.target.password_check.value,
-      remember: event.target['remember-me'].checked,
+      name: (event.target as unknown as HTMLFormElement).name.value,
+      email: (event.target as unknown as HTMLFormElement).email.value,
+      password: (event.target as unknown as HTMLFormElement).password.value,
+      password_confirmation: (event.target as unknown as HTMLFormElement).password_check.value,
+      remember: (event.target as unknown as HTMLFormElement)['remember-me'].checked,
     };
 
     try {
       const response = await axios.post('http://localhost:8000/api/register', formData);
       console.log('Registration successful:', response.data);
-      // メール送信成功メッセージなどの処理をここに追加できます
+
+      // 正常に登録された場合、次のページにPOSTリクエストでデータを渡す
+      router.push({
+        pathname: '/Verifications',
+        query: {
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+          remember: formData.remember,
+        }
+      });
     } catch (error) {
-      console.error('Registration failed:', error.response.data);
-      // エラーメッセージなどの処理をここに追加できます
+      const err = error as any; // `error` を `any` にキャスト
+      if (err.response && err.response.data.errors) {
+        setErrors(err.response.data.errors);
+      } else {
+        console.error('Registration failed:', err.response?.data || err.message);
+      }
     }
   };
-
-  const handlechenge = () => {
-      // `/about` ページに遷移する
-      router.push('/Verifications');
-  }
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -65,6 +75,7 @@ const SigninForm: React.FC = () => {
                   required
                   type="text"
                 />
+                {errors.name && <p className="text-red-500 text-sm mt-2">{errors.name}</p>}
               </div>
               <div>
                 <label className="block text-sm mb-2 dark:text-white" htmlFor="email">
@@ -77,6 +88,7 @@ const SigninForm: React.FC = () => {
                   required
                   type="email"
                 />
+                {errors.email && <p className="text-red-500 text-sm mt-2">{errors.email}</p>}
               </div>
               <div>
                 <div className="flex justify-between items-center">
@@ -91,6 +103,7 @@ const SigninForm: React.FC = () => {
                   required
                   type="password"
                 />
+                {errors.password && <p className="text-red-500 text-sm mt-2">{errors.password}</p>}
               </div>
               <div>
                 <div className="flex justify-between items-center">
@@ -105,6 +118,7 @@ const SigninForm: React.FC = () => {
                   required
                   type="password"
                 />
+                {errors.password_confirmation && <p className="text-red-500 text-sm mt-2">{errors.password_confirmation}</p>}
               </div>
               <div className="flex items-center">
                 <input className="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 dark:bg-neutral-800 dark:border-neutral-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800" id="remember-me" name="remember-me" type="checkbox" />
@@ -112,8 +126,9 @@ const SigninForm: React.FC = () => {
                   ログイン状態を維持する
                 </label>
               </div>
-              <button className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700"
-               onClick={handlechenge}>
+              <button
+                className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700"
+              >
                 作成する
               </button>
             </div>
