@@ -11,6 +11,8 @@ use App\Http\Controllers\Auth\RegisterController;
 
 Route::post('/register', [RegisterController::class, 'register']);
 
+Route::post('/register/vertification', [RegisterController::class, 'PushUserInfo']);
+
 Route::middleware('auth:sanctum')->get('/user', [UserController::class, 'getUserData']);    //Login
 
 Route::middleware('auth:sanctum')->post('/logout', function (Request $request) {            //Logout
