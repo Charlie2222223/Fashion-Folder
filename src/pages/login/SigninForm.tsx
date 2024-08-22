@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios'; // axiosライブラリを使用
 import { FcGoogle } from 'react-icons/fc';
+import router from 'next/router';
 
 const SigninForm: React.FC = () => {
   
@@ -28,6 +29,11 @@ const SigninForm: React.FC = () => {
       // エラーメッセージなどの処理をここに追加できます
     }
   };
+
+  const handlechenge = () => {
+      // `/about` ページに遷移する
+      router.push('/Verifications');
+  }
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -106,7 +112,8 @@ const SigninForm: React.FC = () => {
                   ログイン状態を維持する
                 </label>
               </div>
-              <button className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700">
+              <button className="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700"
+               onClick={handlechenge}>
                 作成する
               </button>
             </div>
