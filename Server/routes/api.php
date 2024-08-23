@@ -13,10 +13,8 @@ Route::post('/register', [RegisterController::class, 'register']);
 
 Route::post('/register/vertification', [RegisterController::class, 'PushUserInfo']);
 
-Route::middleware('auth:sanctum')->get('/user', [UserController::class, 'getUserData']);    //Login
+Route::post('/auth/user', [UserController::class, 'getUserData']);
 
-Route::middleware('auth:sanctum')->post('/logout', function (Request $request) {            //Logout
-    $request->user()->currentAccessToken()->delete();
+Route::middleware('auth:sanctum')->get('/user', [UserController::class, 'getGoogleUserData']);    //Google Login
 
-    return response()->json(['message' => 'Logged out successfully']);
-});
+Route::middleware('auth:sanctum')->post('/logout', [UserController::class, 'logout']);  //Logout

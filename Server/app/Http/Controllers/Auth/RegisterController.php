@@ -112,15 +112,7 @@ class RegisterController extends Controller
         ->where('temporary_password', $request->temporary_password)
         ->first();
 
-        \Log::info('Request Data: ', ['email' => $request->email, 'temporary_password' => $request->temporary_password]);
-
-    if (!$verification) {
-        \Log::error('Verification failed for email: ' . $request->email);
-    } else {
-        \Log::info('Verification succeeded for email: ' . $request->email);
-    }
-
-    return $verification;
+        return $verification;
     }
 
     /**

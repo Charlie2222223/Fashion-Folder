@@ -7,22 +7,26 @@ import PrelineScript from "./components/PrelineScript";
 import Explanation from "./components/Explanation";
 import Gaide from "./components/Gaide";
 import LoginForm from './login/LoginForm';
-import User_Info from './components/user/User_Info'
+import User_Info from './components/user/User_Info';
 
 const Home: React.FC = () => {
   const [isSignInFormVisible, setSignInFormVisible] = useState(false);
   const [isUserFormVisible, setUserFormVisible] = useState(false);
 
-  // トークンを保存するステート
+  // トークンとユーザーデータを保存するステート
   const [token, setToken] = useState<string | null>(null);
+  const [userData, setUserData] = useState<any>(null);
 
   useEffect(() => {
-    // コンポーネントがマウントされたときに、localStorageからトークンを取得してステートに設定
+    // コンポーネントがマウントされたときに、localStorageからトークンとユーザーデータを取得してステートに設定
     const savedToken = localStorage.getItem('authToken');
-    if (typeof savedToken === 'string') {
+    const savedUserData = localStorage.getItem('userData');
+
+    if (savedToken) {
       setToken(savedToken);
-    } else {
-      setToken(null); // savedToken が null の場合には明示的に null を設定
+    }
+    if (savedUserData) {
+      setUserData(JSON.parse(savedUserData)); // JSON 文字列からオブジェクトに変換
     }
   }, []);
 
@@ -33,9 +37,20 @@ const Home: React.FC = () => {
     }
   }, [token]);
 
-  const handleLogin = (newToken: string) => {
+  const handleLoginSuccess = (newToken: string, newUserData: any) => {
     setToken(newToken);  // トークンをステートに保存
+    setUserData(newUserData); // ユーザーデータをステートに保存
+    localStorage.setItem('userData', JSON.stringify(newUserData)); // localStorageに保存
     setSignInFormVisible(false);  // ログインフォームを閉じる
+  };
+
+  const handleLogoutSuccess = () => {
+    // ログアウト時にトークンとユーザーデータをクリア
+    setToken(null);
+    setUserData(null);
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('userData');
+    setUserFormVisible(false);
   };
 
   return (
@@ -48,16 +63,21 @@ const Home: React.FC = () => {
         <Section />
         <Explanation />
         <Gaide onUserClick={() => {
-        setSignInFormVisible(true);  // 状態を更新
+          setSignInFormVisible(true);  // 状態を更新
         }}/>
 
         {isUserFormVisible && (
-          <User_Info onUserClick={() => {
-            setSignInFormVisible(true);
-            setUserFormVisible(false);
-          } } onClose={() => {
-            setUserFormVisible(false)
-          } } />
+          <User_Info 
+            userData={userData}
+            onUserClick={() => {
+              setSignInFormVisible(true);
+              setUserFormVisible(false);
+            }} 
+            onClose={() => {
+              setUserFormVisible(false);
+            }}
+            onLogoutSuccess={handleLogoutSuccess} // ログアウト成功時に呼び出される
+          />
         )}
 
         {isSignInFormVisible && (
@@ -65,6 +85,7 @@ const Home: React.FC = () => {
             onClose={() => {
               setSignInFormVisible(false);  // 状態を更新
             }}
+            onLoginSuccess={handleLoginSuccess} // ログイン成功時に呼び出される
           />
         )}
       </main>
