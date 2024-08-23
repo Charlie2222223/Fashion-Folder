@@ -22,4 +22,18 @@ class UserController extends Controller
             // 必要に応じて他のフィールドを追加
         ]);
     }
+
+    public function login(Request $request)
+    {
+        $credentials = $request->only('email', 'password');
+
+        if (Auth::attempt($credentials)) {
+            $user = Auth::user();
+            $token = $user->createToken('user')->plainTextToken;
+
+            return response()->json(['token' => $token, 'user' => $user]);
+        }
+
+        return response()->json(['message' => 'Invalid credentials'], 401);
+    }
 }

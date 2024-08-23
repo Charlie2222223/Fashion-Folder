@@ -53,13 +53,20 @@ class RegisterController extends Controller
         }
 
         // ユーザーをデータベースに登録
-        $this->registerUser($request);
+        $user = $this->registerUser($request);
 
         // 一時パスワードを削除
         $this->deleteTemporaryPassword($userVerification);
 
-        // 成功メッセージを返す
-        return response()->json(['message' => 'User registration successful']);
+        // トークンを生成
+        $token = $user->createToken('authToken')->plainTextToken;
+
+        // 成功メッセージとトークンを返す
+        return response()->json([
+            'message' => 'User registration successful',
+            'token' => $token,
+            'user' => $user,
+        ]);
     }
 
     /**

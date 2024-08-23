@@ -6,7 +6,7 @@ import Section from './components/Section';
 import PrelineScript from "./components/PrelineScript";
 import Explanation from "./components/Explanation";
 import Gaide from "./components/Gaide";
-import LoginForm from './components/LoginForm';
+import LoginForm from './login/LoginForm';
 import User_Info from './components/user/User_Info'
 
 const Home: React.FC = () => {
