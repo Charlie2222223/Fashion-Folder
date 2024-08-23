@@ -19,23 +19,25 @@ const SignInForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-
+  
     try {
       const response = await axios.post('http://localhost:8000/api/login', {
         email,
         password,
       });
-
+  
       const token = response.data.token;
-
+  
       // トークンをローカルストレージに保存
       localStorage.setItem('authToken', token);
-
+  
       // 必要に応じて他のユーザーデータを保存
       localStorage.setItem('user', JSON.stringify(response.data.user));
-
+      console.log('Navigating to index page');
+  
       // ログイン後にリダイレクト
-      router.push('/');
+      window.location.href = '/';
+      
     } catch (error) {
       const err = error as any;
       if (err.response && err.response.data.errors) {
