@@ -5,7 +5,7 @@ import { BiCloset } from "react-icons/bi";
 import { CiLogout } from "react-icons/ci";
 
 
-const User_Info: React.FC<{ onUserClick: () => void , onClose: () => void}> = ({ onUserClick , onClose}) => {
+const User_Info: React.FC<{ onUserClick: () => void ,onSettingClick: (userData: any) => void ,onClose: () => void}> = ({ onUserClick ,onSettingClick ,onClose}) => {
     const router = useRouter();
     const [userData, setUserData] = useState<any>(null);
 
@@ -127,7 +127,8 @@ const User_Info: React.FC<{ onUserClick: () => void , onClose: () => void}> = ({
                     <BiCloset className="ml-auto text-lg" />
                 </div>
                 <div className="flex items-center justify-between mb-3 text-xs text-left text-white md:text-sm hover:bg-blue-600">
-                    <p>プロフィールを設定する</p>
+                    <p onClick={() => { onSettingClick(userData); }}>
+                        プロフィールを設定する</p>
                     <FaGear className="ml-auto text-lg" />
                 </div>
                 <div className="flex items-center justify-between mb-3 text-xs text-left text-white md:text-sm hover:bg-blue-600"
