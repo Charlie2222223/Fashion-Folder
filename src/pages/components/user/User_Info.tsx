@@ -1,5 +1,9 @@
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
+import { FaGear } from "react-icons/fa6";
+import { BiCloset } from "react-icons/bi";
+import { CiLogout } from "react-icons/ci";
+
 
 const User_Info: React.FC<{ onUserClick: () => void , onClose: () => void}> = ({ onUserClick , onClose}) => {
     const router = useRouter();
@@ -118,20 +122,24 @@ const User_Info: React.FC<{ onUserClick: () => void , onClose: () => void}> = ({
                 <p className="text-xs text-center text-gray-600 md:text-sm dark:text-neutral-400 mb-7">
                     {userData.email}
                 </p>
-                <p className="mb-3 text-xs text-left text-white md:text-sm hover:bg-blue-600">
-                    MyClosetへ進む
-                </p>
-                <p className="mb-3 text-xs text-left text-white md:text-sm hover:bg-blue-600">
-                    プロフィールを設定する
-                </p>
-                <p className="mb-3 text-xs text-left text-white md:text-sm hover:bg-blue-600"
+                <div className="flex items-center justify-between mb-3 text-xs text-left text-white md:text-sm hover:bg-blue-600">
+                    <p>MyClosetへ進む</p>
+                    <BiCloset className="ml-auto text-lg" />
+                </div>
+                <div className="flex items-center justify-between mb-3 text-xs text-left text-white md:text-sm hover:bg-blue-600">
+                    <p>プロフィールを設定する</p>
+                    <FaGear className="ml-auto text-lg" />
+                </div>
+                <div className="flex items-center justify-between mb-3 text-xs text-left text-white md:text-sm hover:bg-blue-600"
                     onClick={handleLogout}>
-                    ログアウト
-                </p>
+                    <p>ログアウト</p>
+                    <CiLogout className="ml-auto text-lg" />
+                </div>
+
                 <div className="flex justify-center mt-10 space-x-5">
                     <button
                         className="px-5 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600"
-                        onClick={() => { onClose(); }}
+                        onClick={onClose}
                     >
                         閉じる
                     </button>

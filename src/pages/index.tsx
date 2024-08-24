@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import Title from './components/Home/Title';
-import Section from './components/Home/Section';
-import PrelineScript from "./components/Home/PrelineScript";
-import Explanation from "./components/Home/Explanation";
-import Gaide from "./components/Home/Gaide";
-import LoginForm from './components/login/LoginForm';
-import User_Info from './components/login/User_Info'
+import Title from './components/home/Title';
+import Section from './components/home/Section';
+import PrelineScript from "./components/home/PrelineScript";
+import Explanation from "./components/home/Explanation";
+import Gaide from "./components/home/Gaide";
+import LoginForm from './components/user/login/LoginForm';
+import User_Info from './components/user/User_Info'
 
 const Home: React.FC = () => {
   const [isSignInFormVisible, setSignInFormVisible] = useState(false);
