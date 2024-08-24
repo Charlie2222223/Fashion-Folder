@@ -15,10 +15,12 @@ Route::post('/register/vertification', [RegisterController::class, 'PushUserInfo
 
 Route::middleware('auth:sanctum')->get('/user', [UserController::class, 'getUserData']);    //SignIn
 
-Route::post('/login', [UserController::class, 'login']);
+Route::post('/login', [UserController::class, 'login']);                                    //Login
 
 Route::middleware('auth:sanctum')->post('/logout', function (Request $request) {            //Logout
     $request->user()->currentAccessToken()->delete();
 
     return response()->json(['message' => 'Logged out successfully']);
 });
+
+Route::middleware('auth:sanctum')->post('/upload/avatar', [UserController::class, 'uploadAvatar']);

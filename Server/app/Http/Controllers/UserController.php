@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\LoginRequest;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -37,4 +38,31 @@ class UserController extends Controller
 
         return response()->json(['message' => 'Invalid credentials'], 401);
     }
+
+    public function uploadAvatar(Request $request)
+{
+    $request->validate([
+        'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // 画像のバリデーション
+    ]);
+
+    $user = Auth::user();
+    if ($request->hasFile('avatar')) {
+        // 既存のアバター画像を削除
+        if ($user->avatar) {
+            Storage::delete('public/avatars/' . $user->avatar);
+        }
+
+        // 新しい画像を保存
+        $avatarName = $user->id . '_avatar.' . $request->avatar->extension();
+        $request->avatar->storeAs('public/avatars', $avatarName);
+
+        // ユーザーのアバター情報を更新
+        $user->avatar = 'storage/avatars/' . $avatarName;
+        $user->save();
+
+        return response()->json(['message' => 'Avatar uploaded successfully', 'avatar' => $avatarName]);
+    }
+
+    return response()->json(['message' => 'Failed to upload avatar'], 500);
+}
 }
