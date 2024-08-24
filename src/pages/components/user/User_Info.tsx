@@ -114,7 +114,7 @@ const User_Info: React.FC<{ onUserClick: () => void ,onSettingClick: (userData: 
                 </h1>
                 <div className="flex justify-center mb-6">
                     <img
-                        src={userData.avatar || '/default-avatar.png'}
+                        src={`http://localhost:8000/${userData.avatar}` || '/default-avatar.png'}
                         alt="ユーザーアイコン"
                         className="object-cover w-20 h-20 rounded-full"
                     />
