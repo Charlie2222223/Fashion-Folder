@@ -83,9 +83,15 @@ const SettingForm: React.FC<{onClose: () => void, userData: any}> = ({onClose, u
                     style={{ display: 'none' }}
                     onChange={handleFileChange}  // ファイル選択後、ステートに保存
                 />
-                <p className="text-xs text-center text-gray-600 md:text-sm dark:text-neutral-400 mb-7">
+                <p className="mb-3 text-xs text-center text-gray-600 md:text-sm dark:text-neutral-400">
                     {userData.email}
                 </p>
+                {/* Passwordを変更リンクを中央に配置 */}
+                <div className="text-center">
+                    <a className="text-xs text-blue-600 decoration-2 hover:underline dark:text-blue-500 md:text-sm" href="#">
+                        Passwordを変更はこちら
+                    </a>
+                </div>
                 {/* 保存ボタン */}
                 <div className="flex justify-center mt-10 space-x-5">
                     <button
