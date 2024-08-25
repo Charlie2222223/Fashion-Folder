@@ -39,46 +39,40 @@ class UserController extends Controller
         return response()->json(['message' => 'Invalid credentials'], 401);
     }
 
-    public function uploadAvatar(Request $request)
+    public function updateProfile(Request $request)
     {
         $request->validate([
-            'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // 画像のバリデーション
+            'name' => 'sometimes|required|string|max:255', // 名前のバリデーション、'sometimes'でオプションにする
+            'avatar' => 'sometimes|required|image|mimes:jpeg,png,jpg,gif|max:2048', // 画像のバリデーション、'sometimes'でオプションにする
         ]);
-
+    
         $user = Auth::user();
+    
+        if ($request->has('name')) {
+            // ユーザーの名前を更新
+            $user->name = $request->name;
+        }
+    
         if ($request->hasFile('avatar')) {
             // 既存のアバター画像を削除
             if ($user->avatar) {
                 Storage::delete('public/avatars/' . $user->avatar);
             }
-
+    
             // 新しい画像を保存
             $avatarName = $user->id . '_avatar.' . $request->avatar->extension();
             $request->avatar->storeAs('public/avatars', $avatarName);
-
+    
             // ユーザーのアバター情報を更新
             $user->avatar = 'storage/avatars/' . $avatarName;
-            $user->save();
-
-            return response()->json(['message' => 'Avatar uploaded successfully', 'avatar' => $avatarName]);
         }
-
-        return response()->json(['message' => 'Failed to upload avatar'], 500);
-    }
     
-    public function uploadName(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255', // 名前のバリデーション
+        $user->save();
+    
+        return response()->json([
+            'message' => 'Profile updated successfully', 
+            'name' => $user->name, 
+            'avatar' => $user->avatar
         ]);
-
-        $user = Auth::user();
-
-            // ユーザーの名前更新
-            $user->name = $request->name;
-            $user->save();
-
-            return response()->json(['message' => 'Name updated successfully', 'name' => $request->name]);
-        }
-    
+    }
 }

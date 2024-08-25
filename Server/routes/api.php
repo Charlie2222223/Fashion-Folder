@@ -23,7 +23,4 @@ Route::middleware('auth:sanctum')->post('/logout', function (Request $request) {
     return response()->json(['message' => 'Logged out successfully']);
 });
 
-Route::middleware('auth:sanctum')->post('/upload/avatar', [UserController::class, 'uploadAvatar']);
-
-Route::middleware('auth:sanctum')->post('/upload/name', [UserController::class, 'uploadName']);
-
+Route::middleware('auth:sanctum')->post('/upload/profile', [UserController::class, 'updateProfile']);
