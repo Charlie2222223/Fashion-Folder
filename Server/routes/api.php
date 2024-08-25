@@ -24,3 +24,6 @@ Route::middleware('auth:sanctum')->post('/logout', function (Request $request) {
 });
 
 Route::middleware('auth:sanctum')->post('/upload/avatar', [UserController::class, 'uploadAvatar']);
+
+Route::middleware('auth:sanctum')->post('/upload/name', [UserController::class, 'uploadName']);
+

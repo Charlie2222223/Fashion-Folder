@@ -42,41 +42,41 @@ const VerificationsForm: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white border border-gray-200 rounded-xl shadow-sm dark:bg-neutral-900 dark:border-neutral-700 h-128 p-20 relative w-full max-w-3xl mx-4 sm:mx-8 md:mx-16 lg:mx-24 xl:mx-32">
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-white text-center mb-8">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="relative w-full max-w-3xl p-20 mx-4 bg-white border border-gray-200 shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-700 h-128 sm:mx-8 md:mx-16 lg:mx-24 xl:mx-32">
+        <h1 className="mb-8 text-2xl font-bold text-center text-gray-800 dark:text-white">
           メール認証
         </h1>
         {/* メールアドレスの表示 */}
-        <p className="text-center text-gray-600 dark:text-gray-400 mb-4">
+        <p className="mb-4 text-center text-gray-600 dark:text-gray-400">
           メールアドレス: <span className="font-bold">{query.email}</span>
         </p>
         <form onSubmit={handleSubmit}>
           <div className="grid gap-y-7">
             <div className="flex flex-col items-center gap-y-7">
               <div className="w-full max-w-md">
-                <label className="block text-sm mb-2 text-center dark:text-white" htmlFor="Vertification">
+                <label className="block mb-2 text-sm text-center dark:text-white" htmlFor="Vertification">
                   仮パスワード入力
                 </label>
                 <input
-                  className="py-3 px-4 w-full border border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:placeholder-neutral-500 dark:focus:bg-neutral-800 dark:focus:ring-neutral-600 shadow-sm"
+                  className="w-full px-4 py-3 text-sm border border-gray-200 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:placeholder-neutral-500 dark:focus:bg-neutral-800 dark:focus:ring-neutral-600"
                   id="Vertification"
                   name="Vertification"
                   required
                   type="text"
                 />
-                {errors.Vertification && <p className="text-red-500 text-sm mt-2">{errors.Vertification}</p>}
+                {errors.Vertification && <p className="mt-2 text-sm text-red-500">{errors.Vertification}</p>}
               </div>
 
               <button
-                className="w-full max-w-md py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700"
+                className="inline-flex items-center justify-center w-full max-w-md px-4 py-3 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg gap-x-2 hover:bg-blue-700 focus:outline-none focus:bg-blue-700"
                 type="submit"
               >
                 送信
               </button>
             </div>
             {/* エラーメッセージ表示 */}
-            {errors.general && <p className="text-red-500 text-sm text-center mt-2">{errors.general}</p>}
+            {errors.general && <p className="mt-2 text-sm text-center text-red-500">{errors.general}</p>}
           </div>
         </form>
       </div>
