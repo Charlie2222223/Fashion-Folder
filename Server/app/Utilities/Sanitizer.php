@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Utilities;
+
 class Sanitizer {
     /**
      * 入力データをサニタイジングする静的メソッド

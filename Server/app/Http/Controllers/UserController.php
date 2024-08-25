@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Storage;
+use App\Utilities\Sanitizer;
 
 class UserController extends Controller
 {
@@ -40,39 +41,44 @@ class UserController extends Controller
     }
 
     public function updateProfile(Request $request)
-    {
-        $request->validate([
-            'name' => 'sometimes|required|string|max:255', // 名前のバリデーション、'sometimes'でオプションにする
-            'avatar' => 'sometimes|required|image|mimes:jpeg,png,jpg,gif|max:2048', // 画像のバリデーション、'sometimes'でオプションにする
-        ]);
-    
-        $user = Auth::user();
-    
-        if ($request->has('name')) {
-            // ユーザーの名前を更新
-            $user->name = $request->name;
-        }
-    
-        if ($request->hasFile('avatar')) {
-            // 既存のアバター画像を削除
-            if ($user->avatar) {
-                Storage::delete('public/avatars/' . $user->avatar);
-            }
-    
-            // 新しい画像を保存
-            $avatarName = $user->id . '_avatar.' . $request->avatar->extension();
-            $request->avatar->storeAs('public/avatars', $avatarName);
-    
-            // ユーザーのアバター情報を更新
-            $user->avatar = 'storage/avatars/' . $avatarName;
-        }
-    
-        $user->save();
-    
-        return response()->json([
-            'message' => 'Profile updated successfully', 
-            'name' => $user->name, 
-            'avatar' => $user->avatar
-        ]);
+{
+    $request->validate([
+        'name' => 'sometimes|required|string|max:255', // 名前のバリデーション、'sometimes'でオプションにする
+        'avatar' => 'sometimes|required|image|mimes:jpeg,png,jpg,gif|max:2048', // 画像のバリデーション、'sometimes'でオプションにする
+    ]);
+
+    $user = Auth::user();
+
+    if ($request->has('name')) {
+        // 名前のサニタイジング
+        $sanitizedName = Sanitizer::sanitizeString($request->name);
+        // ユーザーの名前を更新
+        $user->name = $sanitizedName;
     }
+
+    if ($request->hasFile('avatar')) {
+        // 既存のアバター画像を削除
+        if ($user->avatar) {
+            Storage::delete('public/avatars/' . $user->avatar);
+        }
+
+        // 新しい画像を保存
+        $avatarName = $user->id . '_avatar.' . $request->avatar->extension();
+        $request->avatar->storeAs('public/avatars', $avatarName);
+
+        // アバターURLのサニタイジング
+        $sanitizedAvatarPath = Sanitizer::sanitizeString('storage/avatars/' . $avatarName);
+
+        // ユーザーのアバター情報を更新
+        $user->avatar = $sanitizedAvatarPath;
+    }
+
+    $user->save();
+
+    return response()->json([
+        'message' => 'Profile updated successfully', 
+        'name' => $user->name, 
+        'avatar' => $user->avatar
+    ]);
+}
 }
