@@ -1,6 +1,6 @@
 import React from 'react'
-import Background from './components/Background'
-import SigninForm from './components/user/signin/SigninForm'
+import Background from '../../Background'
+import SigninForm from './SigninForm'
 
 const SignIn: React.FC = () => {
   return (

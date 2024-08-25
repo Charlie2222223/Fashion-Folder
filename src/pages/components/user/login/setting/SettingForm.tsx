@@ -6,7 +6,36 @@ import { BiCloset } from "react-icons/bi";
 const SettingForm: React.FC<{onClose: () => void, userData: any}> = ({onClose, userData}) => {
     const [selectedFile, setSelectedFile] = useState<File | null>(null); // ファイル選択の状態を管理するためのステート
     const [name, setName] = useState(userData.name); // ユーザーの名前を管理するためのステート
+    const [email, setEmail] = useState(userData.email);
     const [isSaving, setIsSaving] = useState(false); // 保存中の状態を管理するためのステート
+
+    const handleClickPassword = async () => {
+
+        const formData = new FormData();
+        formData.append('email', email);
+
+        try{
+
+            const response = await fetch('http://127.0.0.1:8000/api/change/password', {
+                method: 'post',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`, // 認証トークンをヘッダーに追加
+                },
+                body: formData,
+            })
+
+            router.push({
+                pathname: '/components/user/login/setting/password/PasswordChange',
+                query: {
+                    email: email
+                }
+              });
+            
+        }catch(error){
+            console.log('not found');
+        }
+        
+    }
 
     // ファイルが選択されたときに呼び出されるハンドラー
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,11 +113,12 @@ const SettingForm: React.FC<{onClose: () => void, userData: any}> = ({onClose, u
                     onChange={handleFileChange}  // ファイル選択後、ステートに保存
                 />
                 <p className="mb-3 text-xs text-center text-gray-600 md:text-sm dark:text-neutral-400">
-                    {userData.email}
+                    {email}
                 </p>
                 {/* Passwordを変更リンクを中央に配置 */}
                 <div className="text-center">
-                    <a className="text-xs text-blue-600 decoration-2 hover:underline dark:text-blue-500 md:text-sm" href="#">
+                    <a className="text-xs text-blue-600 decoration-2 hover:underline dark:text-blue-500 md:text-sm"
+                        onClick={handleClickPassword}>
                         Passwordを変更はこちら
                     </a>
                 </div>

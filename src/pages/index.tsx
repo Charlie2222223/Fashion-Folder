@@ -8,7 +8,7 @@ import Explanation from "./components/home/Explanation";
 import Gaide from "./components/home/Gaide";
 import LoginForm from './components/user/login/LoginForm';
 import User_Info from './components/user/User_Info';
-import SettingForm from './components/user/login/SettingForm';
+import SettingForm from './components/user/login/setting/SettingForm';
 
 const Home: React.FC = () => {
   const [isSignInFormVisible, setSignInFormVisible] = useState(false);
