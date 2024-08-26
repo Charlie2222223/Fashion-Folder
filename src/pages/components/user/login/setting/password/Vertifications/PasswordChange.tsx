@@ -1,5 +1,5 @@
 import React from 'react'
-import Background from '../../../../Background'
+import Background from '../../../../../Background'
 import PasswordVertifications from './PasswordVertifications'
 
 const PasswordChange: React.FC = () => {

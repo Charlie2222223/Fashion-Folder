@@ -1,5 +1,5 @@
 import React from 'react'
-import Background from '../../../../Background'
+import Background from '../../../../../Background'
 import PasswordInputForm from './PasswordInputForm'
 
 const PasswordInput: React.FC = () => {

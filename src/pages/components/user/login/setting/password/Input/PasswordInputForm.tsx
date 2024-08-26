@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios'; // axiosライブラリを使用
 import { useRouter } from 'next/router';
 
-const PasswordVertifivations: React.FC = () => {
+const PasswordInputForm: React.FC = () => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const router = useRouter(); // useRouterフックからrouterを取得
   const { query } = router; // queryをrouterから取得
@@ -78,4 +78,4 @@ const PasswordVertifivations: React.FC = () => {
   );
 };
 
-export default PasswordVertifivations;
+export default PasswordInputForm;

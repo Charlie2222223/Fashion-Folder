@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios'; // axiosライブラリを使用
 import { useRouter } from 'next/router';
 
-const PasswordInputForm: React.FC = () => {
+const PasswordVertifivations: React.FC = () => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const router = useRouter(); // useRouterフックからrouterを取得
   const { query } = router; // queryをrouterから取得
@@ -23,7 +23,7 @@ const PasswordInputForm: React.FC = () => {
       console.log('Verification successful:', response.data);
 
       // 正常に処理された場合、次のステップに進むなどの処理を行います
-      router.push('/components/user/login/setting/password/PasswordInput'); // 次のステップに進む
+      router.push('/components/user/login/setting/password/Input/PasswordInput'); // 次のステップに進む
     } catch (error) {
       const err = error as any; // `error` を `any` にキャスト
       if (err.response && err.response.data.errors) {
@@ -78,4 +78,4 @@ const PasswordInputForm: React.FC = () => {
   );
 };
 
-export default PasswordInputForm;
+export default PasswordVertifivations;
