@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
@@ -11,37 +12,61 @@ use Illuminate\Support\Str;
 use App\Mail\WelcomeMail;
 use App\Http\Requests\RegisterRequest;
 use Illuminate\Http\Request;
-use App\Utilities\Sanitizer; // Sanitizerクラスをインポート
+use App\Utilities\Sanitizer;
 
 class RegisterController extends Controller
 {
+    /**
+     * ユーザー登録の最初のステップ: 一時パスワードを生成してメールで送信する
+     * 
+     * @param RegisterRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function register(RegisterRequest $request)
     {
-        // サニタイジング処理
-        $sanitizedEmail = Sanitizer::sanitizeString($request->input('email'));
-        
-        // 6桁のランダムな一時パスワードを生成
-        $temporaryPassword = $this->generateTemporaryPassword();
+        // メールアドレスをサニタイズ
+        $sanitizedEmail = $this->sanitizeInput($request->input('email'));
 
-        // 一時パスワードを保存
-        $this->storeTemporaryPassword($sanitizedEmail, $temporaryPassword);
-
-        // メール送信
-        $this->sendVerificationEmail($sanitizedEmail, $temporaryPassword);
+        // 一時パスワードを生成し、メールで送信
+        $this->processRegistration($sanitizedEmail);
 
         return response()->json(['message' => 'Temporary password sent, please verify']);
     }
 
-    public function PushUserInfo(Request $request)
+    /**
+     * ユーザーがパスワードを変更する際の処理: 一時パスワードを生成してメールで送信する
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function registerPassword(Request $request)
     {
-        // サニタイジング処理
-        $sanitizedEmail = Sanitizer::sanitizeString($request->input('email'));
-        $sanitizedName = Sanitizer::sanitizeString($request->input('name'));
-        $sanitizedTemporaryPassword = Sanitizer::sanitizeString($request->input('temporary_password'));
+        // メールアドレスをサニタイズ
+        $sanitizedEmail = $this->sanitizeInput($request->input('email'));
 
-        // 一時パスワードを確認
+        // 一時パスワードを生成し、メールで送信
+        $this->processRegistration($sanitizedEmail);
+
+        return response()->json(['message' => 'Temporary password sent, please verify']);
+    }
+
+    /**
+     * ユーザー情報を登録し、最終的にユーザー登録を完了する
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function pushUserInfo(Request $request)
+    {
+        // 入力された情報をサニタイズ
+        $sanitizedEmail = $this->sanitizeInput($request->input('email'));
+        $sanitizedName = $this->sanitizeInput($request->input('name'));
+        $sanitizedTemporaryPassword = $this->sanitizeInput($request->input('temporary_password'));
+
+        // 一時パスワードを検証
         $userVerification = $this->verifyTemporaryPassword($sanitizedEmail, $sanitizedTemporaryPassword);
 
+        // 検証失敗時の処理
         if (!$userVerification) {
             return response()->json(['message' => 'Invalid temporary password'], 400);
         }
@@ -49,10 +74,10 @@ class RegisterController extends Controller
         // ユーザーをデータベースに登録
         $user = $this->registerUser($sanitizedName, $sanitizedEmail, $request->password);
 
-        // 一時パスワードを削除
+        // 一時パスワードをデータベースから削除
         $this->deleteTemporaryPassword($userVerification);
 
-        // トークンを生成
+        // 認証トークンを生成して返却
         $token = $user->createToken('authToken')->plainTextToken;
 
         return response()->json([
@@ -62,24 +87,113 @@ class RegisterController extends Controller
         ]);
     }
 
-    protected function verifyTemporaryPassword($email, $temporaryPassword)
+    /**
+     * 入力データをサニタイズする
+     * 
+     * @param string $input
+     * @return string
+     */
+    protected function sanitizeInput($input)
     {
-        $verification = UserVerification::where('email', $email)
-            ->where('temporary_password', $temporaryPassword)
-            ->first();
-
-        return $verification;
+        return Sanitizer::sanitizeString($input);
     }
 
+    /**
+     * 一時パスワードを生成し、データベースに保存し、メールで送信する処理を行う
+     * 
+     * @param string $sanitizedEmail
+     * @return void
+     */
+    protected function processRegistration($sanitizedEmail)
+    {
+        // 6桁のランダムな一時パスワードを生成
+        $temporaryPassword = $this->generateTemporaryPassword();
+
+        // 一時パスワードをデータベースに保存
+        $this->storeTemporaryPassword($sanitizedEmail, $temporaryPassword);
+
+        // 一時パスワードを確認用メールで送信
+        $this->sendVerificationEmail($sanitizedEmail, $temporaryPassword);
+    }
+
+    /**
+     * 一時パスワードを検証する
+     * 
+     * @param string $email
+     * @param string $temporaryPassword
+     * @return \App\Models\UserVerification|null
+     */
+    protected function verifyTemporaryPassword($email, $temporaryPassword)
+    {
+        return UserVerification::where('email', $email)
+            ->where('temporary_password', $temporaryPassword)
+            ->first();
+    }
+
+    /**
+     * ユーザーをデータベースに登録する
+     * 
+     * @param string $name
+     * @param string $email
+     * @param string $password
+     * @return \App\Models\User
+     */
     protected function registerUser($name, $email, $password)
     {
         return User::create([
             'name' => $name,
             'email' => $email,
             'password' => Hash::make($password),
-            'provider' => 'google',
+            'provider' => 'google',  // プロバイダ情報を設定
         ]);
     }
 
-    // 他のメソッドは変わらず
+    /**
+     * 6桁のランダムな一時パスワードを生成する
+     * 
+     * @return string
+     */
+    protected function generateTemporaryPassword()
+    {
+        return Str::random(6);
+    }
+
+    /**
+     * 一時パスワードをデータベースに保存する
+     * 
+     * @param string $email
+     * @param string $temporaryPassword
+     * @return void
+     */
+    protected function storeTemporaryPassword($email, $temporaryPassword)
+    {
+        UserVerification::create([
+            'email' => $email,
+            'temporary_password' => $temporaryPassword,
+            'created_at' => now(),
+        ]);
+    }
+
+    /**
+     * 一時パスワード確認用のメールを送信する
+     * 
+     * @param string $email
+     * @param string $temporaryPassword
+     * @return void
+     */
+    protected function sendVerificationEmail($email, $temporaryPassword)
+    {
+        Mail::to($email)->send(new WelcomeMail($temporaryPassword));
+    }
+
+    /**
+     * 一時パスワードをデータベースから削除する
+     * 
+     * @param \App\Models\UserVerification $userVerification
+     * @return void
+     */
+    protected function deleteTemporaryPassword($userVerification)
+    {
+        $userVerification->delete();
+    }
 }
