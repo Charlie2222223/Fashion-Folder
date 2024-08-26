@@ -10,8 +10,6 @@ const PasswordVertifivations: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    // クエリパラメータとフォームデータを統合
-    const form = event.target as unknown as HTMLFormElement;
     const formData = {
       email: query.email as string,
     };

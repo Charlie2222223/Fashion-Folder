@@ -19,7 +19,6 @@ class RegisterController extends Controller
     {
         // サニタイジング処理
         $sanitizedEmail = Sanitizer::sanitizeString($request->input('email'));
-        $sanitizedName = Sanitizer::sanitizeString($request->input('name'));
         
         // 6桁のランダムな一時パスワードを生成
         $temporaryPassword = $this->generateTemporaryPassword();

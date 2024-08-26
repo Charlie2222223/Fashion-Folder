@@ -1,6 +1,7 @@
 import router, { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { FaGear, FaPlus } from "react-icons/fa6";
+import axios from 'axios';
 import { BiCloset } from "react-icons/bi";
 
 const SettingForm: React.FC<{onClose: () => void, userData: any}> = ({onClose, userData}) => {
@@ -10,32 +11,37 @@ const SettingForm: React.FC<{onClose: () => void, userData: any}> = ({onClose, u
     const [isSaving, setIsSaving] = useState(false); // 保存中の状態を管理するためのステート
 
     const handleClickPassword = async () => {
-
         const formData = new FormData();
         formData.append('email', email);
-
-        try{
-
-            const response = await fetch('http://127.0.0.1:8000/api/change/password', {
-                method: 'post',
+    
+        try {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                throw new Error('Authentication token is missing');
+            }
+    
+            const response = await axios.post('http://localhost:8000/api/register/password', formData, {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`, // 認証トークンをヘッダーに追加
+                    'Authorization': `Bearer ${token}`,
                 },
-                body: formData,
-            })
-
+            });
+    
+            console.log('Registration successful:', response.data);
+    
             router.push({
                 pathname: '/components/user/login/setting/password/PasswordChange',
                 query: {
-                    email: email
-                }
-              });
-            
-        }catch(error){
-            console.log('not found');
+                    email: email,
+                },
+            });
+        } catch (error) {
+            if (error.response) {
+                console.log('Authentication failed:', error.response.data);
+            } else {
+                console.log('Request failed:', error.message);
+            }
         }
-        
-    }
+    };
 
     // ファイルが選択されたときに呼び出されるハンドラー
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
