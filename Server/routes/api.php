@@ -8,6 +8,7 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 
 use App\Http\Controllers\Auth\RegisterController;
+use App\Models\User;
 
 Route::post('/register', [RegisterController::class, 'register']);                          //メールの送信
 
@@ -25,4 +26,6 @@ Route::middleware('auth:sanctum')->post('/logout', function (Request $request) {
 
 Route::middleware('auth:sanctum')->post('/upload/profile', [UserController::class, 'updateProfile']);   //アカウントの設定変更
 
-Route::middleware('auth:sanctum')->post('/register/password', [RegisterController::class, 'registerPassword']);   //アカウントの設定変更
+Route::middleware('auth:sanctum')->post('/register/password', [RegisterController::class, 'registerPassword']);   //アカウントのパスワード変更のメールを送信
+
+Route::middleware('auth:sanctum')->post('change/password/vertification', [UserController::class, '']);  //パスワードを変更

@@ -17,29 +17,12 @@ use App\Utilities\Sanitizer;
 class RegisterController extends Controller
 {
     /**
-     * ユーザー登録の最初のステップ: 一時パスワードを生成してメールで送信する
-     * 
-     * @param RegisterRequest $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function register(RegisterRequest $request)
-    {
-        // メールアドレスをサニタイズ
-        $sanitizedEmail = $this->sanitizeInput($request->input('email'));
-
-        // 一時パスワードを生成し、メールで送信
-        $this->processRegistration($sanitizedEmail);
-
-        return response()->json(['message' => 'Temporary password sent, please verify']);
-    }
-
-    /**
-     * ユーザーがパスワードを変更する際の処理: 一時パスワードを生成してメールで送信する
+     * ユーザー登録またはパスワード変更の処理: 一時パスワードを生成してメールで送信する
      * 
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function registerPassword(Request $request)
+    public function handleRegistration(Request $request)
     {
         // メールアドレスをサニタイズ
         $sanitizedEmail = $this->sanitizeInput($request->input('email'));
@@ -85,6 +68,28 @@ class RegisterController extends Controller
             'token' => $token,
             'user' => $user,
         ]);
+    }
+
+    /**
+     * ユーザー登録の最初のステップ: 一時パスワードを生成してメールで送信する
+     * 
+     * @param RegisterRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function register(RegisterRequest $request)
+    {
+        return $this->handleRegistration($request);
+    }
+
+    /**
+     * ユーザーがパスワードを変更する際の処理: 一時パスワードを生成してメールで送信する
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function registerPassword(Request $request)
+    {
+        return $this->handleRegistration($request);
     }
 
     /**
