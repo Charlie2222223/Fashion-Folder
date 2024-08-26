@@ -6,7 +6,7 @@ use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 
-class MatchOldPassword implements Rule
+class MatchNewPassword implements Rule
 {
     protected $email;
 
@@ -29,18 +29,11 @@ class MatchOldPassword implements Rule
      */
     public function passes($attribute, $value)
     {
-        // ユーザーのメールアドレスでデータベースからユーザーを取得
+        // ユーザーのメールアドレスでデータベースからパスワードを取得
         $user = User::where('email', $this->email)->first();
 
-        // ユーザーが存在する場合、入力されたパスワードとハッシュ化されたパスワードを比較
-        if ($user) {
-            return Hash::check($value, $user->password);
-        }
-
-        // ユーザーが存在しない場合はfalseを返す
-        return false;
+        return !Hash::check($value, $user->password);
     }
-
 
     /**
      * バリデーションに失敗した場合のエラーメッセージを返すメソッド

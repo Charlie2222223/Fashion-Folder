@@ -48,18 +48,35 @@ const PasswordInputForm: React.FC = () => {
         <form onSubmit={handleSubmit}>
           <div className="grid gap-y-7">
             <div className="flex flex-col items-center gap-y-7">
-              <div className="w-full max-w-md">
-                <label className="block mb-2 text-sm text-center dark:text-white" htmlFor="Vertification">
-                  確認コード入力
-                </label>
+            <div>
+                <div className="flex items-center justify-between">
+                  <label className="block mb-2 text-sm dark:text-white" htmlFor="password">
+                    パスワード
+                  </label>
+                </div>
                 <input
-                  className="w-full px-4 py-3 text-sm border border-gray-200 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:placeholder-neutral-500 dark:focus:bg-neutral-800 dark:focus:ring-neutral-600"
-                  id="Vertification"
-                  name="Vertification"
+                  className="block w-full px-4 py-3 text-sm border border-gray-200 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:placeholder-neutral-500 dark:focus:bg-neutral-800 dark:focus:ring-neutral-600"
+                  id="password"
+                  name="password"
                   required
-                  type="text"
+                  type="password"
                 />
-                {errors.Vertification && <p className="mt-2 text-sm text-red-500">{errors.Vertification}</p>}
+                {errors.password && <p className="mt-2 text-sm text-red-500">{errors.password}</p>}
+              </div>
+              <div>
+                <div className="flex items-center justify-between">
+                  <label className="block mb-2 text-sm dark:text-white" htmlFor="password_check">
+                    パスワード(確認)
+                  </label>
+                </div>
+                <input
+                  className="block w-full px-4 py-3 text-sm border border-gray-200 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:placeholder-neutral-500 dark:focus:bg-neutral-800 dark:focus:ring-neutral-600"
+                  id="password_check"
+                  name="password_check"
+                  required
+                  type="password"
+                />
+                {errors.password_confirmation && <p className="mt-2 text-sm text-red-500">{errors.password_confirmation}</p>}
               </div>
 
               <button

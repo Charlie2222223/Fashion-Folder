@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Storage;
 use App\Utilities\Sanitizer;
+use App\Http\Requests\NewPassword;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -111,4 +113,25 @@ class UserController extends Controller
             'avatar' => $user->avatar
         ]);
     }
+
+    public function passwordVertification(NewPassword $request)
+    {
+        // 現在認証されているユーザーを取得
+        $user = Auth::user();
+    
+        // パスワードのハッシュ化
+        $hashedPassword = Hash::make($request->password);
+    
+        // ユーザーのパスワードを更新
+        $user->password = $hashedPassword;
+    
+        // ユーザー情報を保存
+        $user->save();
+    
+        return response()->json([
+            'message' => 'Password updated successfully', 
+            'password' => $user->password, 
+        ]);
+    }
+
 }

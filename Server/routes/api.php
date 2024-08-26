@@ -28,4 +28,6 @@ Route::middleware('auth:sanctum')->post('/upload/profile', [UserController::clas
 
 Route::middleware('auth:sanctum')->post('/register/password', [RegisterController::class, 'registerPassword']);   //アカウントのパスワード変更のメールを送信
 
-Route::middleware('auth:sanctum')->post('change/password/Input', [UserController::class, '']);  //パスワードを変更
+Route::middleware('auth:sanctum')->post('change/password/vertification', [UserController::class, '']);  //パスワードを変更
+
+Route::middleware('auth:sanctum')->post('change/password/input', [UserController::class, 'passwordVertification']);  //パスワードを変更

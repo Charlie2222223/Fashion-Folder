@@ -4,8 +4,9 @@ import { useRouter } from 'next/router';
 
 const PasswordVertifivations: React.FC = () => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const router = useRouter(); // useRouterフックからrouterを取得
-  const { query } = router; // queryをrouterから取得
+  const [message, setMessage] = useState<string | null>(null); // ユーザーフィードバック用のメッセージ
+  const router = useRouter();
+  const { query } = router;
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -14,16 +15,27 @@ const PasswordVertifivations: React.FC = () => {
       email: query.email as string,
     };
 
-    // formDataをコンソールに出力して確認
     console.log('Form Data:', formData);
 
     try {
-      // Laravel APIにリクエストを送信
-      const response = await axios.post('http://localhost:8000/api/change/password/vertification', formData);
-      console.log('Verification successful:', response.data);
+      // 認証トークンを取得
+      const token = localStorage.getItem('authToken');
 
-      // 正常に処理された場合、次のステップに進むなどの処理を行います
-      router.push('/components/user/login/setting/password/Input/PasswordInput'); // 次のステップに進む
+      // Laravel APIにリクエストを送信
+      const response = await axios.post('http://localhost:8000/api/change/password/vertification', formData, {
+        headers: {
+          'Authorization': `Bearer ${token}`, // Authorizationヘッダーを追加
+        },
+      });
+      
+      console.log('Verification successful:', response.data);
+      setMessage('Password verification successful! Proceeding to next step.');
+
+      // 正常に処理された場合、次のステップに進む
+      setTimeout(() => {
+        router.push('/components/user/login/setting/password/Input/PasswordInput');
+      }, 2000); // メッセージを表示してから2秒後に次のステップに進む
+
     } catch (error) {
       const err = error as any; // `error` を `any` にキャスト
       if (err.response && err.response.data.errors) {
@@ -31,6 +43,7 @@ const PasswordVertifivations: React.FC = () => {
         setErrors(err.response.data.errors);
       } else {
         console.error('Verification failed:', err.response?.data || err.message);
+        setMessage('Verification failed. Please try again.');
       }
     }
   };
