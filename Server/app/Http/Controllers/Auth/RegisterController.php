@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
@@ -17,94 +16,71 @@ use App\Utilities\Sanitizer;
 class RegisterController extends Controller
 {
     /**
-     * ユーザー登録またはパスワード変更の処理: 一時パスワードを生成してメールで送信する
+     * Handle user registration or password reset request: Generates a temporary password and sends it via email.
      * 
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function handleRegistration(Request $request)
     {
-        // メールアドレスをサニタイズ
         $sanitizedEmail = $this->sanitizeInput($request->input('email'));
-
-        // 一時パスワードを生成し、メールで送信
         $this->processRegistration($sanitizedEmail);
 
         return response()->json(['message' => 'Temporary password sent, please verify']);
     }
 
     /**
-     * ユーザー情報を登録し、最終的にユーザー登録を完了する
+     * Complete the user registration process by verifying the temporary password and saving user information.
      * 
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function pushUserInfo(Request $request)
     {
-        // 入力された情報をサニタイズ
         $sanitizedEmail = $this->sanitizeInput($request->input('email'));
         $sanitizedName = $this->sanitizeInput($request->input('name'));
         $sanitizedTemporaryPassword = $this->sanitizeInput($request->input('temporary_password'));
 
-        // 一時パスワードを検証
         $userVerification = $this->verifyTemporaryPassword($sanitizedEmail, $sanitizedTemporaryPassword);
 
-        // 検証失敗時の処理
         if (!$userVerification) {
             return response()->json(['message' => 'Invalid temporary password'], 400);
         }
 
-        // ユーザーをデータベースに登録
-<<<<<<< Updated upstream
         $user = $this->registerUser($sanitizedName, $sanitizedEmail, $request->password);
-=======
-        $user = $this->registerUser($request);
->>>>>>> Stashed changes
-
-        // 一時パスワードをデータベースから削除
         $this->deleteTemporaryPassword($userVerification);
 
-<<<<<<< Updated upstream
-        // 認証トークンを生成して返却
         $token = $user->createToken('authToken')->plainTextToken;
 
-=======
-        // トークンを生成
-        $token = $user->createToken('authToken')->plainTextToken;
-
-        // 成功メッセージとトークンを返す
->>>>>>> Stashed changes
         return response()->json([
             'message' => 'User registration successful',
             'token' => $token,
             'user' => $user,
         ]);
-<<<<<<< Updated upstream
     }
 
-    public function checkVertification(Request $request){
-
-        // 入力された情報をサニタイズ
+    /**
+     * Verify the temporary password provided by the user.
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function checkVerification(Request $request)
+    {
         $sanitizedEmail = $this->sanitizeInput($request->input('email'));
         $sanitizedTemporaryPassword = $this->sanitizeInput($request->input('temporary_password'));
 
         $userVerification = $this->verifyTemporaryPassword($sanitizedEmail, $sanitizedTemporaryPassword);
 
-        // 検証失敗時の処理
         if (!$userVerification) {
             return response()->json(['message' => 'Invalid temporary password'], 400);
         }
 
-        return response()->json([
-            'messege' => 'Complaete password',
-        ]);
-
-=======
->>>>>>> Stashed changes
+        return response()->json(['message' => 'Password verification successful']);
     }
 
     /**
-     * ユーザー登録の最初のステップ: 一時パスワードを生成してメールで送信する
+     * User registration: Handles the initial step by sending a temporary password via email.
      * 
      * @param RegisterRequest $request
      * @return \Illuminate\Http\JsonResponse
@@ -115,7 +91,7 @@ class RegisterController extends Controller
     }
 
     /**
-     * ユーザーがパスワードを変更する際の処理: 一時パスワードを生成してメールで送信する
+     * Handles the request for changing the password by sending a temporary password via email.
      * 
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
@@ -126,7 +102,7 @@ class RegisterController extends Controller
     }
 
     /**
-     * 入力データをサニタイズする
+     * Sanitize input data.
      * 
      * @param string $input
      * @return string
@@ -137,25 +113,20 @@ class RegisterController extends Controller
     }
 
     /**
-     * 一時パスワードを生成し、データベースに保存し、メールで送信する処理を行う
+     * Process registration by generating, storing, and emailing a temporary password.
      * 
      * @param string $sanitizedEmail
      * @return void
      */
     protected function processRegistration($sanitizedEmail)
     {
-        // 6桁のランダムな一時パスワードを生成
         $temporaryPassword = $this->generateTemporaryPassword();
-
-        // 一時パスワードをデータベースに保存
         $this->storeTemporaryPassword($sanitizedEmail, $temporaryPassword);
-
-        // 一時パスワードを確認用メールで送信
         $this->sendVerificationEmail($sanitizedEmail, $temporaryPassword);
     }
 
     /**
-     * 一時パスワードを検証する
+     * Verify the temporary password.
      * 
      * @param string $email
      * @param string $temporaryPassword
@@ -169,7 +140,7 @@ class RegisterController extends Controller
     }
 
     /**
-     * ユーザーをデータベースに登録する
+     * Register a new user.
      * 
      * @param string $name
      * @param string $email
@@ -182,12 +153,12 @@ class RegisterController extends Controller
             'name' => $name,
             'email' => $email,
             'password' => Hash::make($password),
-            'provider' => 'google',  // プロバイダ情報を設定
+            'provider' => 'google',
         ]);
     }
 
     /**
-     * 6桁のランダムな一時パスワードを生成する
+     * Generate a 6-digit random temporary password.
      * 
      * @return string
      */
@@ -197,7 +168,7 @@ class RegisterController extends Controller
     }
 
     /**
-     * 一時パスワードをデータベースに保存する
+     * Store the temporary password in the database.
      * 
      * @param string $email
      * @param string $temporaryPassword
@@ -213,7 +184,7 @@ class RegisterController extends Controller
     }
 
     /**
-     * 一時パスワード確認用のメールを送信する
+     * Send a verification email with the temporary password.
      * 
      * @param string $email
      * @param string $temporaryPassword
@@ -225,7 +196,7 @@ class RegisterController extends Controller
     }
 
     /**
-     * 一時パスワードをデータベースから削除する
+     * Delete the temporary password from the database.
      * 
      * @param \App\Models\UserVerification $userVerification
      * @return void
