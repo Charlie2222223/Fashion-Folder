@@ -14,6 +14,11 @@ const User_Info: React.FC<{ onUserClick: () => void ,onSettingClick: (userData: 
         router.push('/auth/SignIn');
     };
 
+    const handleCloset = () => {
+        //クローゼットへ移動する
+        router.push("/dashboard");
+    }
+
     const handleLogout = async () => {
         const token = localStorage.getItem('authToken');
     
@@ -123,7 +128,9 @@ const User_Info: React.FC<{ onUserClick: () => void ,onSettingClick: (userData: 
                     {userData.email}
                 </p>
                 <div className="flex items-center justify-between mb-3 text-xs text-left text-white md:text-sm hover:bg-blue-600">
-                    <p>MyClosetへ進む</p>
+                    <p onClick={handleCloset}>
+                        MyClosetへ進む
+                    </p>
                     <BiCloset className="ml-auto text-lg" />
                 </div>
                 <div className="flex items-center justify-between mb-3 text-xs text-left text-white md:text-sm hover:bg-blue-600">
