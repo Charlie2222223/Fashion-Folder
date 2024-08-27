@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 
 const PasswordInputForm: React.FC = () => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [email, setEmail] = useState<string | null>(null); // メールアドレスを状態で管理
   const router = useRouter(); // useRouterフックからrouterを取得
   const { query } = router; // queryをrouterから取得
 
@@ -11,7 +12,7 @@ const PasswordInputForm: React.FC = () => {
     event.preventDefault();
 
     const formData = {
-      email: query.email as string,
+      password: query.password as string,
     };
 
     // formDataをコンソールに出力して確認
@@ -19,7 +20,7 @@ const PasswordInputForm: React.FC = () => {
 
     try {
       // Laravel APIにリクエストを送信
-      const response = await axios.post('http://localhost:8000/api/change/password/vertification', formData);
+      const response = await axios.post('http://localhost:8000/api/change/password/input', formData);
       console.log('Verification successful:', response.data);
 
       // 正常に処理された場合、次のステップに進むなどの処理を行います
@@ -42,9 +43,11 @@ const PasswordInputForm: React.FC = () => {
           メール認証
         </h1>
         {/* メールアドレスの表示 */}
-        <p className="mb-4 text-center text-gray-600 dark:text-gray-400">
-          メールアドレス: <span className="font-bold">{query.email}</span>
-        </p>
+        {query.email && (
+          <p className="mb-4 text-center text-gray-600 dark:text-gray-400">
+            <span className="font-bold">{query.email}</span>
+          </p>
+        )}
         <form onSubmit={handleSubmit}>
           <div className="grid gap-y-7">
             <div className="flex flex-col items-center gap-y-7">

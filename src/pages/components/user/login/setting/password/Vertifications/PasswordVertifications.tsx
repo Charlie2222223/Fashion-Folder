@@ -11,8 +11,10 @@ const PasswordVertifivations: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
+    const form = event.target as unknown as HTMLFormElement;
     const formData = {
       email: query.email as string,
+      temporary_password: form.elements.namedItem('Vertification')?.value,
     };
 
     console.log('Form Data:', formData);
@@ -33,7 +35,12 @@ const PasswordVertifivations: React.FC = () => {
 
       // 正常に処理された場合、次のステップに進む
       setTimeout(() => {
-        router.push('/components/user/login/setting/password/Input/PasswordInput');
+        router.push({
+          pathname: '/components/user/login/setting/password/Input/PasswordInput',
+          query: {
+              email: query.email,
+          },
+      });
       }, 2000); // メッセージを表示してから2秒後に次のステップに進む
 
     } catch (error) {

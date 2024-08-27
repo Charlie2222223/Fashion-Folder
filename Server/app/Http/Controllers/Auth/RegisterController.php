@@ -70,6 +70,25 @@ class RegisterController extends Controller
         ]);
     }
 
+    public function checkVertification(Request $request){
+
+        // 入力された情報をサニタイズ
+        $sanitizedEmail = $this->sanitizeInput($request->input('email'));
+        $sanitizedTemporaryPassword = $this->sanitizeInput($request->input('temporary_password'));
+
+        $userVerification = $this->verifyTemporaryPassword($sanitizedEmail, $sanitizedTemporaryPassword);
+
+        // 検証失敗時の処理
+        if (!$userVerification) {
+            return response()->json(['message' => 'Invalid temporary password'], 400);
+        }
+
+        return response()->json([
+            'messege' => 'Complaete password',
+        ]);
+
+    }
+
     /**
      * ユーザー登録の最初のステップ: 一時パスワードを生成してメールで送信する
      * 
