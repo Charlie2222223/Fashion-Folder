@@ -11,7 +11,8 @@ const Gaide: React.FC <{ onUserClick: () => void }> = ({ onUserClick }) => {
     const router = useRouter();
 
     const handleClick = () => {
-      router.push('/signin/SignIn');
+        console.log('Navigating to SignIn page');
+        router.push('/auth/SignIn');
     };
 
     return (

@@ -9,27 +9,30 @@ const SettingForm: React.FC<{onClose: () => void, userData: any}> = ({onClose, u
     const [name, setName] = useState(userData.name); // ユーザーの名前を管理するためのステート
     const [email, setEmail] = useState(userData.email);
     const [isSaving, setIsSaving] = useState(false); // 保存中の状態を管理するためのステート
+    const [isLoading, setIsLoading] = useState(false); // パスワード変更リクエスト送信中の状態
 
     const handleClickPassword = async () => {
+        setIsLoading(true); // リクエスト開始時にローディング状態にする
+
         const formData = new FormData();
         formData.append('email', email);
-    
+
         try {
             const token = localStorage.getItem('authToken');
             if (!token) {
                 throw new Error('Authentication token is missing');
             }
-    
+
             const response = await axios.post('http://localhost:8000/api/register/password', formData, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
             });
-    
+
             console.log('Registration successful:', response.data);
-    
+
             router.push({
-                pathname: '/components/user/login/setting/password/Vertifications/PasswordChange',
+                pathname: '/user/Vertifications/PasswordChange',
                 query: {
                     email: email,
                 },
@@ -41,6 +44,8 @@ const SettingForm: React.FC<{onClose: () => void, userData: any}> = ({onClose, u
             } else {
                 console.log('Request failed:', err.message);
             }
+        } finally {
+            setIsLoading(false); // リクエスト完了時にローディング状態を解除する
         }
     };
 
@@ -124,9 +129,11 @@ const SettingForm: React.FC<{onClose: () => void, userData: any}> = ({onClose, u
                 </p>
                 {/* Passwordを変更リンクを中央に配置 */}
                 <div className="text-center">
-                    <a className="text-xs text-blue-600 decoration-2 hover:underline dark:text-blue-500 md:text-sm"
-                        onClick={handleClickPassword}>
-                        Passwordを変更はこちら
+                    <a
+                        className={`text-xs text-blue-600 decoration-2 hover:underline dark:text-blue-500 md:text-sm ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`}
+                        onClick={!isLoading ? handleClickPassword : undefined}
+                    >
+                        {isLoading ? '送信中...' : 'Passwordを変更はこちら'}
                     </a>
                 </div>
                 {/* 保存ボタン */}

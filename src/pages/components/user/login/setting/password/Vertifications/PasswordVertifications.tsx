@@ -36,7 +36,7 @@ const PasswordVertifivations: React.FC = () => {
       // 正常に処理された場合、次のステップに進む
       setTimeout(() => {
         router.push({
-          pathname: '/components/user/login/setting/password/Input/PasswordInput',
+          pathname: '/user/PasswordInput',
           query: {
               email: query.email,
           },

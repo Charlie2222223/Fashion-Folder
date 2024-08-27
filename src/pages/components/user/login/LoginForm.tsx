@@ -10,7 +10,7 @@ const SignInForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const handleClick = () => {
-    router.push('/SignIn');
+    router.push('/auth/SignIn');
   };
 
   const handleGoogleLogin = () => {

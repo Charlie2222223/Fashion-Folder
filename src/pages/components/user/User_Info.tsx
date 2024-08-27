@@ -11,7 +11,7 @@ const User_Info: React.FC<{ onUserClick: () => void ,onSettingClick: (userData: 
 
     const handleClick = () => {
         // サインインページに遷移する
-        router.push('/SignIn');
+        router.push('/auth/SignIn');
     };
 
     const handleLogout = async () => {
