@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use App\Utilities\Sanitizer; // Sanitizerクラスをインポート
 
 class SocialController extends Controller
 {
@@ -33,13 +34,18 @@ class SocialController extends Controller
                 throw new \Exception('Google user information could not be retrieved.');
             }
 
+            // サニタイジング処理を追加
+            $sanitizedEmail = Sanitizer::sanitizeString($googleUser->getEmail());
+            $sanitizedName = Sanitizer::sanitizeString($googleUser->getName());
+            $sanitizedAvatar = Sanitizer::sanitizeString($googleUser->getAvatar());
+
             // ユーザーをデータベースで検索または新規作成
             $user = User::firstOrCreate(
-                ['email' => $googleUser->getEmail()],
+                ['email' => $sanitizedEmail],
                 [
-                    'name' => $googleUser->getName(),
+                    'name' => $sanitizedName,
                     'provider_id' => $googleUser->getId(),
-                    'avatar' => $googleUser->getAvatar(),
+                    'avatar' => $sanitizedAvatar,
                     'provider' => 'google',
                     'password' => bcrypt(Str::random(16)), // ダミーパスワードを設定
                 ]

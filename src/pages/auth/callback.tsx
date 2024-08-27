@@ -8,7 +8,7 @@ const Callback = () => {
         if (typeof window !== 'undefined') { // ブラウザ環境かどうかを確認
             const { token } = router.query;
             if (token) {
-                localStorage.setItem('token', token as string);
+                localStorage.setItem('authToken', token as string);
                 router.push('/'); // 認証後にリダイレクトする
             }
         }

@@ -4,6 +4,7 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use App\Models\UserVerification;
 
 class Kernel extends ConsoleKernel
 {
@@ -15,7 +16,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        // 2分ごとにUserVerificationの期限切れを削除
+        $schedule->call(function () {
+            UserVerification::deleteExpired();
+        })->everyTwoMinutes();
     }
 
     /**
@@ -29,4 +33,5 @@ class Kernel extends ConsoleKernel
 
         require base_path('routes/console.php');
     }
+
 }
