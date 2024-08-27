@@ -32,7 +32,7 @@ const SettingForm: React.FC<{onClose: () => void, userData: any}> = ({onClose, u
             console.log('Registration successful:', response.data);
 
             router.push({
-                pathname: '/user/Vertifications/PasswordChange',
+                pathname: '/user/PasswordChange',
                 query: {
                     email: email,
                 },
