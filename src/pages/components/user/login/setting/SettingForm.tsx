@@ -35,10 +35,11 @@ const SettingForm: React.FC<{onClose: () => void, userData: any}> = ({onClose, u
                 },
             });
         } catch (error) {
-            if (error.response) {
-                console.log('Authentication failed:', error.response.data);
+            const err = error as any; // `error` を `any` にキャスト
+            if (err.response) {
+                console.log('Authentication failed:', err.response.data);
             } else {
-                console.log('Request failed:', error.message);
+                console.log('Request failed:', err.message);
             }
         }
     };

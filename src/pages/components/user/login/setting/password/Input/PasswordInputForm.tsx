@@ -12,15 +12,24 @@ const PasswordInputForm: React.FC = () => {
     event.preventDefault();
 
     const formData = {
-      password: query.password as string,
+      email: query.email,
+      password: (event.target as unknown as HTMLFormElement).password.value,
+      password_confirmation: (event.target as unknown as HTMLFormElement).password_check.value,
     };
 
     // formDataをコンソールに出力して確認
     console.log('Form Data:', formData);
 
     try {
+
+      const token = localStorage.getItem('authToken');
       // Laravel APIにリクエストを送信
-      const response = await axios.post('http://localhost:8000/api/change/password/input', formData);
+      const response = await axios.post('http://localhost:8000/api/change/password/input', formData,{
+        headers: {
+          'Authorization': `Bearer ${token}`, // Authorizationヘッダーを追加
+        },
+      }
+      );
       console.log('Verification successful:', response.data);
 
       // 正常に処理された場合、次のステップに進むなどの処理を行います

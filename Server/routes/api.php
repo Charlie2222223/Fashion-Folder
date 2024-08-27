@@ -30,4 +30,4 @@ Route::middleware('auth:sanctum')->post('/register/password', [RegisterControlle
 
 Route::middleware('auth:sanctum')->post('change/password/vertification', [RegisterController::class, 'checkVertification']);  //パスワードを変更
 
-Route::middleware('auth:sanctum')->post('change/password/input', [UserController::class, 'passwordVertification']);  //パスワードを変更
+Route::middleware('auth:sanctum')->post('change/password/input', [UserController::class, 'passwordVertification']);  //パスワードを変更 

@@ -32,6 +32,12 @@ class MatchNewPassword implements Rule
         // ユーザーのメールアドレスでデータベースからパスワードを取得
         $user = User::where('email', $this->email)->first();
 
+        // ユーザーが存在しない場合、バリデーション失敗
+        if (!$user) {
+            return false;
+        }
+
+        // 入力されたパスワードが現在のパスワードと一致しないことを確認
         return !Hash::check($value, $user->password);
     }
 
@@ -42,6 +48,6 @@ class MatchNewPassword implements Rule
      */
     public function message()
     {
-        return '入力されたパスワードは現在のパスワードと一致しません。';
+        return response()->json(['email' => $this->email]);
     }
 }
