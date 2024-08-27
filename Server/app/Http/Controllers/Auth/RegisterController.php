@@ -55,19 +55,31 @@ class RegisterController extends Controller
         }
 
         // ユーザーをデータベースに登録
+<<<<<<< Updated upstream
         $user = $this->registerUser($sanitizedName, $sanitizedEmail, $request->password);
+=======
+        $user = $this->registerUser($request);
+>>>>>>> Stashed changes
 
         // 一時パスワードをデータベースから削除
         $this->deleteTemporaryPassword($userVerification);
 
+<<<<<<< Updated upstream
         // 認証トークンを生成して返却
         $token = $user->createToken('authToken')->plainTextToken;
 
+=======
+        // トークンを生成
+        $token = $user->createToken('authToken')->plainTextToken;
+
+        // 成功メッセージとトークンを返す
+>>>>>>> Stashed changes
         return response()->json([
             'message' => 'User registration successful',
             'token' => $token,
             'user' => $user,
         ]);
+<<<<<<< Updated upstream
     }
 
     public function checkVertification(Request $request){
@@ -87,6 +99,8 @@ class RegisterController extends Controller
             'messege' => 'Complaete password',
         ]);
 
+=======
+>>>>>>> Stashed changes
     }
 
     /**
