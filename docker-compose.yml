@@ -27,7 +27,7 @@ services:
       DB_PASSWORD: Charlie@223
     command: php artisan serve --host=0.0.0.0 --port=8000
 
-      # Next.jsのフロントエンド
+  # Next.jsのフロントエンド
   frontend:
     build:
       context: ./
@@ -36,7 +36,7 @@ services:
     restart: unless-stopped
     working_dir: /app
     volumes:
-      - /Users/charlie_brown/Fashion-Folder
+      - ./:/app  # 正しいマウントパスに変更
     networks:
       - app-network
     ports:

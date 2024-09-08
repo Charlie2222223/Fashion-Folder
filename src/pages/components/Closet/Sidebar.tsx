@@ -42,7 +42,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 />
               </svg>
               <span className="mx-2 text-2xl font-semibold text-white">
-                Dashboard
+                Closet
               </span>
             </div>
           </div>
