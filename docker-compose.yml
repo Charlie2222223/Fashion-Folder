@@ -11,7 +11,6 @@ services:
     working_dir: /var/www
     volumes:
       - ./Server:/var/www
-      - ./Server/storage:/var/www/storage
     networks:
       - app-network
     ports:
@@ -36,7 +35,7 @@ services:
     restart: unless-stopped
     working_dir: /app
     volumes:
-      - ./:/app  # 正しいマウントパスに変更
+      - ./:/app
     networks:
       - app-network
     ports:
