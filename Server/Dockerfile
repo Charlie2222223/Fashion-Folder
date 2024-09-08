@@ -1,28 +1,41 @@
-# Dockerfile for backend
-
+# ベースイメージの指定
 FROM php:8.2-fpm
 
-# Install necessary dependencies including mysql-client and composer
+# 必要なパッケージのインストール
 RUN apt-get update && apt-get install -y \
-    default-mysql-client \
-    curl \
+    git \
     unzip \
-    && docker-php-ext-install pdo pdo_mysql
+    curl \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    zip \
+    libzip-dev \
+    && docker-php-ext-install pdo_mysql mbstring zip exif pcntl
 
-# Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# Composerのインストール
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Set working directory
+# 作業ディレクトリの設定
 WORKDIR /var/www
 
-# Copy application files
+# Laravelアプリケーションのコピー
 COPY . .
 
-# Install composer dependencies
+# Composerで依存パッケージをインストール
 RUN composer install
 
-# Set permissions for www-data
+# パーミッションの設定
 RUN chown -R www-data:www-data /var/www
 
-# Start the PHP server
+# エントリーポイントスクリプトのコピー
+COPY docker-entrypoint.sh /usr/local/bin/
+
+# 実行権限を付与
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# コンテナ起動時にエントリーポイントスクリプトを実行
+ENTRYPOINT ["docker-entrypoint.sh"]
+
+# Laravelアプリケーションを起動
 CMD php artisan serve --host=0.0.0.0 --port=8000
