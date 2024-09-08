@@ -50,8 +50,36 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
           />
         </div>
       </div>
-      <div className="flex items-center">
-        {/* Notification and User dropdowns omitted for brevity */}
+      <div className="flex items-center space-x-4">
+        {/* Notification Icon */}
+        <button className="relative text-gray-500 focus:outline-none">
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M15 17H20L18.595 15.595C18.214 15.214 18 14.697 18 14.158V11C18 8.388 16.33 6.165 14 5.341V5C14 3.895 13.105 3 12 3C10.895 3 10 3.895 10 5V5.341C7.67 6.165 6 8.388 6 11V14.158C6 14.697 5.786 15.214 5.405 15.595L4 17H9M15 17V18C15 19.657 13.657 21 12 21C10.343 21 9 19.657 9 18V17M15 17H9"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+            />
+          </svg>
+          <span className="absolute top-0 right-0 inline-block w-2 h-2 bg-red-600 rounded-full"></span>
+        </button>
+
+        {/* User Icon */}
+        <div className="relative">
+          <button className="relative block w-8 h-8 overflow-hidden rounded-full shadow focus:outline-none">
+            <img
+              className="object-cover w-full h-full"
+              src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80"
+              alt="User avatar"
+            />
+          </button>
+        </div>
       </div>
     </header>
   );
