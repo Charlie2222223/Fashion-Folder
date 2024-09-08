@@ -12,9 +12,11 @@ const PasswordVertifivations: React.FC = () => {
     event.preventDefault();
 
     const form = event.target as unknown as HTMLFormElement;
+    const vertificationInput = form.elements.namedItem('Vertification') as HTMLInputElement;
+
     const formData = {
       email: query.email,
-      temporary_password: form.elements.namedItem('Vertification')?.value,
+      temporary_password: vertificationInput?.value,
     };
 
     console.log('Form Data:', formData);

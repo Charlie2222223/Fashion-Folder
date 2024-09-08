@@ -12,19 +12,21 @@ const SigninForm: React.FC = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-
+  
+    const form = event.target as HTMLFormElement;
+  
     const formData = {
-      name: (event.target as unknown as HTMLFormElement).name.value,
-      email: (event.target as unknown as HTMLFormElement).email.value,
-      password: (event.target as unknown as HTMLFormElement).password.value,
-      password_confirmation: (event.target as unknown as HTMLFormElement).password_check.value,
-      remember: (event.target as unknown as HTMLFormElement)['remember-me'].checked,
+      name: (form.elements.namedItem('name') as HTMLInputElement).value,
+      email: (form.elements.namedItem('email') as HTMLInputElement).value,
+      password: (form.elements.namedItem('password') as HTMLInputElement).value,
+      password_confirmation: (form.elements.namedItem('password_check') as HTMLInputElement).value,
+      remember: (form.elements.namedItem('remember-me') as HTMLInputElement).checked,
     };
-
+  
     try {
       const response = await axios.post('http://localhost:8000/api/register', formData);
       console.log('Registration successful:', response.data);
-
+  
       // 正常に登録された場合、次のページにPOSTリクエストでデータを渡す
       router.push({
         pathname: '/Verifications',
@@ -36,7 +38,7 @@ const SigninForm: React.FC = () => {
         }
       });
     } catch (error) {
-      const err = error as any; // `error` を `any` にキャスト
+      const err = error as any;
       if (err.response && err.response.data.errors) {
         setErrors(err.response.data.errors);
       } else {

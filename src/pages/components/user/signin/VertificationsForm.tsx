@@ -12,12 +12,13 @@ const VerificationsForm: React.FC = () => {
 
     // クエリパラメータとフォームデータを統合
     const form = event.target as unknown as HTMLFormElement;
+    const vertificationInput = form.elements.namedItem('Vertification') as HTMLInputElement;
     const formData = {
       name: query.name as string,
       email: query.email as string,
       password: query.password as string,
       remember: query.remember as string,
-      temporary_password: form.elements.namedItem('Vertification')?.value,
+      temporary_password: vertificationInput?.value, // ここで入力値を取得
     };
 
     // formDataをコンソールに出力して確認
