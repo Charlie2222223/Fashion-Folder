@@ -24,7 +24,7 @@ services:
       DB_DATABASE: laravel_db
       DB_USERNAME: root
       DB_PASSWORD: Charlie@223
-    command: php artisan serve --host=0.0.0.0 --port=8000
+    command: bash -c "composer install && php artisan serve --host=0.0.0.0 --port=8000"
 
   # Next.jsのフロントエンド
   frontend:
@@ -40,7 +40,7 @@ services:
       - app-network
     ports:
       - "3000:3000"
-    command: npm run dev
+    command: bash -c "npm install && npm run dev"
 
   # MySQL データベース
   mysql:
