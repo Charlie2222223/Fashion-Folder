@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  # Laravelのバックエンド
+  backend:
+    build:
+      context: ./Server
+      dockerfile: Dockerfile
+    container_name: backend
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./Server:/var/www
+    networks:
+      - app-network
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mysql
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: laravel_db
+      DB_USERNAME: root
+      DB_PASSWORD: Charlie@223
+    command: php artisan serve --host=0.0.0.0 --port=8000
+
+  # Next.jsのフロントエンド
+  frontend:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: frontend
+    restart: unless-stopped
+    working_dir: /app
+    volumes:
+      - /Users/charlie_brown/Fashion-Folder
+    networks:
+      - app-network
+    ports:
+      - "3000:3000"
+    command: npm run dev
+
+  # MySQL データベース
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: Charlie@223
+      MYSQL_DATABASE: laravel_db
+    volumes:
+      - ./mysql:/var/lib/mysql
+    networks:
+      - app-network
+    ports:
+      - "3306:3306"
+
+networks:
+  app-network:
+    driver: bridge
