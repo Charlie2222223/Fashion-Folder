@@ -1,6 +1,8 @@
+import withMT from "@material-tailwind/react/utils/withMT";
 import type { Config } from "tailwindcss";
 
-const config: Config = {
+const config: Config = withMT({
+  darkMode: 'class', // ダークモードを有効にする設定
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -15,10 +17,10 @@ const config: Config = {
         'slide-in-left': 'slideInLeft 0.5s ease-out forwards',
       },
       animation: {
-        "tracking-in-expand": "tracking-in-expand 3s cubic-bezier(0.215, 0.610, 0.355, 1.000) both",        //タイトルのアニメーション
-        'slide-in-left': 'slideInLeft 1.5s ease-out forwards',                                              //Sectionのアニメーション
-        "slide-in-fwd-center": "slide-in-fwd-center 1.5s cubic-bezier(0.250, 0.460, 0.450, 0.940)   both",  //Sectionの画像のアニメーション
-        'fade-in-background': 'fadeInBackground 2s ease-out forwards',                                      //Gaideのアニメーション
+        "tracking-in-expand": "tracking-in-expand 3s cubic-bezier(0.215, 0.610, 0.355, 1.000) both",
+        'slide-in-left': 'slideInLeft 1.5s ease-out forwards',
+        "slide-in-fwd-center": "slide-in-fwd-center 1.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both",
+        'fade-in-background': 'fadeInBackground 2s ease-out forwards',
       },
       keyframes: {
         "tracking-in-expand": {
@@ -69,6 +71,6 @@ const config: Config = {
   plugins: [
     require('preline/plugin'),
   ],
-};
+}) as Config;
 
 export default config;
