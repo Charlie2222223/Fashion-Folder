@@ -16,12 +16,14 @@ const ClothingRegistration: React.FC = () => {
     size: "",
     color: "",
     price: "",
-    image: null, // 画像データ
+    image: null,
   });
 
   const [clothingList, setClothingList] = useState<ClothingItem[]>([]); // 登録された服のリスト
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const categories = ["Tシャツ", "パンツ", "ジャケット", "スカート", "ドレス", "スーツ", "アウター", "ジーンズ", "シャツ", "パーカー"];
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
   };
@@ -73,7 +75,7 @@ const ClothingRegistration: React.FC = () => {
           </div>
 
           {/* フォームエリア */}
-          <div className="w-2/3 ">
+          <div className="w-2/3">
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">服の名前</label>
               <input
@@ -81,21 +83,28 @@ const ClothingRegistration: React.FC = () => {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
+                className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 required
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">カテゴリ</label>
-              <input
-                type="text"
-                name="category"
-                value={formData.category}
-                onChange={handleChange}
-                className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
-                required
-              />
-            </div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">カテゴリ</label>
+                <select
+                    name="category"
+                    value={formData.category}
+                    onChange={handleChange}
+                    className="block w-full px-3 py-2 mt-1 text-black bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-white"
+                    required
+                >
+                    <option value="">カテゴリを選択してください</option>
+                    {categories.map((category, index) => (
+                    <option key={index} value={category}>
+                        {category}
+                    </option>
+                    ))}
+                </select>
+                </div>
+
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">サイズ</label>
               <input
@@ -103,7 +112,7 @@ const ClothingRegistration: React.FC = () => {
                 name="size"
                 value={formData.size}
                 onChange={handleChange}
-                className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
+                className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 required
               />
             </div>
@@ -114,7 +123,7 @@ const ClothingRegistration: React.FC = () => {
                 name="color"
                 value={formData.color}
                 onChange={handleChange}
-                className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
+                className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 required
               />
             </div>
@@ -125,7 +134,7 @@ const ClothingRegistration: React.FC = () => {
                 name="price"
                 value={formData.price}
                 onChange={handleChange}
-                className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
+                className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 required
               />
             </div>

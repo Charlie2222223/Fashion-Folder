@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CategoryController;
 
 use Illuminate\Support\Facades\Auth;
 
@@ -31,3 +32,5 @@ Route::middleware('auth:sanctum')->post('/register/password', [RegisterControlle
 Route::middleware('auth:sanctum')->post('change/password/vertification', [RegisterController::class, 'checkVertification']);  //パスワードを変更
 
 Route::middleware('auth:sanctum')->post('change/password/input', [UserController::class, 'passwordVertification']);  //パスワードを変更 
+
+Route::get('/categories', [CategoryController::class, 'index']);  //服のカテゴリーをデータベースに追加
