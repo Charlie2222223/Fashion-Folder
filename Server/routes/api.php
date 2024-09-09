@@ -8,6 +8,8 @@ use App\Http\Controllers\CategoryController;
 
 use Illuminate\Support\Facades\Auth;
 
+use App\Http\Controllers\ImageGenerationController;
+
 use App\Http\Controllers\Auth\RegisterController;
 use App\Models\User;
 
@@ -34,3 +36,6 @@ Route::middleware('auth:sanctum')->post('change/password/vertification', [Regist
 Route::middleware('auth:sanctum')->post('change/password/input', [UserController::class, 'passwordVertification']);  //パスワードを変更 
 
 Route::get('/categories', [CategoryController::class, 'index']);  //服のカテゴリーをデータベースに追加
+
+Route::post('/generate-image', [ImageGenerationController::class, 'generateImage']);
+

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 interface ClothingItem {
   name: string;
@@ -19,26 +20,34 @@ const ClothingRegistration: React.FC = () => {
     image: null,
   });
 
-  const [clothingList, setClothingList] = useState<ClothingItem[]>([]); // 登録された服のリスト
+  const [clothingList, setClothingList] = useState<ClothingItem[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const categories = ["Tシャツ", "パンツ", "ジャケット", "スカート", "ドレス", "スーツ", "アウター", "ジーンズ", "シャツ", "パーカー"];
+  const Size = ["XS","S","M","L","XL","XXL","XXXL"];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData((prevFormData) => ({
-          ...prevFormData,
-          image: reader.result as string,
-        }));
-      };
-      reader.readAsDataURL(file);
+  const handleImageGeneration = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.post('http://localhost:8000/api/generate-image', {
+        category: formData.category,
+        size: formData.size,    
+        color: formData.color,
+      });
+      const imageUrl = response.data.imageUrl;
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        image: imageUrl,
+      }));
+    } catch (error) {
+      console.error('画像生成に失敗しました', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -53,9 +62,11 @@ const ClothingRegistration: React.FC = () => {
       <div className="max-w-4xl p-6 mx-auto mt-10 bg-white rounded-lg shadow-md dark:bg-gray-800 dark:text-white">
         <h1 className="mb-6 text-2xl font-bold">服を登録する</h1>
         <form onSubmit={handleSubmit} className="flex space-x-6">
-          {/* 画像挿入エリア */}
+          {/* 画像生成エリア */}
           <div className="w-1/3">
-            {formData.image ? (
+            {loading ? (
+              <div>画像を生成中...</div>
+            ) : formData.image ? (
               <img
                 src={formData.image}
                 alt="Preview"
@@ -66,12 +77,14 @@ const ClothingRegistration: React.FC = () => {
                 <span className="text-gray-500 dark:text-gray-300">画像を選択してください</span>
               </div>
             )}
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="block w-full text-sm text-gray-900 border border-gray-300 rounded-md cursor-pointer bg-gray-50 focus:outline-none dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600"
-            />
+            <button
+              type="button"
+              onClick={handleImageGeneration}
+              className="w-full px-4 py-2 mb-4 text-white bg-indigo-600 rounded-md hover:bg-indigo-700 dark:bg-gray-700 dark:hover:bg-gray-600"
+              disabled={loading}
+            >
+              AIで画像を生成する
+            </button>
           </div>
 
           {/* フォームエリア */}
@@ -83,38 +96,43 @@ const ClothingRegistration: React.FC = () => {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                className="block w-full px-3 py-2 mt-1 text-black bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-white"
                 required
               />
             </div>
             <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">カテゴリ</label>
-                <select
-                    name="category"
-                    value={formData.category}
-                    onChange={handleChange}
-                    className="block w-full px-3 py-2 mt-1 text-black bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-white"
-                    required
-                >
-                    <option value="">カテゴリを選択してください</option>
-                    {categories.map((category, index) => (
-                    <option key={index} value={category}>
-                        {category}
-                    </option>
-                    ))}
-                </select>
-                </div>
-
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">カテゴリ</label>
+              <select
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                className="block w-full px-3 py-2 mt-1 text-black bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-white"
+                required
+              >
+                <option value="">カテゴリを選択してください</option>
+                {categories.map((category, index) => (
+                  <option key={index} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </select>
+            </div>
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">サイズ</label>
-              <input
-                type="text"
+              <select
                 name="size"
                 value={formData.size}
                 onChange={handleChange}
-                className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                className="block w-full px-3 py-2 mt-1 text-black bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-white"
                 required
-              />
+              >
+               <option value="">サイズを選択してください</option>
+               {Size.map((size, index) => (
+                <option key={index} value={size}>
+                    {size}
+                </option>
+               ))}
+              </select>
             </div>
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">色</label>
@@ -123,7 +141,7 @@ const ClothingRegistration: React.FC = () => {
                 name="color"
                 value={formData.color}
                 onChange={handleChange}
-                className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                className="block w-full px-3 py-2 mt-1 text-black bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-white"
                 required
               />
             </div>
@@ -134,7 +152,7 @@ const ClothingRegistration: React.FC = () => {
                 name="price"
                 value={formData.price}
                 onChange={handleChange}
-                className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                className="block w-full px-3 py-2 mt-1 text-black bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-white"
                 required
               />
             </div>
