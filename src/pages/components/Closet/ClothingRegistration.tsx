@@ -7,6 +7,7 @@ interface ClothingItem {
   size: string;
   color: string;
   price: string;
+  description: string | null; // 服の詳細説明
   image: string | null;
 }
 
@@ -17,27 +18,31 @@ const ClothingRegistration: React.FC = () => {
     size: "",
     color: "",
     price: "",
+    description: null,
     image: null,
   });
 
   const [clothingList, setClothingList] = useState<ClothingItem[]>([]);
   const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState<"upload" | "generate">("upload"); // タブの状態
 
   const categories = ["Tシャツ", "パンツ", "ジャケット", "スカート", "ドレス", "スーツ", "アウター", "ジーンズ", "シャツ", "パーカー"];
-  const Size = ["XS","S","M","L","XL","XXL","XXXL"];
+  const Size = ["XS", "S", "M", "L", "XL", "XXL", "XXXL"];
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
   };
 
   const handleImageGeneration = async () => {
-    setLoading(true);
+    setLoading(true); // ロード状態を開始
     try {
       const response = await axios.post('http://localhost:8000/api/generate-image', {
+        prompt: `服の画像を生成して　服のカテゴリーは${formData.category} で服の色は ${formData.color} で服の細かい詳細は ${formData.description ? `${formData.description}` : '特にない'}`, 
         category: formData.category,
-        size: formData.size,    
+        size: formData.size,
         color: formData.color,
+        description: formData.description, // 服の詳細説明をリクエストに追加
       });
       const imageUrl = response.data.imageUrl;
       setFormData((prevFormData) => ({
@@ -47,44 +52,105 @@ const ClothingRegistration: React.FC = () => {
     } catch (error) {
       console.error('画像生成に失敗しました', error);
     } finally {
-      setLoading(false);
+      setLoading(false); // ロード状態を終了
+    }
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          image: reader.result as string,
+        }));
+      };
+      reader.readAsDataURL(file);
     }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setClothingList((prevList) => [...prevList, formData]);
-    setFormData({ name: "", category: "", size: "", color: "", price: "", image: null });
+    setFormData({ name: "", category: "", size: "", color: "", price: "", description: null, image: null });
   };
 
   return (
     <div>
       <div className="max-w-4xl p-6 mx-auto mt-10 bg-white rounded-lg shadow-md dark:bg-gray-800 dark:text-white">
         <h1 className="mb-6 text-2xl font-bold">服を登録する</h1>
+        <div className="flex mb-6">
+          {/* タブ切り替えボタン */}
+          <button
+            onClick={() => setActiveTab("upload")}
+            className={`w-1/2 px-4 py-2 text-white ${activeTab === "upload" ? "bg-indigo-600" : "bg-gray-500"}`}
+          >
+            画像をアップロード
+          </button>
+          <button
+            onClick={() => setActiveTab("generate")}
+            className={`w-1/2 px-4 py-2 text-white ${activeTab === "generate" ? "bg-indigo-600" : "bg-gray-500"}`}
+          >
+            AIで画像を生成
+          </button>
+        </div>
+
         <form onSubmit={handleSubmit} className="flex space-x-6">
-          {/* 画像生成エリア */}
+          {/* アップロードまたは生成エリア */}
           <div className="w-1/3">
-            {loading ? (
-              <div>画像を生成中...</div>
-            ) : formData.image ? (
-              <img
-                src={formData.image}
-                alt="Preview"
-                className="object-cover w-full h-64 mb-4 border rounded-md dark:border-gray-600"
-              />
+            {activeTab === "upload" ? (
+              <>
+                {formData.image ? (
+                  <img
+                    src={formData.image}
+                    alt="Preview"
+                    className="object-cover w-full h-64 mb-4 border rounded-md dark:border-gray-600"
+                  />
+                ) : (
+                  <div className="flex items-center justify-center w-full h-64 mb-4 border rounded-md dark:border-gray-600">
+                    <span className="text-gray-500 dark:text-gray-300">画像を選択してください</span>
+                  </div>
+                )}
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="block w-full text-sm text-gray-900 border border-gray-300 rounded-md cursor-pointer bg-gray-50 focus:outline-none dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600"
+                />
+              </>
             ) : (
-              <div className="flex items-center justify-center w-full h-64 mb-4 border rounded-md dark:border-gray-600">
-                <span className="text-gray-500 dark:text-gray-300">画像を選択してください</span>
-              </div>
+              <>
+                {loading ? (
+                  <div className="flex items-center justify-center w-full h-64">
+                    <div className="text-lg font-bold text-indigo-600">画像を生成中...</div>
+                    {/* ローディングスピナー */}
+                    <svg className="w-8 h-8 ml-4 text-indigo-600 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                    </svg>
+                  </div>
+                ) : formData.image ? (
+                  <img
+                    src={formData.image}
+                    alt="Preview"
+                    className="object-cover w-full h-64 mb-4 border rounded-md dark:border-gray-600"
+                  />
+                ) : (
+                  <div className="flex items-center justify-center w-full h-64 mb-4 border rounded-md dark:border-gray-600">
+                    <span className="text-gray-500 dark:text-gray-300">AIで画像を生成してください</span>
+                  </div>
+                )}
+                <button
+                  type="button"
+                  onClick={handleImageGeneration}
+                  className="w-full px-4 py-2 mb-4 text-white bg-indigo-600 rounded-md hover:bg-indigo-700 dark:bg-gray-700 dark:hover:bg-gray-600"
+                  disabled={loading} // ロード中はボタンを無効化
+                >
+                  AIで画像を生成する
+                </button>
+              </>
             )}
-            <button
-              type="button"
-              onClick={handleImageGeneration}
-              className="w-full px-4 py-2 mb-4 text-white bg-indigo-600 rounded-md hover:bg-indigo-700 dark:bg-gray-700 dark:hover:bg-gray-600"
-              disabled={loading}
-            >
-              AIで画像を生成する
-            </button>
           </div>
 
           {/* フォームエリア */}
@@ -126,12 +192,12 @@ const ClothingRegistration: React.FC = () => {
                 className="block w-full px-3 py-2 mt-1 text-black bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-white"
                 required
               >
-               <option value="">サイズを選択してください</option>
-               {Size.map((size, index) => (
-                <option key={index} value={size}>
+                <option value="">サイズを選択してください</option>
+                {Size.map((size, index) => (
+                  <option key={index} value={size}>
                     {size}
-                </option>
-               ))}
+                  </option>
+                ))}
               </select>
             </div>
             <div className="mb-4">
@@ -145,6 +211,19 @@ const ClothingRegistration: React.FC = () => {
                 required
               />
             </div>
+            {activeTab === "generate" && (
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">服の詳細説明</label>
+                <textarea
+                  name="description"
+                  value={formData.description || ""}
+                  onChange={handleChange}
+                  className="block w-full px-3 py-2 mt-1 text-black bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-white"
+                  rows={4}
+                  placeholder="服のデザインやスタイルの詳細を入力してください"
+                />
+              </div>
+            )}
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">価格</label>
               <input
