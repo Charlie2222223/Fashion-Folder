@@ -12,6 +12,14 @@ class ImageGenerationController extends Controller
         $client = new Client();
         $apiKey = env('OPENAI_API_KEY');
         
+        // フロントエンドから送信されたデータを取得
+        $category = $request->input('category');
+        $color = $request->input('color');
+        $description = $request->input('description', '特にない'); // デフォルトで "特にない" と設定
+
+        // プロンプトをバックエンドで生成
+        $prompt = "服の画像を生成して。服の種類は{$category}で、服の色は{$color}、詳細: {$description}";
+
         try {
             $response = $client->post('https://api.openai.com/v1/images/generations', [
                 'headers' => [
@@ -19,7 +27,7 @@ class ImageGenerationController extends Controller
                     'Content-Type' => 'application/json',
                 ],
                 'json' => [
-                    'prompt' => 'A ' . $request->input('category') . ' in ' . $request->input('color') . ' color, size ' . $request->input('size'),
+                    'prompt' => $prompt, // 生成したプロンプトを使用
                     'n' => 1,
                     'size' => '512x512',
                 ],
