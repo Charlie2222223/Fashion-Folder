@@ -38,7 +38,6 @@ const ClothingRegistration: React.FC = () => {
     setLoading(true); // ロード状態を開始
     try {
       const response = await axios.post('http://localhost:8000/api/generate-image', {
-        prompt: `服の画像を生成して　服のカテゴリーは${formData.category} で服の色は ${formData.color} で服の細かい詳細は ${formData.description ? `${formData.description}` : '特にない'}`, 
         category: formData.category,
         size: formData.size,
         color: formData.color,
