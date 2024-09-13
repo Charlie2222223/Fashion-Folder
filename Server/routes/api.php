@@ -39,3 +39,5 @@ Route::get('/categories', [CategoryController::class, 'index']);  //服のカテ
 
 Route::post('/generate-image', [ImageGenerationController::class, 'generateImage']);
 
+Route::post('/search-image', [ImageGenerationController::class, 'searchImage']);
+
