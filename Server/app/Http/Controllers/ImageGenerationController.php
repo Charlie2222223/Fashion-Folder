@@ -30,7 +30,6 @@ class ImageGenerationController extends Controller
     {
         $category = $request->input('category');
         $color = $request->input('color');
-        $size = $request->input('size');
         $description = $request->input('description', '特にない');
 
         $prompt = "服だけの画像を作って　{$color}色の{$category}　この服の詳細は{$description}";
