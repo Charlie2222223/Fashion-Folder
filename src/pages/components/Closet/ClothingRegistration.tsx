@@ -58,7 +58,6 @@ const ClothingRegistration: React.FC = () => {
     try {
       const response = await axios.post('http://localhost:8000/api/generate-image', {
         category: formData.category,
-        size: formData.size,
         color: formData.color,
         description: formData.description,
       });
