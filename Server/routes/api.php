@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ImageGenerationController;
 
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\UserClosetController; // 追加
+
 use App\Models\User;
 
 Route::post('/register', [RegisterController::class, 'register']);                          //メールの送信
@@ -40,4 +42,6 @@ Route::get('/categories', [CategoryController::class, 'index']);  //服のカテ
 Route::post('/generate-image', [ImageGenerationController::class, 'generateImage']);
 
 Route::post('/search-image', [ImageGenerationController::class, 'searchImage']);
+
+Route::middleware('auth:sanctum')->post('/user-closet', [UserClosetController::class, 'store']);
 
