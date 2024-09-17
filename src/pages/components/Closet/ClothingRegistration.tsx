@@ -32,6 +32,9 @@ const ClothingRegistration: React.FC = () => {
   const categories = ["Tシャツ", "パンツ", "ジャケット", "スカート", "ドレス", "スーツ", "アウター", "ジーンズ", "シャツ", "パーカー"];
   const sizes = ["XS", "S", "M", "L", "XL", "XXL", "XXXL"];
 
+  // 認証トークンを設定（例としてローカルストレージから取得）
+  const token = localStorage.getItem("authToken");
+  
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
@@ -56,18 +59,26 @@ const ClothingRegistration: React.FC = () => {
     setAiGenerating(true);
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:8000/api/generate-image', {
-        category: formData.category,
-        color: formData.color,
-        description: formData.description,
-      });
+      const response = await axios.post(
+        "http://localhost:8000/api/generate-image",
+        {
+          category: formData.category,
+          color: formData.color,
+          description: formData.description,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       const imageUrl = response.data.imageUrl;
       setFormData((prevFormData) => ({
         ...prevFormData,
         image: imageUrl,
       }));
     } catch (error) {
-      console.error('AI画像生成に失敗しました', error);
+      console.error("AI画像生成に失敗しました", error);
     } finally {
       setAiGenerating(false);
       setLoading(false);
@@ -78,9 +89,17 @@ const ClothingRegistration: React.FC = () => {
   const searchSampleImages = async () => {
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:8000/api/search-image', {
-        keyword: searchKeyword || "clothing",
-      });
+      const response = await axios.post(
+        "http://localhost:8000/api/search-image",
+        {
+          keyword: searchKeyword || "clothing",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       const images = response.data.images;
       setImageResults(images);
     } catch (error) {
@@ -90,11 +109,39 @@ const ClothingRegistration: React.FC = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setClothingList((prevList) => [...prevList, formData]);
-    setFormData({ name: "", category: "", size: "", color: "", price: "", description: null, image: null });
+    try {
+      // バックエンドAPIにフォームデータを送信
+      const response = await axios.post(
+        "http://localhost:8000/api/user-closet",
+        {
+          clothes_name: formData.name,
+          clothes_category: formData.category,
+          clothes_size: formData.size,
+          clothes_color: formData.color,
+          clothes_detail: formData.description,
+          price: parseInt(formData.price, 10),
+          image: formData.image,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // レスポンスから登録されたデータを取得してリストに追加
+      const registeredClothes = response.data.clothes;
+      setClothingList((prevList) => [...prevList, registeredClothes]);
+
+      // フォームをリセット
+      setFormData({ name: "", category: "", size: "", color: "", price: "", description: null, image: null });
+    } catch (error) {
+      console.error("服の登録に失敗しました", error);
+    }
   };
+
 
   return (
     <div>
