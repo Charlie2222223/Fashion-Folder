@@ -57,17 +57,18 @@ class SocialController extends Controller
             // トークンを生成
             $token = $user->createToken('user')->plainTextToken;
 
-            // ソーシャルコントローラのリダイレクト部分
-            $frontendUrl = env('FRONTEND_URL', 'http://localhost:3000'); // 環境変数からURLを取得
-            return redirect()->to($frontendUrl . '/auth/callback?token=' . $token); // フロントエンドにリダイレクト
+            // フロントエンドURLを取得
+            $frontendUrl = env('FRONTEND_URL', 'http://localhost:3000');
 
-        }catch (\Throwable $e) {
+            // フロントエンドにリダイレクト
+            return redirect()->to($frontendUrl . '/auth/callback?token=' . $token);
+
+        } catch (\Throwable $e) {
             Log::error('Google login error: ' . $e->getMessage());
             Log::info('Google user data: ', ['user' => $googleUser ?? null]);
-
-            // 例外のスタックトレースをログに記録
             Log::error('Stack trace: ' . $e->getTraceAsString());
 
+            // エラー時のリダイレクト
             return redirect('/login')->withErrors(['error' => 'Unable to login using Google. Please try again.']);
         }
     }
