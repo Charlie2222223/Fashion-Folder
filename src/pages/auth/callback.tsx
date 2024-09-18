@@ -9,7 +9,7 @@ const Callback = () => {
             const { token } = router.query;
             if (token) {
                 localStorage.setItem('authToken', token as string);
-                router.push('/'); // 認証後にリダイレクトする
+                router.push('/'); // 認証後に /home にリダイレクトする
             }
         }
     }, [router.query]);
