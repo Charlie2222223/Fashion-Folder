@@ -47,4 +47,10 @@ Route::middleware('auth:sanctum')->post('/user-closet', [UserClosetController::c
 
 Route::get('/user-closet', [UserClosetController::class, 'index']); // 追加
 
+Route::put('/user-closet/{id}', [UserClosetController::class, 'update']);
+
+Route::delete('/user-closet/{id}', [UserClosetController::class, 'destroy']);
+
+
+
 
