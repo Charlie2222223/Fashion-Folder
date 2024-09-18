@@ -31,6 +31,7 @@ const ClothingRegistration: React.FC = () => {
 
   const categories = ["Tシャツ", "パンツ", "ジャケット", "スカート", "ドレス", "スーツ", "アウター", "ジーンズ", "シャツ", "パーカー"];
   const sizes = ["XS", "S", "M", "L", "XL", "XXL", "XXXL"];
+  const colors = ["赤色","青色","黄色","緑色","茶色","グレー","紺色","紫色","オレンジ色","黒色","白色"];
 
   // 認証トークンを設定（例としてローカルストレージから取得）
   const token = localStorage.getItem("authToken");
@@ -298,14 +299,20 @@ const ClothingRegistration: React.FC = () => {
 
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">色</label>
-              <input
-                type="text"
+              <select
                 name="color"
                 value={formData.color}
                 onChange={handleChange}
                 className="block w-full px-3 py-2 mt-1 text-black bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-white"
                 required
-              />
+              >
+                <option value="">色を選択してください</option>
+                {colors.map((color, index) => (
+                  <option key={index} value={color}>
+                    {color}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div className="mb-4">
@@ -336,7 +343,7 @@ const ClothingRegistration: React.FC = () => {
               type="submit"
               className="w-full px-4 py-2 mb-4 text-white bg-indigo-600 rounded-md hover:bg-indigo-700 dark:bg-gray-700 dark:hover:bg-gray-600"
             >
-              追加する
+              登録する
             </button>
           </div>
         </form>

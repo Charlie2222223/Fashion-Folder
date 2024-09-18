@@ -129,4 +129,56 @@ class UserClosetController extends Controller
             return response()->json(['message' => 'Internal Server Error'], 500);
         }
     }
+
+    public function update(Request $request, $id)
+    {
+        $user = Auth::guard('api')->user();
+
+        if (!$user) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        $clothes = UserCloset::where('user_id', $user->id)->where('id', $id)->first();
+
+        if (!$clothes) {
+            return response()->json(['message' => 'Not Found'], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'clothes_name' => 'required|string|max:255',
+            'clothes_category' => 'required|string|max:255',
+            'clothes_size' => 'required|string|max:10',
+            'clothes_color' => 'required|string|max:50',
+            'clothes_detail' => 'nullable|string',
+            'price' => 'required|integer|min:0',
+            // 画像のバリデーションが必要なら追加
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $clothes->update($request->all());
+
+        return response()->json(['message' => 'Clothes updated successfully', 'clothes' => $clothes], 200);
+    }
+
+    public function destroy($id)
+    {
+        $user = Auth::guard('api')->user();
+
+        if (!$user) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        $clothes = UserCloset::where('user_id', $user->id)->where('id', $id)->first();
+
+        if (!$clothes) {
+            return response()->json(['message' => 'Not Found'], 404);
+        }
+
+        $clothes->delete();
+
+        return response()->json(['message' => 'Clothes deleted successfully'], 200);
+    }
 }
