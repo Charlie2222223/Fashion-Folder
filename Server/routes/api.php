@@ -45,3 +45,6 @@ Route::post('/search-image', [ImageGenerationController::class, 'searchImage']);
 
 Route::middleware('auth:sanctum')->post('/user-closet', [UserClosetController::class, 'store']);
 
+Route::get('/user-closet', [UserClosetController::class, 'index']); // 追加
+
+

@@ -24,6 +24,7 @@ class User extends Authenticatable
         'provider_id',
         'avatar',
         'provider',
+        'api_token', // 追加
     ];
 
     /**

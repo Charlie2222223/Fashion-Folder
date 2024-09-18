@@ -10,6 +10,26 @@ use Illuminate\Support\Facades\Log;
 
 class UserClosetController extends Controller
 {
+
+    // 服の一覧取得
+    public function index(Request $request)
+    {
+        $user = Auth::guard('api')->user();
+
+        if (!$user) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        try {
+            $clothes = UserCloset::where('user_id', $user->id)->get();
+
+            return response()->json(['clothes' => $clothes], 200);
+        } catch (\Exception $e) {
+            Log::error('Error fetching clothes: ' . $e->getMessage());
+            return response()->json(['message' => 'Internal Server Error'], 500);
+        }
+    }
+
     /**
      * 服を登録する
      *
