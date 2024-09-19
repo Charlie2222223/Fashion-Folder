@@ -121,7 +121,7 @@ const ClothingRegistration: React.FC = () => {
           clothes_category: formData.category,
           clothes_size: formData.size,
           clothes_color: formData.color,
-          clothes_detail: formData.description,
+          clothes_detail: formData.description == "" ? "特になし" : formData.description,
           price: parseInt(formData.price, 10),
           image: formData.image,
         },
@@ -143,25 +143,24 @@ const ClothingRegistration: React.FC = () => {
     }
   };
 
-
   return (
     <div>
-      <div className="max-w-4xl p-6 mx-auto mt-10 bg-white rounded-lg shadow-md dark:bg-gray-800 dark:text-white">
-        <h1 className="mb-6 text-2xl font-bold">服を登録する</h1>
+      <div className="max-w-4xl p-4 mx-auto mt-6 bg-white rounded-lg shadow-md dark:bg-gray-800 dark:text-white sm:p-6">
+        <h1 className="mb-4 text-xl font-bold sm:text-2xl">服を登録する</h1>
 
         {/* 右上に検索フィールド */}
-        <div className="flex justify-end mb-6">
+        <div className="flex flex-col items-center mb-4 space-y-2 sm:flex-row sm:justify-end sm:space-y-0 sm:space-x-4">
           <input
             type="text"
             placeholder="検索キーワードを入力"
             value={searchKeyword}
             onChange={(e) => setSearchKeyword(e.target.value)}
-            className="block px-3 py-2 mr-4 text-black bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-white"
+            className="block w-full px-3 py-2 text-black bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-white sm:w-auto"
           />
           <button
             type="button"
             onClick={searchSampleImages}
-            className="px-4 py-2 text-white bg-indigo-600 rounded-md"
+            className="w-full px-4 py-2 text-white bg-indigo-600 rounded-md sm:w-auto"
             disabled={loading}
           >
             画像を検索する
@@ -169,7 +168,7 @@ const ClothingRegistration: React.FC = () => {
         </div>
 
         {/* タブ切り替えエリア */}
-        <div className="flex mb-6">
+        <div className="flex mb-4">
           <button
             onClick={() => setActiveTab("upload")}
             className={`w-1/2 px-4 py-2 text-white ${activeTab === "upload" ? "bg-indigo-600" : "bg-gray-500"}`}
@@ -184,9 +183,9 @@ const ClothingRegistration: React.FC = () => {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex space-x-6">
+        <form onSubmit={handleSubmit} className="flex flex-col space-y-6 sm:flex-row sm:space-y-0 sm:space-x-6">
           {/* アップロードまたは生成エリア */}
-          <div className="w-1/3">
+          <div className="sm:w-1/3">
             {formData.image ? (
               <img
                 src={formData.image}
@@ -248,7 +247,7 @@ const ClothingRegistration: React.FC = () => {
           </div>
 
           {/* フォームエリア */}
-          <div className="w-2/3">
+          <div className="sm:w-2/3">
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">服の名前</label>
               <input
@@ -354,9 +353,9 @@ const ClothingRegistration: React.FC = () => {
           <ul>
             {clothingList.map((item, index) => (
               <li key={index} className="p-4 mb-4 bg-gray-100 rounded-md shadow dark:bg-gray-700">
-                <div className="flex items-center space-x-4">
-                  <img src={item.image || ""} alt={item.name} className="object-cover w-20 h-20 rounded-md" />
-                  <div>
+                <div className="flex flex-col items-center space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
+                  <img src={item.image || ""} alt={item.name} className="object-cover w-32 h-32 rounded-md" />
+                  <div className="text-center sm:text-left">
                     <p>名前: {item.name}</p>
                     <p>カテゴリ: {item.category}</p>
                     <p>サイズ: {item.size}</p>
