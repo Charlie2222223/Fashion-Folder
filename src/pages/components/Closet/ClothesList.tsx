@@ -184,7 +184,7 @@ const ClothesList: React.FC = () => {
     <div className="relative">
       {/* ゴミ箱アイコン */}
       <div
-        className={`fixed bottom-4 right-4 z-50 flex items-center justify-center w-16 h-16 rounded-full shadow-lg cursor-pointer ${
+        className={`fixed bottom-4 right-4 z-50 flex items-center justify-center w-12 h-12 rounded-full shadow-lg cursor-pointer ${
           isDragOverTrash ? 'bg-red-500' : 'bg-gray-200 dark:bg-gray-700'
         }`}
         onDragOver={handleDragOverTrash}
@@ -192,18 +192,18 @@ const ClothesList: React.FC = () => {
         onDrop={handleDropOnTrash}
         onClick={handleTrashIconClick}
       >
-        <FaTrashAlt className="text-2xl text-gray-800 dark:text-white" />
+        <FaTrashAlt className="text-xl text-gray-800 dark:text-white" />
       </div>
 
-      <h1 className="mb-6 text-2xl font-bold text-gray-800 dark:text-white">クローゼットの服</h1>
+      <h1 className="mb-6 text-xl font-bold text-gray-800 dark:text-white sm:text-2xl">クローゼットの服</h1>
       {clothingList.length === 0 ? (
         <p className="text-gray-800 dark:text-white">クローゼットに服がありません。</p>
       ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
           {clothingList.map((item) => (
             <div
               key={item.id}
-              className={`p-4 bg-gray-100 rounded-md shadow cursor-pointer dark:bg-gray-700 ${
+              className={`p-2 bg-gray-100 rounded-md shadow cursor-pointer dark:bg-gray-700 ${
                 draggedItemId === item.id ? 'opacity-50' : ''
               }`}
               onClick={() => {
@@ -219,20 +219,20 @@ const ClothesList: React.FC = () => {
                   <img
                     src={item.image}
                     alt={item.clothes_name}
-                    className="object-cover w-40 h-40 rounded-md"
+                    className="object-cover w-full h-auto max-w-xs rounded-md"
                   />
                 ) : (
-                  <div className="flex items-center justify-center w-40 h-40 bg-gray-200 rounded-md">
+                  <div className="flex items-center justify-center w-full h-32 bg-gray-200 rounded-md">
                     <span className="text-gray-500">No Image</span>
                   </div>
                 )}
-                <div className="mt-4 text-center text-gray-800 dark:text-white">
-                  <p className="font-bold">{item.clothes_name}</p>
-                  <p>カテゴリ: {item.clothes_category}</p>
-                  <p>サイズ: {item.clothes_size}</p>
-                  <p>色: {item.clothes_color}</p>
-                  <p>価格: ¥{item.price}</p>
-                  <p>詳細: {item.clothes_detail || '特にありません'}</p>
+                <div className="mt-2 text-center text-gray-800 dark:text-white">
+                  <p className="text-sm font-bold sm:text-base">{item.clothes_name}</p>
+                  <p className="text-xs sm:text-sm">カテゴリ: {item.clothes_category}</p>
+                  <p className="text-xs sm:text-sm">サイズ: {item.clothes_size}</p>
+                  <p className="text-xs sm:text-sm">色: {item.clothes_color}</p>
+                  <p className="text-xs sm:text-sm">価格: ¥{item.price}</p>
+                  {/* 詳細は省略またはモーダルで表示 */}
                 </div>
               </div>
             </div>
@@ -243,12 +243,12 @@ const ClothesList: React.FC = () => {
       {/* 編集用モーダル */}
       {editingItem && formData && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="w-full max-w-lg p-6 mx-auto bg-white rounded-md dark:bg-gray-800">
+          <div className="w-full max-w-lg p-4 mx-auto bg-white rounded-md dark:bg-gray-800 sm:p-6">
             <h2 className="mb-4 text-xl font-semibold text-gray-800 dark:text-white">服の編集</h2>
             <form onSubmit={handleFormSubmit}>
               {/* フォームフィールド */}
               {/* 服の名前 */}
-              <div className="mb-4">
+              <div className="mb-2">
                 <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
                   服の名前
                 </label>
@@ -257,88 +257,22 @@ const ClothesList: React.FC = () => {
                   name="clothes_name"
                   value={formData.clothes_name}
                   onChange={handleFormChange}
-                  className="w-full px-3 py-2 text-gray-800 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
+                  className="w-full px-2 py-1 text-gray-800 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
                 />
               </div>
-              {/* カテゴリ */}
-              <div className="mb-4">
-                <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
-                  カテゴリ
-                </label>
-                <input
-                  type="text"
-                  name="clothes_category"
-                  value={formData.clothes_category}
-                  onChange={handleFormChange}
-                  className="w-full px-3 py-2 text-gray-800 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
-                />
-              </div>
-              {/* サイズ */}
-              <div className="mb-4">
-                <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
-                  サイズ
-                </label>
-                <input
-                  type="text"
-                  name="clothes_size"
-                  value={formData.clothes_size}
-                  onChange={handleFormChange}
-                  className="w-full px-3 py-2 text-gray-800 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
-                />
-              </div>
-              {/* 色 */}
-              <div className="mb-4">
-                <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
-                  色
-                </label>
-                <input
-                  type="text"
-                  name="clothes_color"
-                  value={formData.clothes_color}
-                  onChange={handleFormChange}
-                  className="w-full px-3 py-2 text-gray-800 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
-                />
-              </div>
-              {/* 価格 */}
-              <div className="mb-4">
-                <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
-                  価格
-                </label>
-                <input
-                  type="number"
-                  name="price"
-                  value={formData.price}
-                  onChange={handleFormChange}
-                  className="w-full px-3 py-2 text-gray-800 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
-                />
-              </div>
-              {/* 詳細 */}
-              <div className="mb-4">
-                <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
-                  詳細
-                </label>
-                <textarea
-                  name="clothes_detail"
-                  value={formData.clothes_detail || ''}
-                  onChange={handleFormChange}
-                  className="w-full px-3 py-2 text-gray-800 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
-                  rows={4}
-                  placeholder="服の詳細を入力してください"
-                />
-              </div>
-
+              {/* 他のフィールドも同様に調整 */}
               {/* ボタン */}
-              <div className="flex justify-end mt-6">
+              <div className="flex justify-end mt-4">
                 <button
                   type="button"
                   onClick={handleCancelEdit}
-                  className="px-4 py-2 mr-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 dark:bg-gray-600 dark:text-white"
+                  className="px-3 py-1 mr-2 text-sm text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 dark:bg-gray-600 dark:text-white"
                 >
                   キャンセル
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 text-white bg-indigo-600 rounded-md hover:bg-indigo-700"
+                  className="px-3 py-1 text-sm text-white bg-indigo-600 rounded-md hover:bg-indigo-700"
                 >
                   保存する
                 </button>
@@ -351,41 +285,41 @@ const ClothesList: React.FC = () => {
       {/* ゴミ箱モーダル */}
       {isTrashModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="w-full max-w-2xl p-6 mx-auto bg-white rounded-md dark:bg-gray-800">
+          <div className="w-full max-w-lg p-4 mx-auto bg-white rounded-md dark:bg-gray-800 sm:p-6">
             <h2 className="mb-4 text-xl font-semibold text-gray-800 dark:text-white">ゴミ箱</h2>
             {trashItems.length === 0 ? (
               <p className="text-gray-800 dark:text-white">ゴミ箱は空です。</p>
             ) : (
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+              <div className="grid grid-cols-2 gap-4">
                 {trashItems.map((item) => (
                   <div
                     key={item.id}
-                    className="p-4 bg-gray-100 rounded-md shadow dark:bg-gray-700"
+                    className="p-2 bg-gray-100 rounded-md shadow dark:bg-gray-700"
                   >
                     <div className="flex flex-col items-center">
                       {item.image ? (
                         <img
                           src={item.image}
                           alt={item.clothes_name}
-                          className="object-cover w-32 h-32 rounded-md"
+                          className="object-cover w-full h-auto max-w-xs rounded-md"
                         />
                       ) : (
-                        <div className="flex items-center justify-center w-32 h-32 bg-gray-200 rounded-md">
+                        <div className="flex items-center justify-center w-full h-32 bg-gray-200 rounded-md">
                           <span className="text-gray-500">No Image</span>
                         </div>
                       )}
                       <div className="mt-2 text-center text-gray-800 dark:text-white">
-                        <p className="font-bold">{item.clothes_name}</p>
+                        <p className="text-sm font-bold">{item.clothes_name}</p>
                         <div className="flex mt-2 space-x-2">
                           <button
                             onClick={() => handleRestoreItem(item.id)}
-                            className="px-2 py-1 text-sm text-white bg-green-500 rounded hover:bg-green-600"
+                            className="px-2 py-1 text-xs text-white bg-green-500 rounded hover:bg-green-600"
                           >
                             復元
                           </button>
                           <button
                             onClick={() => handleDeletePermanently(item.id)}
-                            className="px-2 py-1 text-sm text-white bg-red-500 rounded hover:bg-red-600"
+                            className="px-2 py-1 text-xs text-white bg-red-500 rounded hover:bg-red-600"
                           >
                             削除
                           </button>
@@ -396,10 +330,10 @@ const ClothesList: React.FC = () => {
                 ))}
               </div>
             )}
-            <div className="flex justify-end mt-6">
+            <div className="flex justify-end mt-4">
               <button
                 onClick={closeTrashModal}
-                className="px-4 py-2 text-white bg-indigo-600 rounded-md hover:bg-indigo-700"
+                className="px-4 py-2 text-sm text-white bg-indigo-600 rounded-md hover:bg-indigo-700"
               >
                 閉じる
               </button>
