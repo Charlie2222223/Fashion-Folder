@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 interface ClothingItem {
@@ -33,9 +33,14 @@ const ClothingRegistration: React.FC = () => {
   const sizes = ["XS", "S", "M", "L", "XL", "XXL", "XXXL"];
   const colors = ["赤色","青色","黄色","緑色","茶色","グレー","紺色","紫色","オレンジ色","黒色","白色"];
 
-  // 認証トークンを設定（例としてローカルストレージから取得）
-  const token = localStorage.getItem("authToken");
-  
+  const [token, setToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    // クライアントサイドでのみ実行
+    const storedToken = localStorage.getItem("authToken");
+    setToken(storedToken);
+  }, []);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
@@ -57,6 +62,11 @@ const ClothingRegistration: React.FC = () => {
 
   // AI画像生成処理 (Laravel APIを使用)
   const handleImageGeneration = async () => {
+    if (!token) {
+      console.error("認証トークンがありません。ログインしてください。");
+      return;
+    }
+
     setAiGenerating(true);
     setLoading(true);
     try {
@@ -88,6 +98,11 @@ const ClothingRegistration: React.FC = () => {
 
   // Laravel APIを使用して画像を検索する
   const searchSampleImages = async () => {
+    if (!token) {
+      console.error("認証トークンがありません。ログインしてください。");
+      return;
+    }
+
     setLoading(true);
     try {
       const response = await axios.post(
@@ -112,6 +127,12 @@ const ClothingRegistration: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!token) {
+      console.error("認証トークンがありません。ログインしてください。");
+      return;
+    }
+
     try {
       // バックエンドAPIにフォームデータを送信
       const response = await axios.post(
@@ -142,6 +163,11 @@ const ClothingRegistration: React.FC = () => {
       console.error("服の登録に失敗しました", error);
     }
   };
+
+  // トークンが取得されるまで待機
+  if (token === null) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div>
