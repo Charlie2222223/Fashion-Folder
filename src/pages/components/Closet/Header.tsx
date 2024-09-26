@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import User_Info from '../user/User_Info';
+import User_Info from '../user_auth/User_Info';
 
 interface HeaderProps {
   onToggleSidebar: () => void;
