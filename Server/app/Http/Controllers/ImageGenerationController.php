@@ -59,11 +59,13 @@ class ImageGenerationController extends Controller
         $keyword = $request->input('keyword', 'clothing');
 
         try {
+            // キーワードの翻訳
             $translatedKeyword = $this->translateKeyword($keyword);
 
+            // Pexels APIリクエスト
             $response = $this->client->get('https://api.pexels.com/v1/search', [
                 'headers' => [
-                    'Authorization' => $this->pexelsApiKey, // Bearer を外す
+                    'Authorization' => $this->pexelsApiKey, // Bearer は不要
                 ],
                 'query' => [
                     'query' => $translatedKeyword,
@@ -72,18 +74,25 @@ class ImageGenerationController extends Controller
             ]);
 
             $body = json_decode($response->getBody(), true);
-            $images = array_map(fn($photo) => $photo['src']['medium'], $body['photos']);
 
-            return response()->json([
-                'success' => true,
-                'images' => $images
-            ]);
+            // Pexels APIが期待するデータを含んでいるか確認
+            if (isset($body['photos'])) {
+                $images = array_map(fn($photo) => $photo['src']['medium'], $body['photos']);
+
+                return response()->json([
+                    'success' => true,
+                    'images' => $images
+                ]);
+            } else {
+                // APIが期待するデータを返していない場合
+                return $this->handleApiError('Pexels APIのレスポンスが不正です', new \Exception('不正なレスポンス'));
+            }
+
         } catch (\Exception $e) {
-
+            // 画像検索失敗時のエラーハンドリング
             return $this->handleApiError('画像検索に失敗しました', $e);
         }
     }
-
     /**
      * キーワードの翻訳処理
      */
