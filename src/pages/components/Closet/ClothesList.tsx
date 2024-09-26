@@ -184,7 +184,7 @@ const ClothesList: React.FC = () => {
     <div className="relative">
       {/* ゴミ箱アイコン */}
       <div
-        className={`fixed bottom-4 right-4 z-50 flex items-center justify-center w-12 h-12 rounded-full shadow-lg cursor-pointer ${
+        className={`fixed bottom-4 right-4 z-50 flex items-center justify-center w-20 h-20 rounded-full shadow-lg cursor-pointer ${
           isDragOverTrash ? 'bg-red-500' : 'bg-gray-200 dark:bg-gray-700'
         }`}
         onDragOver={handleDragOverTrash}
@@ -195,9 +195,13 @@ const ClothesList: React.FC = () => {
         <FaTrashAlt className="text-xl text-gray-800 dark:text-white" />
       </div>
 
-      <h1 className="mb-6 text-xl font-bold text-gray-800 dark:text-white sm:text-2xl">クローゼットの服</h1>
+      <h1 className="mb-6 text-xl font-bold text-gray-800 dark:text-white sm:text-2xl">クローゼットの服一覧</h1>
       {clothingList.length === 0 ? (
-        <p className="text-gray-800 dark:text-white">クローゼットに服がありません。</p>
+        <div className="flex items-center justify-center min-h-screen pb-40">
+          <p className="text-2xl text-center text-gray-800 dark:text-white">
+            クローゼットに服がありません。
+          </p>
+        </div>
       ) : (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
           {clothingList.map((item) => (
