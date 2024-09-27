@@ -11,7 +11,6 @@ services:
     working_dir: /var/www
     volumes:
       - ./Server:/var/www
-      - ./Server/storage:/var/www/storage
     networks:
       - app-network
     ports:
@@ -25,7 +24,7 @@ services:
       DB_DATABASE: laravel_db
       DB_USERNAME: root
       DB_PASSWORD: Charlie@223
-    command: php artisan serve --host=0.0.0.0 --port=8000
+    command: bash -c "composer install && php artisan serve --host=0.0.0.0 --port=8000"
 
   # Next.jsのフロントエンド
   frontend:
@@ -36,7 +35,7 @@ services:
     restart: unless-stopped
     working_dir: /app
     volumes:
-      - ./:/app  # 正しいマウントパスに変更
+      - ./:/app
     networks:
       - app-network
     ports:
