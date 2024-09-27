@@ -10,7 +10,7 @@ const SignInForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const handleClick = () => {
-    router.push('/auth/SignIn');
+    router.push('/auth/SignUp'); // サインアップページへのパスを確認してください
   };
 
   const handleGoogleLogin = () => {
@@ -19,31 +19,33 @@ const SignInForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-  
+
     try {
       const response = await axios.post('http://localhost:8000/api/login', {
         email,
         password,
       });
-  
-      const token = response.data.token;
-  
+
+      const token = response.data.access_token;
+
       // トークンをローカルストレージに保存
       localStorage.setItem('authToken', token);
-  
+
+      // Axiosのデフォルトヘッダーにトークンを設定
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
       // 必要に応じて他のユーザーデータを保存
       localStorage.setItem('user', JSON.stringify(response.data.user));
-      console.log('Navigating to index page');
-  
+
       // ログイン後にリダイレクト
-      window.location.href = '/';
-      
+      router.push('/'); // Next.jsのルーターを使用
     } catch (error) {
       const err = error as any;
       if (err.response && err.response.data.errors) {
         setErrors(err.response.data.errors);
       } else {
         console.error('Login failed:', err.response?.data || err.message);
+        setErrors({ general: 'ログインに失敗しました。メールアドレスとパスワードを確認してください。' });
       }
     }
   };
@@ -51,8 +53,8 @@ const SignInForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="relative w-full max-w-md p-8 mx-4 bg-white border border-gray-200 shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-700 sm:mx-8 md:mx-16 lg:mx-24 xl:mx-32">
-        <button 
-          onClick={onClose} 
+        <button
+          onClick={onClose}
           className="absolute text-gray-600 top-2 right-2 hover:text-gray-900"
         >
           ✖
@@ -66,17 +68,19 @@ const SignInForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             こちらで登録
           </a>
         </p>
-        <button 
-        onClick={handleGoogleLogin}
-        className="inline-flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800">
+        <button
+          onClick={handleGoogleLogin}
+          className="inline-flex items-center justify-center w-full px-4 py-3 mb-4 text-sm font-medium text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800"
+        >
           <FcGoogle className="mr-2 text-2xl" />
           Googleでサインイン
         </button>
-        <div className="flex items-center py-3 text-xs text-gray-400 uppercase before:flex-1 before:border-t before:border-gray-200 before:me-6 after:flex-1 after:border-t after:border-gray-200 after:ms-6 dark:text-neutral-500 dark:before:border-neutral-600 dark:after:border-neutral-600">
+        <div className="flex items-center py-3 text-xs text-gray-400 uppercase before:flex-1 before:border-t before:border-gray-200 before:mr-6 after:flex-1 after:border-t after:border-gray-200 after:ml-6 dark:text-neutral-500 dark:before:border-neutral-600 dark:after:border-neutral-600">
           または
         </div>
         <form onSubmit={handleSubmit}>
           <div className="grid gap-y-4">
+            {errors.general && <p className="text-sm text-red-500">{errors.general}</p>}
             <div>
               <label className="block mb-2 text-sm dark:text-white" htmlFor="email">
                 メールアドレス
@@ -108,13 +112,18 @@ const SignInForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                 onChange={(e) => setPassword(e.target.value)}
               />
               {errors.password && <p className="mt-2 text-sm text-red-500">{errors.password}</p>}
-              <a className="inline-flex items-center text-sm text-blue-600 gap-x-1 decoration-2 hover:underline dark:text-blue-500" href="#">
+              <a className="inline-flex items-center mt-2 text-sm text-blue-600 gap-x-1 decoration-2 hover:underline dark:text-blue-500" href="#">
                 パスワードをお忘れですか？
               </a>
             </div>
             <div className="flex items-center">
-              <input className="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 dark:bg-neutral-800 dark:border-neutral-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800" id="remember-me" name="remember-me" type="checkbox" />
-              <label className="text-sm ms-3 dark:text-white" htmlFor="remember-me">
+              <input
+                className="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 dark:bg-neutral-800 dark:border-neutral-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
+                id="remember-me"
+                name="remember-me"
+                type="checkbox"
+              />
+              <label className="ml-3 text-sm dark:text-white" htmlFor="remember-me">
                 ログイン状態を維持する
               </label>
             </div>
@@ -122,7 +131,7 @@ const SignInForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
               サインイン
             </button>
           </div>
-        </form> 
+        </form>
       </div>
     </div>
   );
