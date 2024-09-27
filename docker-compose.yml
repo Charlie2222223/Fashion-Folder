@@ -50,8 +50,6 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: Charlie@223
       MYSQL_DATABASE: laravel_db
-    volumes:
-      - ./mysql:/var/lib/mysql
     networks:
       - app-network
     ports:

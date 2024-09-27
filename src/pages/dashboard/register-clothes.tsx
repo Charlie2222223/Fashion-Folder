@@ -1,10 +1,8 @@
-// pages/dashboard/index.tsx
-
 import React from 'react';
-import Layout from '../components/Closet/Layout';
+import Layout from '../components/Closet//Layout';
 import ClothingRegistration from '../components/Closet/ClothingRegistration';
 
-const DashboardHome: React.FC = () => {
+const RegisterClothesPage: React.FC = () => {
   return (
     <Layout>
       <ClothingRegistration />
@@ -12,4 +10,4 @@ const DashboardHome: React.FC = () => {
   );
 };
 
-export default DashboardHome;
+export default RegisterClothesPage;
