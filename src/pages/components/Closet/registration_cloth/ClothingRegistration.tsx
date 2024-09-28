@@ -3,9 +3,9 @@ import axios from "axios";
 
 interface ClothingItem {
   name: string;
-  category: string;
-  size: string;
-  color: string;
+  category_id: string;
+  size_id: string;
+  color_id: string;
   price: string;
   description: string | null;
   image: string | null;
@@ -14,9 +14,9 @@ interface ClothingItem {
 const ClothingRegistration: React.FC = () => {
   const [formData, setFormData] = useState<ClothingItem>({
     name: "",
-    category: "",
-    size: "",
-    color: "",
+    category_id: "",
+    size_id: "",
+    color_id: "",
     price: "",
     description: null,
     image: null,
@@ -29,27 +29,38 @@ const ClothingRegistration: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"upload" | "generate">("upload"); // タブの状態
   const [aiGenerating, setAiGenerating] = useState(false); // AI生成中の状態
 
-  const categories = ["Tシャツ", "パンツ", "ジャケット", "スカート","アウター", "ジーンズ", "シャツ", "パーカー","カーディガン  "];
-  const sizes = ["XS", "S", "M", "L", "XL", "XXL", "XXXL"];
-  const colors = [
-    { name: "赤色", code: "#FF0000" },
-    { name: "青色", code: "#0000FF" },
-    { name: "黄色", code: "#FFFF00" },
-    { name: "緑色", code: "#008000" },
-    { name: "茶色", code: "#A52A2A" },
-    { name: "グレー", code: "#808080" },
-    { name: "紺色", code: "#000080" },
-    { name: "紫色", code: "#800080" },
-    { name: "オレンジ色", code: "#FFA500" },
-    { name: "黒色", code: "#000000" },
-    { name: "白色", code: "#FFFFFF" },
-  ];
+  const [categories, setCategories] = useState<any[]>([]);
+  const [sizes, setSizes] = useState<any[]>([]);
+  const [colors, setColors] = useState<any[]>([]);
   const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
-    // クライアントサイドでのみ実行
     const storedToken = localStorage.getItem("authToken");
     setToken(storedToken);
+
+    // カテゴリ、サイズ、カラーの情報をAPIから取得
+    const fetchData = async () => {
+      try {
+        const categoryRes = await axios.get("http://localhost:8000/api/categories", {
+          headers: { Authorization: `Bearer ${storedToken}` },
+        });
+        setCategories(categoryRes.data);
+
+        const sizeRes = await axios.get("http://localhost:8000/api/sizes", {
+          headers: { Authorization: `Bearer ${storedToken}` },
+        });
+        setSizes(sizeRes.data);
+
+        const colorRes = await axios.get("http://localhost:8000/api/colors", {
+          headers: { Authorization: `Bearer ${storedToken}` },
+        });
+        setColors(colorRes.data);
+      } catch (error) {
+        console.error("Error fetching data", error);
+      }
+    };
+
+    fetchData();
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -71,7 +82,7 @@ const ClothingRegistration: React.FC = () => {
     }
   };
 
-  // AI画像生成処理 (Laravel APIを使用)
+  // AI画像生成処理
   const handleImageGeneration = async () => {
     if (!token) {
       console.error("認証トークンがありません。ログインしてください。");
@@ -84,8 +95,8 @@ const ClothingRegistration: React.FC = () => {
       const response = await axios.post(
         "http://localhost:8000/api/generate-image",
         {
-          category: formData.category,
-          color: formData.color,
+          category_id: formData.category_id,
+          color_id: formData.color_id,
           description: formData.description,
         },
         {
@@ -107,7 +118,7 @@ const ClothingRegistration: React.FC = () => {
     }
   };
 
-  // Laravel APIを使用して画像を検索する
+  // 画像検索処理
   const searchSampleImages = async () => {
     if (!token) {
       console.error("認証トークンがありません。ログインしてください。");
@@ -145,14 +156,13 @@ const ClothingRegistration: React.FC = () => {
     }
 
     try {
-      // バックエンドAPIにフォームデータを送信
       const response = await axios.post(
         "http://localhost:8000/api/user-closet",
         {
           clothes_name: formData.name,
-          clothes_category: formData.category,
-          clothes_size: formData.size,
-          clothes_color: formData.color,
+          clothes_category_id: formData.category_id,
+          clothes_size_id: formData.size_id,
+          clothes_color_id: formData.color_id,
           clothes_detail: formData.description == "" ? "特になし" : formData.description,
           price: parseInt(formData.price, 10),
           image: formData.image,
@@ -164,18 +174,15 @@ const ClothingRegistration: React.FC = () => {
         }
       );
 
-      // レスポンスから登録されたデータを取得してリストに追加
       const registeredClothes = response.data.clothes;
       setClothingList((prevList) => [...prevList, registeredClothes]);
 
-      // フォームをリセット
-      setFormData({ name: "", category: "", size: "", color: "", price: "", description: null, image: null });
+      setFormData({ name: "", category_id: "", size_id: "", color_id: "", price: "", description: null, image: null });
     } catch (error) {
       console.error("服の登録に失敗しました", error);
     }
   };
 
-  // トークンが取得されるまで待機
   if (token === null) {
     return <div>Loading...</div>;
   }
@@ -185,7 +192,6 @@ const ClothingRegistration: React.FC = () => {
       <div className="max-w-4xl p-4 mx-auto mt-6 bg-white rounded-lg shadow-md dark:bg-gray-800 dark:text-white sm:p-6">
         <h1 className="mb-4 text-xl font-bold sm:text-2xl">服を登録する</h1>
 
-        {/* 右上に検索フィールド */}
         <div className="flex flex-col items-center mb-4 space-y-2 sm:flex-row sm:justify-end sm:space-y-0 sm:space-x-4">
           <input
             type="text"
@@ -204,7 +210,6 @@ const ClothingRegistration: React.FC = () => {
           </button>
         </div>
 
-        {/* タブ切り替えエリア */}
         <div className="flex mb-4">
           <button
             onClick={() => setActiveTab("upload")}
@@ -221,7 +226,6 @@ const ClothingRegistration: React.FC = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col space-y-6 sm:flex-row sm:space-y-0 sm:space-x-6">
-          {/* アップロードまたは生成エリア */}
           <div className="sm:w-1/3">
             {formData.image ? (
               <img
@@ -253,14 +257,12 @@ const ClothingRegistration: React.FC = () => {
               </button>
             )}
 
-            {/* AI生成中のスピナー */}
             {aiGenerating && (
               <div className="flex justify-center mt-4">
                 <div className="w-8 h-8 border-t-4 border-blue-600 border-solid rounded-full animate-spin"></div>
               </div>
             )}
 
-            {/* 検索結果表示 */}
             {!loading && imageResults.length > 0 && (
               <div className="grid grid-cols-3 gap-2 mt-4">
                 {imageResults.map((url, index) => (
@@ -275,7 +277,6 @@ const ClothingRegistration: React.FC = () => {
               </div>
             )}
 
-            {/* 画像検索中のスピナー */}
             {loading && (
               <div className="flex justify-center mt-4">
                 <div className="w-8 h-8 border-t-4 border-blue-600 border-solid rounded-full animate-spin"></div>
@@ -283,7 +284,6 @@ const ClothingRegistration: React.FC = () => {
             )}
           </div>
 
-          {/* フォームエリア */}
           <div className="sm:w-2/3">
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">服の名前</label>
@@ -300,16 +300,16 @@ const ClothingRegistration: React.FC = () => {
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">カテゴリ</label>
               <select
-                name="category"
-                value={formData.category}
+                name="category_id"
+                value={formData.category_id}
                 onChange={handleChange}
                 className="block w-full px-3 py-2 mt-1 text-black bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-white"
                 required
               >
                 <option value="">カテゴリを選択してください</option>
-                {categories.map((category, index) => (
-                  <option key={index} value={category}>
-                    {category}
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.clothes_name}
                   </option>
                 ))}
               </select>
@@ -318,46 +318,45 @@ const ClothingRegistration: React.FC = () => {
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">サイズ</label>
               <select
-                name="size"
-                value={formData.size}
+                name="size_id"
+                value={formData.size_id}
                 onChange={handleChange}
                 className="block w-full px-3 py-2 mt-1 text-black bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-white"
                 required
               >
                 <option value="">サイズを選択してください</option>
-                {sizes.map((size, index) => (
-                  <option key={index} value={size}>
-                    {size}
+                {sizes.map((size) => (
+                  <option key={size.id} value={size.id}>
+                    {size.size_name}
                   </option>
                 ))}
               </select>
             </div>
 
             <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">色</label>
-            <div className="flex items-center">
-              <select
-                name="color"
-                value={formData.color}
-                onChange={handleChange}
-                className="block w-full px-3 py-2 mt-1 text-black bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-white"
-                required
-              >
-                <option value="">色を選択してください</option>
-                {colors.map((color, index) => (
-                  <option key={index} value={color.code}>
-                    {color.name}
-                  </option>
-                ))}
-              </select>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">色</label>
+              <div className="flex items-center">
+                <select
+                  name="color_id"
+                  value={formData.color_id}
+                  onChange={handleChange}
+                  className="block w-full px-3 py-2 mt-1 text-black bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-800 dark:text-white"
+                  required
+                >
+                  <option value="">色を選択してください</option>
+                  {colors.map((color) => (
+                    <option key={color.id} value={color.id}>
+                      {color.color_name}
+                    </option>
+                  ))}
+                </select>
 
-              {/* 選択された色を表示 */}
-              <div
-                className="w-8 h-8 ml-4 border border-gray-300 rounded-full"
-                style={{ backgroundColor: formData.color || 'transparent' }} // 選択された色を背景に設定
-              />
+                <div
+                  className="w-8 h-8 ml-4 border border-gray-300 rounded-full"
+                  style={{ backgroundColor: colors.find((c) => c.id === formData.color_id)?.color_code || "transparent" }}
+                />
+              </div>
             </div>
-          </div>
 
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">服の詳細説明</label>

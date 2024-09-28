@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Log;
 
 class UserClosetController extends Controller
 {
-
     // 服の一覧取得
     public function index(Request $request)
     {
@@ -21,7 +20,9 @@ class UserClosetController extends Controller
         }
 
         try {
-            $clothes = UserCloset::where('user_id', $user->id)->get();
+            $clothes = UserCloset::with(['category', 'color', 'size'])
+                ->where('user_id', $user->id)
+                ->get();
 
             return response()->json(['clothes' => $clothes], 200);
         } catch (\Exception $e) {
@@ -50,9 +51,9 @@ class UserClosetController extends Controller
         // バリデーションルールの定義
         $validator = Validator::make($request->all(), [
             'clothes_name' => 'required|string|max:255',
-            'clothes_category' => 'required|string|max:255',
-            'clothes_size' => 'required|string|max:10',
-            'clothes_color' => 'required|string|max:50',
+            'clothes_category_id' => 'required|exists:clothes_categories,id',
+            'clothes_size_id' => 'required|exists:clothes_size,id',
+            'clothes_color_id' => 'required|exists:clothes_color,id',
             'clothes_detail' => 'nullable|string',
             'price' => 'required|integer|min:0',
             'image' => 'nullable|string', // Base64画像またはURLを受け取る場合
@@ -112,9 +113,9 @@ class UserClosetController extends Controller
             $clothes = UserCloset::create([
                 'user_id' => $user->id,
                 'clothes_name' => $request->clothes_name,
-                'clothes_category' => $request->clothes_category,
-                'clothes_size' => $request->clothes_size,
-                'clothes_color' => $request->clothes_color,
+                'clothes_category_id' => $request->clothes_category_id,
+                'clothes_size_id' => $request->clothes_size_id,
+                'clothes_color_id' => $request->clothes_color_id,
                 'clothes_detail' => $request->clothes_detail,
                 'price' => $request->price,
                 'image' => $imagePath,
@@ -146,12 +147,11 @@ class UserClosetController extends Controller
 
         $validator = Validator::make($request->all(), [
             'clothes_name' => 'required|string|max:255',
-            'clothes_category' => 'required|string|max:255',
-            'clothes_size' => 'required|string|max:10',
-            'clothes_color' => 'required|string|max:50',
+            'clothes_category_id' => 'required|exists:clothes_categories,id',
+            'clothes_size_id' => 'required|exists:clothes_size,id',
+            'clothes_color_id' => 'required|exists:clothes_color,id',
             'clothes_detail' => 'nullable|string',
             'price' => 'required|integer|min:0',
-            // 画像のバリデーションが必要なら追加
         ]);
 
         if ($validator->fails()) {
