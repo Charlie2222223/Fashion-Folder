@@ -53,7 +53,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               <span className="mx-3">クローゼットに入れる</span>
             </Link>
             <Link
-              href="/dashboard/setup-coordinates"
+              href="/dashboard/outfit-setup"
               className={`flex items-center px-6 py-2 mt-4 ${
                 isActive('/dashboard/setup-coordinates')
                   ? 'text-gray-100 bg-gray-700 bg-opacity-25'
