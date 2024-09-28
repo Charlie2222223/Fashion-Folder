@@ -1,15 +1,18 @@
-// pages/dashboard/index.tsx
+import React, { useState } from 'react';
+import Sidebar from '../components/closet/Sidebar';
+import Header from '../components/closet/Header';
 
-import React from 'react';
-import Layout from '../components/Closet/Layout';
-import ClothingRegistration from '../components/Closet/ClothingRegistration';
+const Index: React.FC = () => {
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
 
-const DashboardHome: React.FC = () => {
   return (
-    <Layout>
-      <ClothingRegistration />
-    </Layout>
+    <>
+      <Header onToggleSidebar={() => setSidebarOpen(!isSidebarOpen)} />
+      <main>
+        <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} />
+      </main>
+    </>
   );
 };
 
-export default DashboardHome;
+export default Index;
