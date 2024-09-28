@@ -29,10 +29,21 @@ const ClothingRegistration: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"upload" | "generate">("upload"); // タブの状態
   const [aiGenerating, setAiGenerating] = useState(false); // AI生成中の状態
 
-  const categories = ["Tシャツ", "パンツ", "ジャケット", "スカート", "ドレス", "スーツ", "アウター", "ジーンズ", "シャツ", "パーカー"];
+  const categories = ["Tシャツ", "パンツ", "ジャケット", "スカート","アウター", "ジーンズ", "シャツ", "パーカー","カーディガン  "];
   const sizes = ["XS", "S", "M", "L", "XL", "XXL", "XXXL"];
-  const colors = ["赤色","青色","黄色","緑色","茶色","グレー","紺色","紫色","オレンジ色","黒色","白色"];
-
+  const colors = [
+    { name: "赤色", code: "#FF0000" },
+    { name: "青色", code: "#0000FF" },
+    { name: "黄色", code: "#FFFF00" },
+    { name: "緑色", code: "#008000" },
+    { name: "茶色", code: "#A52A2A" },
+    { name: "グレー", code: "#808080" },
+    { name: "紺色", code: "#000080" },
+    { name: "紫色", code: "#800080" },
+    { name: "オレンジ色", code: "#FFA500" },
+    { name: "黒色", code: "#000000" },
+    { name: "白色", code: "#FFFFFF" },
+  ];
   const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
@@ -323,7 +334,8 @@ const ClothingRegistration: React.FC = () => {
             </div>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">色</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">色</label>
+            <div className="flex items-center">
               <select
                 name="color"
                 value={formData.color}
@@ -333,12 +345,19 @@ const ClothingRegistration: React.FC = () => {
               >
                 <option value="">色を選択してください</option>
                 {colors.map((color, index) => (
-                  <option key={index} value={color}>
-                    {color}
+                  <option key={index} value={color.code}>
+                    {color.name}
                   </option>
                 ))}
               </select>
+
+              {/* 選択された色を表示 */}
+              <div
+                className="w-8 h-8 ml-4 border border-gray-300 rounded-full"
+                style={{ backgroundColor: formData.color || 'transparent' }} // 選択された色を背景に設定
+              />
             </div>
+          </div>
 
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">服の詳細説明</label>
@@ -355,7 +374,7 @@ const ClothingRegistration: React.FC = () => {
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">価格</label>
               <input
-                type="text"
+                type="number"
                 name="price"
                 value={formData.price}
                 onChange={handleChange}
@@ -372,28 +391,6 @@ const ClothingRegistration: React.FC = () => {
             </button>
           </div>
         </form>
-
-        {/* 登録された服のリスト */}
-        <div className="mt-6">
-          <h2 className="mb-4 text-xl font-semibold dark:text-gray-300">登録された服</h2>
-          <ul>
-            {clothingList.map((item, index) => (
-              <li key={index} className="p-4 mb-4 bg-gray-100 rounded-md shadow dark:bg-gray-700">
-                <div className="flex flex-col items-center space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
-                  <img src={item.image || ""} alt={item.name} className="object-cover w-32 h-32 rounded-md" />
-                  <div className="text-center sm:text-left">
-                    <p>名前: {item.name}</p>
-                    <p>カテゴリ: {item.category}</p>
-                    <p>サイズ: {item.size}</p>
-                    <p>色: {item.color}</p>
-                    <p>価格: {item.price}</p>
-                    <p>詳細: {item.description || "特にありません"}</p>
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
       </div>
     </div>
   );
