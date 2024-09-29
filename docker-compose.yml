@@ -30,7 +30,7 @@ services:
   # Next.jsのフロントエンド
   frontend:
     build:
-      context: ./
+      context: .
       dockerfile: Dockerfile
     container_name: frontend
     restart: unless-stopped

@@ -12,7 +12,7 @@ const Callback = () => {
                 router.push('/'); // 認証後に /home にリダイレクトする
             }
         }
-    }, [router.query]);
+    }, [router]);
 
     return <div>Loading...</div>;
 };
