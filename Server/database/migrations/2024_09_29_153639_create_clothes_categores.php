@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('clothes_categores', function (Blueprint $table) {
+        Schema::create('clothes_categories', function (Blueprint $table) {
             $table->id();
             $table->string('category_name')->unique();
             $table->timestamps();
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('clothes_categores');
+        Schema::dropIfExists('clothes_categor9es');
     }
 };
