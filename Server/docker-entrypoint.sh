@@ -3,6 +3,7 @@
 # 必要なコマンドを自動実行
 php artisan storage:link || true
 php artisan migrate --force
+php artisan db:seed --force
 
 # 既存のコマンドを実行（CMDの部分）
 exec "$@"
