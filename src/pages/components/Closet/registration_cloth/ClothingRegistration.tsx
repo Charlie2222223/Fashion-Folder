@@ -5,7 +5,7 @@ interface ClothingItem {
   name: string;
   category: string;
   size: string;
-  color: string;
+  color: string; // id of the color
   price: string;
   description: string | null;
   image: string | null;
@@ -32,7 +32,7 @@ const ClothingRegistration: React.FC = () => {
     name: "",
     category: "",
     size: "",
-    color: "",
+    color: "", // Will hold the selected color id
     price: "",
     description: null,
     image: null,
@@ -167,10 +167,8 @@ const ClothingRegistration: React.FC = () => {
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+            Authorization: `Bearer ${token}` },
+      });
       setImageResults(response.data.images);
     } catch (error) {
       console.error("画像検索に失敗しました", error);
@@ -194,7 +192,7 @@ const ClothingRegistration: React.FC = () => {
           clothes_name: formData.name,
           clothes_category: formData.category,
           clothes_size: formData.size,
-          clothes_color: formData.color,
+          clothes_color: formData.color, // color_id will be sent here
           clothes_detail: formData.description || "特になし",
           price: parseInt(formData.price, 10),
           image: formData.image,
@@ -374,7 +372,7 @@ const ClothingRegistration: React.FC = () => {
                 >
                   <option value="">色を選択してください</option>
                   {colors.map((color) => (
-                    <option key={color.id} value={color.color_code}>
+                    <option key={color.id} value={color.id}> {/* Use color.id here */}
                       {color.color_name}
                     </option>
                   ))}
@@ -382,7 +380,7 @@ const ClothingRegistration: React.FC = () => {
 
                 <div
                   className="w-8 h-8 ml-4 border border-gray-300 rounded-full"
-                  style={{ backgroundColor: formData.color || "transparent" }}
+                  style={{ backgroundColor: colors.find(c => c.id === parseInt(formData.color))?.color_code || "transparent" }} // Show selected color's code
                 />
               </div>
             </div>
