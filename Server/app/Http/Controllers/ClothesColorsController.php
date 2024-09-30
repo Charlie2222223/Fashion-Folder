@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\ClothesSizes;
-
-class Clothes_Size extends Controller
+use App\Models\ClothesColors;
+ class ClothesColorsController extends Controller
 {
     /**
      * 全てのClothesCategoriesを取得して返す
@@ -15,9 +14,9 @@ class Clothes_Size extends Controller
     public function index()
     {
         // 全てのデータを取得
-        $sizes = ClothesSizes::all();
+        $colors = ClothesColors::all();
 
         // 取得したデータをJSON形式で返す
-        return response()->json($sizes);
+        return response()->json($colors,200);
     }
 }
