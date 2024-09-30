@@ -37,7 +37,7 @@ class UserCloset extends Model
      */
     public function category()
     {
-        return $this->belongsTo(clothes_categories::class, 'clothes_category');
+        return $this->belongsTo(ClothesCategories::class, 'clothes_category');
     }
 
     /**
@@ -45,7 +45,7 @@ class UserCloset extends Model
      */
     public function size()
     {
-        return $this->belongsTo(clothes_sizes::class, 'clothes_size');
+        return $this->belongsTo(ClothesSizes::class, 'clothes_size');
     }
 
     /**
@@ -53,6 +53,6 @@ class UserCloset extends Model
      */
     public function color()
     {
-        return $this->belongsTo(clothes_colors::class, 'clothes_color');
+        return $this->belongsTo(ClothesColors::class, 'clothes_color');
     }
 }
