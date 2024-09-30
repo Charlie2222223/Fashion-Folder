@@ -8,6 +8,9 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ImageGenerationController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\UserClosetController;
+use App\Http\Controllers\ClothesCategoriesController;
+use App\Http\Controllers\ClothesSizesController;
+use App\Http\Controllers\ClothesColorsController;
 
 // ユーザー登録関連
 Route::post('/register', [RegisterController::class, 'register']); // メールの送信
@@ -26,16 +29,20 @@ Route::middleware('auth:sanctum')->get('/user', [UserController::class, 'getUser
 Route::middleware('auth:sanctum')->post('/upload/profile', [UserController::class, 'updateProfile']); // アカウントの設定変更
 
 // カテゴリー関連
-Route::get('/categories', [CategoryController::class, 'index']); // 服のカテゴリーをデータベースに追加
+Route::get('/categories', [ClothesCategoriesController::class, 'index']); // 服のカテゴリー一覧
 
 // 画像生成関連
-Route::post('/generate-image', [ImageGenerationController::class, 'generateImage']);
-Route::post('/search-image', [ImageGenerationController::class, 'searchImage']);
+Route::post('/generate-image', [ImageGenerationController::class, 'generateImage']); // AIで画像生成
+Route::post('/search-image', [ImageGenerationController::class, 'searchImage']); // 画像検索
 
 // ユーザークローゼット関連
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/user-closet', [UserClosetController::class, 'store']);
-    Route::get('/user-closet', [UserClosetController::class, 'index']);
-    Route::put('/user-closet/{id}', [UserClosetController::class, 'update']);
-    Route::delete('/user-closet/{id}', [UserClosetController::class, 'destroy']);
+    Route::post('/user-closet', [UserClosetController::class, 'store']);  // クローゼットに追加
+    Route::get('/user-closet', [UserClosetController::class, 'index']);   // クローゼット一覧
+    Route::put('/user-closet/{id}', [UserClosetController::class, 'update']);  // クローゼット内アイテム更新
+    Route::delete('/user-closet/{id}', [UserClosetController::class, 'destroy']);  // クローゼット内アイテム削除
+
+    // カテゴリー、サイズ、色の取得
+    Route::get('/sizes', [ClothesSizesController::class, 'index']);  
+    Route::get('/colors', [ClothesColorsController::class, 'index']);
 });
