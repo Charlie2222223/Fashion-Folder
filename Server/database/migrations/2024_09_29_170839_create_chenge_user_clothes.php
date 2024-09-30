@@ -33,7 +33,7 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('clothes_category')->references('id')->on('clothes_categories')->onDelete('cascade');
             $table->foreign('clothes_size')->references('id')->on('clothes_sizes')->onDelete('cascade');
-            $table->foreign('clothes_color')->references('id')->on('clothes_colors')->onDelete('cascade');
+            $table->foreign(columns: 'clothes_color')->references('id')->on('clothes_colors')->onDelete('cascade');
         });
     }
 
