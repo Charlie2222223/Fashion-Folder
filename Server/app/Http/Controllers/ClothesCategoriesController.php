@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\ClothesCategories;
 
-class Clothes_Category extends Controller
+class ClothesCategoriesController extends Controller
 {
     /**
      * 全てのClothesCategoriesを取得して返す
@@ -18,6 +18,6 @@ class Clothes_Category extends Controller
         $categories = ClothesCategories::all();
 
         // 取得したデータをJSON形式で返す
-        return response()->json($categories);
+        return response()->json($categories,200);
     }
 }
