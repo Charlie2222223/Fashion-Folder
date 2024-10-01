@@ -1,4 +1,3 @@
-// User_Info.tsx
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { FaGear } from "react-icons/fa6";
@@ -14,16 +13,20 @@ interface User_InfoProps {
 const User_Info: React.FC<User_InfoProps> = ({ onUserClick, onSettingClick, onClose }) => {
   const router = useRouter();
   const [userData, setUserData] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(false); // ローディング状態を管理する状態
 
   const handleClick = () => {
-    // サインインページに遷移する
     router.push('/auth/SignIn');
   };
 
-  const handleCloset = () => {
-    // クローゼットへ移動する
-    router.push("/dashboard");
-  }
+  const handleCloset = async () => {
+    setIsLoading(true); // ローディングを開始
+    try {
+      await router.push("/dashboard");
+    } finally {
+      setIsLoading(false); // ローディングを終了
+    }
+  };
 
   const handleLogout = async () => {
     const token = localStorage.getItem('authToken');
@@ -39,9 +42,9 @@ const User_Info: React.FC<User_InfoProps> = ({ onUserClick, onSettingClick, onCl
         });
 
         if (response.ok) {
-          localStorage.removeItem('authToken'); // ローカルストレージからトークンを削除
-          localStorage.removeItem('userData'); // ローカルストレージからユーザーデータを削除
-          window.location.href = '/';  // ログインページにリダイレクト
+          localStorage.removeItem('authToken');
+          localStorage.removeItem('userData');
+          window.location.href = '/';
         } else {
           console.error('Failed to log out');
         }
@@ -65,8 +68,7 @@ const User_Info: React.FC<User_InfoProps> = ({ onUserClick, onSettingClick, onCl
 
           if (response.ok) {
             const userData = await response.json();
-            console.log('User Data:', userData);  // ここでレスポンスを確認
-            setUserData(userData); // 取得したユーザーデータを状態にセット
+            setUserData(userData);
           } else {
             console.error('Failed to fetch user data');
           }
@@ -80,6 +82,17 @@ const User_Info: React.FC<User_InfoProps> = ({ onUserClick, onSettingClick, onCl
 
     fetchUserData();
   }, []);
+
+  if (isLoading) {
+    // ローディング中のスピナー表示
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="flex justify-center">
+          <div className="w-10 h-10 border-t-4 border-blue-500 border-solid rounded-full animate-spin"></div>
+        </div>
+      </div>
+    );
+  }
 
   if (!userData) {
     return (
@@ -125,7 +138,7 @@ const User_Info: React.FC<User_InfoProps> = ({ onUserClick, onSettingClick, onCl
         </h1>
         <div className="flex justify-center mb-6">
           <img
-            src={`http://localhost:8000/${userData.avatar}` || '/default-avatar.png'}
+            src={`http://localhost:8000/${userData.avatar}` || 'img/Icon2.png'}
             alt="ユーザーアイコン"
             className="object-cover w-20 h-20 rounded-full"
           />
@@ -135,7 +148,7 @@ const User_Info: React.FC<User_InfoProps> = ({ onUserClick, onSettingClick, onCl
         </p>
         <div
           className="flex items-center justify-between p-2 mb-3 text-xs text-left text-blue-600 rounded cursor-pointer md:text-sm hover:bg-blue-100"
-          onClick={handleCloset}
+          onClick={handleCloset} // ローディング付きクローゼット遷移
         >
           <p>MyClosetへ進む</p>
           <BiCloset className="ml-auto text-lg" />

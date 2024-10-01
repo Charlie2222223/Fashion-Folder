@@ -41,7 +41,7 @@ services:
       - app-network
     ports:
       - "3000:3000"
-    command: bash -c "npm install && npm run dev"
+    command: bash -c "npm install && npm run build && npm run dev"
 
   # MySQL データベース
   mysql:
@@ -51,14 +51,13 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: Charlie@223
       MYSQL_DATABASE: laravel_db
+      TZ: 'Asia/Tokyo'
     networks:
       - app-network
     ports:
       - "3306:3306"
     volumes:
       - mysql-data:/var/lib/mysql
-      - /etc/localtime:/etc/localtime:ro
-      - /usr/share/zoneinfo:/usr/share/zoneinfo:ro
     command: --skip-host-cache --skip-name-resolve
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
