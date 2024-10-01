@@ -106,7 +106,7 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
           {/* User Icon */}
           <div className="relative">
             <button
-              className="relative block w-8 h-8 overflow-hidden rounded-full shadow focus:outline-none"
+              className="relative block w-16 h-16 overflow-hidden rounded-full shadow focus:outline-none"
               onClick={handleUserClick}
             >
             <img
