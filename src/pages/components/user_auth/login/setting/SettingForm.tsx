@@ -88,7 +88,7 @@ const SettingForm: React.FC<{ onClose: () => void, userData: any }> = ({ onClose
     };
 
     return (
-        <div className="fixed inset-x-0 top-0 z-50 flex items-start justify-end bg-opacity-50">
+        <div className="fixed inset-x-0 top-0 z-50 flex items-start justify-end bg-opacity-50 dark:bg-neutral-800">
             <div className="relative w-64 max-w-md p-8 mx-4 bg-white border border-gray-200 shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-700 sm:mx-8 md:mx-16 lg:mx-24 xl:mx-32">
                 {/* ユーザー名入力 */}
                 <input
@@ -102,13 +102,14 @@ const SettingForm: React.FC<{ onClose: () => void, userData: any }> = ({ onClose
                     <img
                         src={userData?.avatar ? `http://localhost:8000/${userData.avatar}` : '/default-avatar.png'}
                         alt="ユーザーアイコン"
-                        className="object-cover w-20 h-20 rounded-full"
+                        className="object-cover w-20 h-20 rounded-full dark:bg-neutral-700"
                         style={{ cursor: 'pointer' }}
                     />
                 </div>
                 {/* ファイル選択 */}
-                <FaPlus className='mb-4 ml-32 text-2xl'                        
-                        onClick={() => document.getElementById('fileInput')?.click()}
+                <FaPlus
+                    className="mb-4 ml-32 text-2xl text-gray-700 dark:text-white"
+                    onClick={() => document.getElementById('fileInput')?.click()}
                 />
                 <input
                     type="file"

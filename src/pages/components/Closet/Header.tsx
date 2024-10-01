@@ -110,7 +110,7 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
               onClick={handleUserClick}
             >
             <img
-              src={userData?.avatar ? `http://localhost:8000/${userData.avatar}` : '/default-avatar.png'}
+              src={userData?.avatar ? `http://localhost:8000/${userData.avatar}` : 'img/Icon2.png'}
               alt="ユーザーアイコン"
               className="object-cover w-20 h-20 rounded-full"
             />
