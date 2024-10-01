@@ -1,9 +1,11 @@
-import { useEffect } from "react";
+import { useState,useEffect } from "react";
 import { useRouter } from "next/router"; 
 import { FaHome, FaUserAlt } from "react-icons/fa";
 
 const Header: React.FC<{ onUserClick: () => void }> = ({ onUserClick }) => {
   const router = useRouter(); 
+  const [userData, setUserData] = useState<any>(null);
+
 
   useEffect(() => {
     console.log("Header component mounted");
@@ -13,6 +15,36 @@ const Header: React.FC<{ onUserClick: () => void }> = ({ onUserClick }) => {
     console.log("Icon clicked");
     router.push('/SignIn'); 
   };
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const authToken = localStorage.getItem('authToken');
+
+      if (authToken) {
+        try {
+          const response = await fetch('http://127.0.0.1:8000/api/user', {
+            headers: {
+              'Authorization': `Bearer ${authToken}`
+            }
+          });
+
+          if (response.ok) {
+            const userData = await response.json();
+            console.log('User Data:', userData);  // ここでレスポンスを確認
+            setUserData(userData); // 取得したユーザーデータを状態にセット
+          } else {
+            console.error('Failed to fetch user data');
+          }
+        } catch (error) {
+          console.error('Error occurred:', error);
+        }
+      } else {
+        console.error('No token found');
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   return (
     <header className="flex items-center justify-between p-3 text-white bg-gray-800">
@@ -27,14 +59,17 @@ const Header: React.FC<{ onUserClick: () => void }> = ({ onUserClick }) => {
         </h1>
       </div>
       <nav className="flex">
-        <button 
-          onClick={() => {
-            onUserClick();
+      <button
+          className="relative block w-12 h-12 overflow-hidden rounded-full shadow focus:outline-none"
+          onClick={()=>{
+            onUserClick;
           }}
-          className="z-20 flex items-center ml-6 text-white hover:text-gray-400"
         >
-          <FaUserAlt size={28} />
-          <span className="ml-3 text-lg">ユーザー</span> 
+          <img
+            src={userData?.avatar ? `http://localhost:8000/${userData.avatar}` : 'img/Icon2.png'}
+            alt="ユーザーアイコン"
+            className="object-cover w-20 h-20 rounded-full"
+          />
         </button>
         <div className="hidden lg:flex">
         <a href="#home" className="flex items-center ml-6 text-white hover:text-gray-400">

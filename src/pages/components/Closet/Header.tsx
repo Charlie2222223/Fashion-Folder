@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import User_Info from '../user_auth/User_Info';
 
 interface HeaderProps {
@@ -8,6 +8,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
   const [isUserInfoVisible, setIsUserInfoVisible] = useState(false);
   const [selectedUserData, setSelectedUserData] = useState<any>(null); // 必要に応じて型を定義
+  const [userData, setUserData] = useState<any>(null);
 
   const handleUserClick = () => {
     setIsUserInfoVisible(true);
@@ -22,6 +23,37 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
   const handleClose = () => {
     setIsUserInfoVisible(false);
   };
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const authToken = localStorage.getItem('authToken');
+
+      if (authToken) {
+        try {
+          const response = await fetch('http://127.0.0.1:8000/api/user', {
+            headers: {
+              'Authorization': `Bearer ${authToken}`
+            }
+          });
+
+          if (response.ok) {
+            const userData = await response.json();
+            console.log('User Data:', userData);  // ここでレスポンスを確認
+            setUserData(userData); // 取得したユーザーデータを状態にセット
+          } else {
+            console.error('Failed to fetch user data');
+          }
+        } catch (error) {
+          console.error('Error occurred:', error);
+        }
+      } else {
+        console.error('No token found');
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
 
   return (
     <>
@@ -74,14 +106,14 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
           {/* User Icon */}
           <div className="relative">
             <button
-              className="relative block w-8 h-8 overflow-hidden rounded-full shadow focus:outline-none"
+              className="relative block w-16 h-16 overflow-hidden rounded-full shadow focus:outline-none"
               onClick={handleUserClick}
             >
-              <img
-                className="object-cover w-full h-full"
-                src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80"
-                alt="User avatar"
-              />
+            <img
+              src={userData?.avatar ? `http://localhost:8000/${userData.avatar}` : 'img/Icon2.png'}
+              alt="ユーザーアイコン"
+              className="object-cover w-20 h-20 rounded-full"
+            />
             </button>
           </div>
         </div>
