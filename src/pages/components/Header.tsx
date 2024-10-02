@@ -1,11 +1,10 @@
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router"; 
-import { FaHome, FaUserAlt } from "react-icons/fa";
+import { FaHome } from "react-icons/fa";
 
 const Header: React.FC<{ onUserClick: () => void }> = ({ onUserClick }) => {
   const router = useRouter(); 
   const [userData, setUserData] = useState<any>(null);
-
 
   useEffect(() => {
     console.log("Header component mounted");
@@ -59,11 +58,9 @@ const Header: React.FC<{ onUserClick: () => void }> = ({ onUserClick }) => {
         </h1>
       </div>
       <nav className="flex">
-      <button
-          className="relative block w-12 h-12 overflow-hidden rounded-full shadow focus:outline-none"
-          onClick={()=>{
-            onUserClick;
-          }}
+        <button
+          className="relative z-50 block w-12 h-12 overflow-hidden rounded-full shadow focus:outline-none"
+          onClick={onUserClick}
         >
           <img
             src={userData?.avatar ? `http://localhost:8000/${userData.avatar}` : 'img/Icon2.png'}
@@ -72,11 +69,11 @@ const Header: React.FC<{ onUserClick: () => void }> = ({ onUserClick }) => {
           />
         </button>
         <div className="hidden lg:flex">
-        <a href="#home" className="flex items-center ml-6 text-white hover:text-gray-400">
-          <FaHome size={28} />
-          <span className="ml-3 text-lg">Home</span>
-        </a>
-      </div>
+          <a href="#home" className="flex items-center ml-6 text-white hover:text-gray-400">
+            <FaHome size={28} />
+            <span className="ml-3 text-lg">Home</span>
+          </a>
+        </div>
       </nav>
     </header>
   );
