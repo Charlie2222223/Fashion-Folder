@@ -119,4 +119,17 @@ entity "clothes_setup_items (セットアップアイテム)" as clothes_setup_i
     * updated_at        : timestamp       : 更新日時
 }
 
+users ||--o{ user_verifications : "ユーザーID"
+users ||--o{ sessions : "ユーザーID"
+users ||--o{ user_closets : "ユーザーID"
+users ||--o{ clothes_setups : "ユーザーID"
+users ||--o{ password_resets : "Email"
+
+user_closets ||--o{ clothes_setup_items : "服ID"
+clothes_categories ||--o{ user_closets : "カテゴリーID"
+clothes_colors ||--o{ user_closets : "カラーID"
+clothes_sizes ||--o{ user_closets : "サイズID"
+
+clothes_setups ||--o{ clothes_setup_items : "セットアップID"
+
 @enduml
