@@ -92,6 +92,8 @@ const OutfitSetup: React.FC = () => {
   
       if (response.status === 201) {
         console.log('コーディネートが保存されました');
+        // 保存が成功したら、選択された服をリセット
+        setSelectedItems([]);
       }
     } catch (error) {
       console.error('保存中にエラーが発生しました:', error);
@@ -167,7 +169,7 @@ const OutfitSetup: React.FC = () => {
       </div>
 
       <button
-        onClick={() => handleSaveOutfit()}
+        onClick={handleSaveOutfit}
         className="px-4 py-2 mt-4 text-white bg-indigo-600 rounded-md hover:bg-indigo-700"
       >
         コーディネートを保存
