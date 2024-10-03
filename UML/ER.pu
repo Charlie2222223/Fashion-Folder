@@ -1,62 +1,122 @@
- @startuml Fashion-FolderDB
- hide circle
- skinparam linetype ortho
+@startuml Fashion-FolderDB
+hide circle
+skinparam linetype ortho
 
- entity "users (ユーザー)" as users {
-     * <<PK>> id : Guid : id
-     --
-     * <<u>> name                : string    : ユーザー名
-     * <<u>> email               : string    : Email
-     * email_verified_at         : date      : Email作成日時
-     * password                  : string    : パスワード
-     * <<u>> api_token           : string    : トークンの情報
-     * two_factor_secret         : text      : 二要素認証のシークレットキー
-     * two_factor_recovery_codes : text      : 二要素認証のリカバリーコード
-     * two_factor_confirmed_at   : date      : 二要素認証の有効化された日時
-     * remember_token            : string    : ログイン状態を保持
-     * provider_id               : string    : 外部認証で取得したユーザーID
-     * avatar                    : string    : アバターのURL
-     * provider                  : string    : 認証に使われたプロバイダー名   
-     created_at                  : date      : 作成日時
-     updated_at                  : date      : 更新日時
- }
+entity "users (ユーザー)" as users {
+    * <<PK>> id                        : bigint unsigned : ユーザーID
+    --
+    * name                             : varchar(255)    : ユーザー名
+    * <<u>> email                      : varchar(255)    : Email
+    * email_verified_at                : timestamp       : Email作成日時
+    * password                         : varchar(255)    : パスワード
+    * api_token                        : varchar(80)     : APIトークン
+    * two_factor_secret                : text            : 二要素認証シークレット
+    * two_factor_recovery_codes        : text            : 二要素認証リカバリーコード
+    * two_factor_confirmed_at          : timestamp       : 二要素認証有効化日時
+    * remember_token                   : varchar(100)    : ログイン保持トークン
+    * provider_id                      : varchar(255)    : 外部認証プロバイダーID
+    * avatar                           : varchar(255)    : アバター画像URL
+    * provider                         : varchar(255)    : 認証に使用したプロバイダー
+    * created_at                       : timestamp       : 作成日時
+    * updated_at                       : timestamp       : 更新日時
+}
 
- entity "smokers (燻製器)" as smokers {
-     * <<PK>> id : Guid : id
-     --
-     * <<FK>> user_id            : foreignId : ユーザーid
-     * name                      : string    : 燻製機器名
-     off_temperature             : double    : 電源off温度(℃)
-     on_difference_temperature   : double    : 電源onにする温度差(℃)
-     created_at                  : date      : 作成日時
-     updated_at                  : date      : 更新日時
-     --
-     unique : [user_id, name] 
- }
+entity "user_verifications (一時パスワード)" as user_verifications {
+    * <<PK>> id                   : bigint unsigned : ユーザーID
+    --
+    * email                       : varchar(255)    : Email
+    * temporary_password           : varchar(255)    : 一時的なパスワード
+    * created_at                   : timestamp       : 作成日時
+    * updated_at                   : timestamp       : 更新日時
+}
 
- entity "smoking_states (M 燻製実施状況)" as smoking_states {
-     * <<PK>> id : Guid : id
-     --
-     * <<u>> name    : string    : 状況名
-     * display_name  : string    : 状況表示名
-     created_at      : date      : 作成日時
-     updated_at      : date      : 更新日時
- }
+entity "sessions (セッション)" as sessions {
+    * <<PK>> id            : varchar(255)    : セッションID
+    --
+    * <<FK>> user_id       : bigint unsigned : ユーザーID
+    * ip_address           : varchar(45)     : IPアドレス
+    * user_agent           : text            : ユーザーエージェント
+    * payload              : longtext        : ペイロード
+    * last_activity        : int             : 最終アクティビティ
+}
 
- entity "smokings (燻製実施)" as smokings {
-     * <<PK>> id : Guid : id
-     --
-     * <<FK>> smoker_id          : integer : 燻製器id
-     * <<FK>> smoking_state_id   : integer : 燻製実施状況id
-     temperature : 温度(℃)
-     is_smoke : bool : 煙が出ている
-     is_power_on : bool : 電源が入っている
-     created_at : date : 作成日時
-     updated_at : date : 更新日時
- }
+entity "password_resets (パスワードリセット)" as password_resets {
+    * <<FK>> email      : varchar(255) : メールアドレス
+    --
+    * token             : varchar(255) : リセットトークン
+    * created_at        : timestamp    : 作成日時
+}
 
- users ||..o{ smokers
- smoking_states ||..o{ smokings
- smokers ||..o{ smokings
+entity "personal_access_tokens (個人アクセストークン)" as personal_access_tokens {
+    * <<PK>> id             : bigint unsigned : トークンID
+    --
+    * tokenable_type        : varchar(255)    : トークン対象のタイプ
+    * tokenable_id          : bigint unsigned : トークン対象のID
+    * name                  : varchar(255)    : トークン名
+    * <<u>> token           : varchar(64)     : トークン
+    * abilities             : text            : トークンの権限
+    * expires_at            : timestamp       : トークンの有効期限
+    * last_used_at          : timestamp       : 最終使用日時
+    * created_at            : timestamp       : 作成日時
+    * updated_at            : timestamp       : 更新日時
+}
 
- @enduml
+entity "user_closets (ユーザークローゼット)" as user_closets {
+    * <<PK>> id               : bigint unsigned : クローゼットID
+    --
+    * <<FK>> user_id          : bigint unsigned : ユーザーID
+    * <<FK>> clothes_category : bigint unsigned : カテゴリーID
+    * <<FK>> clothes_size     : bigint unsigned : サイズID
+    * <<FK>> clothes_color    : bigint unsigned : カラーID
+    * clothes_name            : varchar(255)    : 服の名前
+    * clothes_detail          : text            : 服の詳細
+    * price                   : decimal(8,2)    : 価格
+    * image                   : varchar(255)    : 画像パス
+    * created_at              : timestamp       : 作成日時
+    * updated_at              : timestamp       : 更新日時
+}
+
+entity "clothes_categories (服カテゴリー)" as clothes_categories {
+    * <<PK>> id            : bigint unsigned : カテゴリーID
+    --
+    * <<u>> category_name  : varchar(255)    : カテゴリー名
+    * created_at           : timestamp       : 作成日時
+    * updated_at           : timestamp       : 更新日時
+}
+
+entity "clothes_colors (服の色)" as clothes_colors {
+    * <<PK>> id         : bigint unsigned : 色ID
+    --
+    * <<u>> color_name  : varchar(255)    : 色名
+    * color_code        : varchar(255)    : 色コード
+    * created_at        : timestamp       : 作成日時
+    * updated_at        : timestamp       : 更新日時
+}
+
+entity "clothes_sizes (服のサイズ)" as clothes_sizes {
+    * <<PK>> id         : bigint unsigned : サイズID
+    --
+    * <<u>> size_name   : varchar(255)    : サイズ名
+    * created_at        : timestamp       : 作成日時
+    * updated_at        : timestamp       : 更新日時
+}
+
+entity "clothes_setups (コーディネートセットアップ)" as clothes_setups {
+    * <<PK>> id         : bigint unsigned : セットアップID
+    --
+    * <<FK>> user_id    : bigint unsigned : ユーザーID
+    * setup_name        : varchar(255)    : セットアップ名
+    * created_at        : timestamp       : 作成日時
+    * updated_at        : timestamp       : 更新日時
+}
+
+entity "clothes_setup_items (セットアップアイテム)" as clothes_setup_items {
+    * <<PK>> id         : bigint unsigned : アイテムID
+    --
+    * <<FK>> setup_id   : bigint unsigned : セットアップID
+    * <<FK>> clothes_id : bigint unsigned : 服ID
+    * created_at        : timestamp       : 作成日時
+    * updated_at        : timestamp       : 更新日時
+}
+
+@enduml
