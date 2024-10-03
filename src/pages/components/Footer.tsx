@@ -10,7 +10,7 @@ const Footer: React.FC = () => {
           <a href="#privacy" className="hover:text-gray-400">Privacy Policy</a>
         </div>
         <div className="text-sm">
-          &copy; 2024 My Fashion App. All rights reserved.
+          &copy; 2024 My Fashion App. All rights reserv.
         </div>
       </div>
     </footer>
