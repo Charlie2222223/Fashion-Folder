@@ -76,7 +76,7 @@ entity "user_closets (ユーザークローゼット)" as user_closets {
     * updated_at              : timestamp       : 更新日時
 }
 
-entity "clothes_categories (服カテゴリー)" as clothes_categories {
+entity "clothes_categories (服のカテゴリー)" as clothes_categories {
     * <<PK>> id            : bigint unsigned : カテゴリーID
     --
     * <<u>> category_name  : varchar(255)    : カテゴリー名
@@ -119,6 +119,24 @@ entity "clothes_setup_items (セットアップアイテム)" as clothes_setup_i
     * updated_at        : timestamp       : 更新日時
 }
 
+entity "seasons (季節)" as seasons {
+    * <<PK>> id : bigint unsigned : 季節ID
+    --
+    * season_name : varchar(255) : 季節名
+    * created_at : timestamp : 作成日時
+    * updated_at : timestamp : 更新日時
+}
+
+entity "clothes_setup_season (セットアップ-季節中間テーブル)" as clothes_setup_season {
+    * <<PK>> id : bigint unsigned : 中間テーブルID
+    --
+    * <<FK>> clothes_setup_id : bigint unsigned : セットアップID
+    * <<FK>> season_id : bigint unsigned : 季節ID
+    * created_at : timestamp : 作成日時
+    * updated_at : timestamp : 更新日時
+}
+
+users ||--o{ clothes_setups : "1対多"
 users ||--o{ user_verifications : "ユーザーID"
 users ||--o{ sessions : "ユーザーID"
 users ||--o{ user_closets : "ユーザーID"
@@ -131,5 +149,8 @@ clothes_colors ||--o{ user_closets : "カラーID"
 clothes_sizes ||--o{ user_closets : "サイズID"
 
 clothes_setups ||--o{ clothes_setup_items : "セットアップID"
+
+clothes_setups ||--o{ clothes_setup_season : "1対多"
+seasons ||--o{ clothes_setup_season : "1対多"
 
 @enduml

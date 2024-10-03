@@ -12,15 +12,23 @@ interface ClothingItem {
   image: string | null;
 }
 
+interface Season {
+  id: number;
+  season_name: string;
+}
+
 const OutfitSetup: React.FC = () => {
   const [clothingList, setClothingList] = useState<ClothingItem[]>([]);
   const [selectedItems, setSelectedItems] = useState<ClothingItem[]>([]); // 選択された服
   const [draggedItem, setDraggedItem] = useState<ClothingItem | null>(null);
   const [isDragOverSetupArea, setIsDragOverSetupArea] = useState<boolean>(false);
   const [setupName, setSetupName] = useState<string>(''); // セットアップ名の状態管理
+  const [seasonList, setSeasonList] = useState<Season[]>([]); // 季節リスト
+  const [selectedSeasons, setSelectedSeasons] = useState<number[]>([]); // 選択された季節IDのリスト
 
   useEffect(() => {
     fetchClothingList();
+    fetchSeasons();
   }, []);
 
   const fetchClothingList = async () => {
@@ -41,6 +49,27 @@ const OutfitSetup: React.FC = () => {
       setClothingList(response.data.clothes);
     } catch (error) {
       console.error('服のリストの取得に失敗しました', error);
+    }
+  };
+
+  const fetchSeasons = async () => {
+    const authToken = localStorage.getItem('authToken');
+  
+    if (!authToken) {
+      console.error('認証トークンがありません。ログインしてください。');
+      return;
+    }
+  
+    try {
+      const response = await axios.get('http://localhost:8000/api/seasons', {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+  
+      setSeasonList(response.data); // 季節データをstateにセット
+    } catch (error) {
+      console.error('季節の取得に失敗しました:', error);
     }
   };
 
@@ -72,28 +101,38 @@ const OutfitSetup: React.FC = () => {
     setSelectedItems((prev) => prev.filter((item) => item.id !== itemId));
   };
 
+  const handleSeasonChange = (seasonId: number) => {
+    if (selectedSeasons.includes(seasonId)) {
+      setSelectedSeasons(selectedSeasons.filter((id) => id !== seasonId));
+    } else {
+      setSelectedSeasons([...selectedSeasons, seasonId]);
+    }
+  };
+
   const handleSaveOutfit = async () => {
     const authToken = localStorage.getItem('authToken');
-    
+
     if (!authToken) {
       console.error('認証トークンがありません。');
       return;
     }
-  
+
     try {
       const response = await axios.post('http://localhost:8000/api/outfit/save', {
         setup_name: setupName,
-        selectedItems: selectedItems.map(item => item.id),
+        selectedItems: selectedItems.map((item) => item.id),
+        selectedSeasons, // 季節データを送信
       }, {
         headers: {
-          'Authorization': `Bearer ${authToken}`,
+          Authorization: `Bearer ${authToken}`,
         },
       });
-  
+
       if (response.status === 201) {
         console.log('コーディネートが保存されました');
-        // 保存が成功したら、選択された服をリセット
+        // 保存が成功したら、選択された服と季節をリセット
         setSelectedItems([]);
+        setSelectedSeasons([]);
       }
     } catch (error) {
       console.error('保存中にエラーが発生しました:', error);
@@ -142,6 +181,20 @@ const OutfitSetup: React.FC = () => {
           placeholder="セットアップの名前を入力"
           className="w-full px-4 py-2 mb-4 text-gray-900 bg-white border border-gray-300 rounded-md dark:bg-gray-700 dark:text-white dark:border-gray-600"
         />
+        <h2 className="mb-2 text-lg font-bold text-gray-800 dark:text-white">季節を選択</h2>
+        <div className="grid grid-cols-2 gap-4">
+          {seasonList.map((season) => (
+            <label key={season.id} className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                value={season.id}
+                checked={selectedSeasons.includes(season.id)}
+                onChange={() => handleSeasonChange(season.id)}
+              />
+              <span className='text-gray-800 dark:text-white'>{season.season_name}</span>
+            </label>
+          ))}
+        </div>
         <h2 className="text-lg font-bold text-gray-800 dark:text-white">選択された服</h2>
         {selectedItems.length === 0 ? (
           <p className="text-gray-500">ここにドラッグして服をセットアップします。</p>

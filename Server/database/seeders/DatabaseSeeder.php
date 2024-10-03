@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             ClothesColorSeeder::class,
             ClothesCategoriesSeeder::class,
             ClothesSizeSeeder::class,
+            SeasonSeeder::class,
         ]);
     }
 }
