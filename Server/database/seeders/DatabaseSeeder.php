@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use SeasonSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -18,7 +17,7 @@ class DatabaseSeeder extends Seeder
             ClothesColorSeeder::class,
             ClothesCategoriesSeeder::class,
             ClothesSizeSeeder::class,
-            SeasonSeeder::class
+            SeasonSeeder::class,
         ]);
     }
 }
