@@ -17,6 +17,7 @@ const OutfitSetup: React.FC = () => {
   const [selectedItems, setSelectedItems] = useState<ClothingItem[]>([]); // 選択された服
   const [draggedItem, setDraggedItem] = useState<ClothingItem | null>(null);
   const [isDragOverSetupArea, setIsDragOverSetupArea] = useState<boolean>(false);
+  const [setupName, setSetupName] = useState<string>(''); // セットアップ名の状態管理
 
   useEffect(() => {
     fetchClothingList();
@@ -105,13 +106,24 @@ const OutfitSetup: React.FC = () => {
         onDrop={handleDropOnSetupArea}
         onDragLeave={() => setIsDragOverSetupArea(false)}
       >
+        <h2 className="mb-2 text-lg font-bold text-gray-800 dark:text-white">セットアップ名</h2>
+        <input
+          type="text"
+          value={setupName}
+          onChange={(e) => setSetupName(e.target.value)}
+          placeholder="セットアップの名前を入力"
+          className="w-full px-4 py-2 mb-4 text-gray-900 bg-white border border-gray-300 rounded-md dark:bg-gray-700 dark:text-white dark:border-gray-600"
+        />
         <h2 className="text-lg font-bold text-gray-800 dark:text-white">選択された服</h2>
         {selectedItems.length === 0 ? (
           <p className="text-gray-500">ここにドラッグして服をセットアップします。</p>
         ) : (
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-3 gap-4">
             {selectedItems.map((item) => (
-              <div key={item.id} className="relative p-4 bg-gray-300 rounded-md">
+              <div
+                key={item.id}
+                className="relative flex flex-col items-center justify-center p-4 bg-gray-300 rounded-md dark:bg-gray-600"
+              >
                 <img src={item.image || ''} alt={item.clothes_name} className="object-cover w-24 h-24 rounded-md" />
                 <button
                   className="absolute text-red-500 top-1 right-1"
@@ -129,7 +141,7 @@ const OutfitSetup: React.FC = () => {
       </div>
 
       <button
-        onClick={() => console.log('選択した服:', selectedItems)}
+        onClick={() => console.log('選択した服:', selectedItems, 'セットアップ名:', setupName)}
         className="px-4 py-2 mt-4 text-white bg-indigo-600 rounded-md hover:bg-indigo-700"
       >
         コーディネートを保存
