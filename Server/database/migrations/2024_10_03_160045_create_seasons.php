@@ -20,10 +20,16 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // 'clothes_setups' テーブルに外部キーとして季節を追加
-        Schema::table('clothes_setups', function (Blueprint $table) {
-            $table->unsignedBigInteger('season_id')->nullable()->after('setup_name');
-            $table->foreign('season_id')->references('id')->on('seasons')->onDelete('set null');
+        // 'clothes_setups' と 'seasons' の中間テーブルを作成
+        Schema::create('clothes_setup_season', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('clothes_setup_id');
+            $table->unsignedBigInteger('season_id');
+            $table->timestamps();
+
+            // 外部キー制約
+            $table->foreign('clothes_setup_id')->references('id')->on('clothes_setups')->onDelete('cascade');
+            $table->foreign('season_id')->references('id')->on('seasons')->onDelete('cascade');
         });
     }
 
@@ -34,11 +40,8 @@ return new class extends Migration
      */
     public function down()
     {
-        // 'clothes_setups' テーブルから外部キーとカラムを削除
-        Schema::table('clothes_setups', function (Blueprint $table) {
-            $table->dropForeign(['season_id']);
-            $table->dropColumn('season_id');
-        });
+        // 'clothes_setup_season' テーブルを削除
+        Schema::dropIfExists('clothes_setup_season');
 
         // 'seasons' テーブルを削除
         Schema::dropIfExists('seasons');
