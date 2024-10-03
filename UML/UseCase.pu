@@ -1,0 +1,39 @@
+@startuml ユースケース図
+   left to right direction
+   skinparam actorStyle awesome
+
+   skinparam usecase {
+       ' 5-1. ユースケースの背景色
+       BackgroundColor DarkSeaGreen
+       ' 5-2. ユースケースの境界線
+       BorderColor DarkSlateGray
+   }
+   rectangle Fashion-Folder {
+
+       usecase 服を登録 as RegisterClothes
+       usecase セットアップ作成 as CreateSetup
+       usecase 登録した服の一覧 as ViewClothesList
+       usecase ランダムコーデ as RandomCoordination
+       usecase ログイン as Login
+
+       ' <<include>> を使ってログインを他のユースケースに関連付け
+       RegisterClothes ..> Login : <<include>>
+       CreateSetup ..> Login : <<include>>
+       ViewClothesList ..> Login : <<include>>
+       RandomCoordination ..> Login : <<include>>
+   }
+
+    skinparam actor {
+        BackgroundColor #333333 
+        BorderColor #999999 
+   }
+
+   actor 利用者 as User
+
+   ' 利用者が各ユースケースを使用
+   User --> RegisterClothes
+   User --> CreateSetup
+   User --> ViewClothesList
+   User --> RandomCoordination
+
+@enduml
