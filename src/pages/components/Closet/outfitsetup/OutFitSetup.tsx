@@ -72,6 +72,32 @@ const OutfitSetup: React.FC = () => {
     setSelectedItems((prev) => prev.filter((item) => item.id !== itemId));
   };
 
+  const handleSaveOutfit = async () => {
+    const authToken = localStorage.getItem('authToken');
+    
+    if (!authToken) {
+      console.error('認証トークンがありません。');
+      return;
+    }
+  
+    try {
+      const response = await axios.post('http://localhost:8000/api/outfit/save', {
+        setup_name: setupName,
+        selectedItems: selectedItems.map(item => item.id),
+      }, {
+        headers: {
+          'Authorization': `Bearer ${authToken}`,
+        },
+      });
+  
+      if (response.status === 201) {
+        console.log('コーディネートが保存されました');
+      }
+    } catch (error) {
+      console.error('保存中にエラーが発生しました:', error);
+    }
+  };
+
   return (
     <div className="max-w-4xl p-4 mx-auto mt-6 bg-white rounded-lg shadow-md dark:bg-gray-800 dark:text-white">
       <h1 className="mb-4 text-xl font-bold">コーディネートをセットアップする</h1>
@@ -141,7 +167,7 @@ const OutfitSetup: React.FC = () => {
       </div>
 
       <button
-        onClick={() => console.log('選択した服:', selectedItems, 'セットアップ名:', setupName)}
+        onClick={() => handleSaveOutfit()}
         className="px-4 py-2 mt-4 text-white bg-indigo-600 rounded-md hover:bg-indigo-700"
       >
         コーディネートを保存
