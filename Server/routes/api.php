@@ -11,6 +11,7 @@ use App\Http\Controllers\UserClosetController;
 use App\Http\Controllers\ClothesCategoriesController;
 use App\Http\Controllers\ClothesSizesController;
 use App\Http\Controllers\ClothesColorsController;
+use App\Http\Controllers\SetupController;
 
 // ユーザー登録関連
 Route::post('/register', [RegisterController::class, 'register']); // メールの送信
@@ -46,3 +47,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/sizes', [ClothesSizesController::class, 'index']);  
     Route::get('/colors', [ClothesColorsController::class, 'index']);
 });
+
+Route::middleware('auth:sanctum')->post('/outfit/save', [SetupController::class, 'store']);

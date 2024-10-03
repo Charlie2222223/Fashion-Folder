@@ -1,0 +1,135 @@
+@startuml Fashion-FolderDB
+hide circle
+skinparam linetype ortho
+
+entity "users (ユーザー)" as users {
+    * <<PK>> id                        : bigint unsigned : ユーザーID
+    --
+    * name                             : varchar(255)    : ユーザー名
+    * <<u>> email                      : varchar(255)    : Email
+    * email_verified_at                : timestamp       : Email作成日時
+    * password                         : varchar(255)    : パスワード
+    * api_token                        : varchar(80)     : APIトークン
+    * two_factor_secret                : text            : 二要素認証シークレット
+    * two_factor_recovery_codes        : text            : 二要素認証リカバリーコード
+    * two_factor_confirmed_at          : timestamp       : 二要素認証有効化日時
+    * remember_token                   : varchar(100)    : ログイン保持トークン
+    * provider_id                      : varchar(255)    : 外部認証プロバイダーID
+    * avatar                           : varchar(255)    : アバター画像URL
+    * provider                         : varchar(255)    : 認証に使用したプロバイダー
+    * created_at                       : timestamp       : 作成日時
+    * updated_at                       : timestamp       : 更新日時
+}
+
+entity "user_verifications (一時パスワード)" as user_verifications {
+    * <<PK>> id                   : bigint unsigned : ユーザーID
+    --
+    * email                       : varchar(255)    : Email
+    * temporary_password           : varchar(255)    : 一時的なパスワード
+    * created_at                   : timestamp       : 作成日時
+    * updated_at                   : timestamp       : 更新日時
+}
+
+entity "sessions (セッション)" as sessions {
+    * <<PK>> id            : varchar(255)    : セッションID
+    --
+    * <<FK>> user_id       : bigint unsigned : ユーザーID
+    * ip_address           : varchar(45)     : IPアドレス
+    * user_agent           : text            : ユーザーエージェント
+    * payload              : longtext        : ペイロード
+    * last_activity        : int             : 最終アクティビティ
+}
+
+entity "password_resets (パスワードリセット)" as password_resets {
+    * <<FK>> email      : varchar(255) : メールアドレス
+    --
+    * token             : varchar(255) : リセットトークン
+    * created_at        : timestamp    : 作成日時
+}
+
+entity "personal_access_tokens (個人アクセストークン)" as personal_access_tokens {
+    * <<PK>> id             : bigint unsigned : トークンID
+    --
+    * tokenable_type        : varchar(255)    : トークン対象のタイプ
+    * tokenable_id          : bigint unsigned : トークン対象のID
+    * name                  : varchar(255)    : トークン名
+    * <<u>> token           : varchar(64)     : トークン
+    * abilities             : text            : トークンの権限
+    * expires_at            : timestamp       : トークンの有効期限
+    * last_used_at          : timestamp       : 最終使用日時
+    * created_at            : timestamp       : 作成日時
+    * updated_at            : timestamp       : 更新日時
+}
+
+entity "user_closets (ユーザークローゼット)" as user_closets {
+    * <<PK>> id               : bigint unsigned : クローゼットID
+    --
+    * <<FK>> user_id          : bigint unsigned : ユーザーID
+    * <<FK>> clothes_category : bigint unsigned : カテゴリーID
+    * <<FK>> clothes_size     : bigint unsigned : サイズID
+    * <<FK>> clothes_color    : bigint unsigned : カラーID
+    * clothes_name            : varchar(255)    : 服の名前
+    * clothes_detail          : text            : 服の詳細
+    * price                   : decimal(8,2)    : 価格
+    * image                   : varchar(255)    : 画像パス
+    * created_at              : timestamp       : 作成日時
+    * updated_at              : timestamp       : 更新日時
+}
+
+entity "clothes_categories (服カテゴリー)" as clothes_categories {
+    * <<PK>> id            : bigint unsigned : カテゴリーID
+    --
+    * <<u>> category_name  : varchar(255)    : カテゴリー名
+    * created_at           : timestamp       : 作成日時
+    * updated_at           : timestamp       : 更新日時
+}
+
+entity "clothes_colors (服の色)" as clothes_colors {
+    * <<PK>> id         : bigint unsigned : 色ID
+    --
+    * <<u>> color_name  : varchar(255)    : 色名
+    * color_code        : varchar(255)    : 色コード
+    * created_at        : timestamp       : 作成日時
+    * updated_at        : timestamp       : 更新日時
+}
+
+entity "clothes_sizes (服のサイズ)" as clothes_sizes {
+    * <<PK>> id         : bigint unsigned : サイズID
+    --
+    * <<u>> size_name   : varchar(255)    : サイズ名
+    * created_at        : timestamp       : 作成日時
+    * updated_at        : timestamp       : 更新日時
+}
+
+entity "clothes_setups (コーディネートセットアップ)" as clothes_setups {
+    * <<PK>> id         : bigint unsigned : セットアップID
+    --
+    * <<FK>> user_id    : bigint unsigned : ユーザーID
+    * setup_name        : varchar(255)    : セットアップ名
+    * created_at        : timestamp       : 作成日時
+    * updated_at        : timestamp       : 更新日時
+}
+
+entity "clothes_setup_items (セットアップアイテム)" as clothes_setup_items {
+    * <<PK>> id         : bigint unsigned : アイテムID
+    --
+    * <<FK>> setup_id   : bigint unsigned : セットアップID
+    * <<FK>> clothes_id : bigint unsigned : 服ID
+    * created_at        : timestamp       : 作成日時
+    * updated_at        : timestamp       : 更新日時
+}
+
+users ||--o{ user_verifications : "ユーザーID"
+users ||--o{ sessions : "ユーザーID"
+users ||--o{ user_closets : "ユーザーID"
+users ||--o{ clothes_setups : "ユーザーID"
+users ||--o{ password_resets : "Email"
+
+user_closets ||--o{ clothes_setup_items : "服ID"
+clothes_categories ||--o{ user_closets : "カテゴリーID"
+clothes_colors ||--o{ user_closets : "カラーID"
+clothes_sizes ||--o{ user_closets : "サイズID"
+
+clothes_setups ||--o{ clothes_setup_items : "セットアップID"
+
+@enduml
