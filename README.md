@@ -205,8 +205,9 @@ docker-compose up --build
 
 ## アプリケーションにアクセス
 
-	•	フロントエンド: http://localhost:3000
-	•	バックエンド API: http://localhost:8000
+・フロントエンド: http://localhost:3000
+
+・バックエンド API: http://localhost:8000
 
 ## コンテナの停止
 
