@@ -52,6 +52,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // セットアップ一覧の取得
     Route::get('/setups',[Clothes_SetupsController::class, 'index']);
+
+    //ランダムでセットアップを取得
+    Route::get('/random-setup', [Clothes_SetupsController::class, 'getRandomSetup']);
 });
 
 Route::middleware('auth:sanctum')->post('/outfit/save', [SetupController::class, 'store']);
