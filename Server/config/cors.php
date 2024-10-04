@@ -3,7 +3,7 @@
 return [
     'paths' => ['api/*', 'login', 'logout', '/sanctum/csrf-cookie'],
     'allowed_methods' => ['*'],
-    'allowed_origins' => ['FRONTEND_URL'], // フロントエンドのURLを指定
+    'allowed_origins' => [env('FRONTEND_URL')], // フロントエンドのURLを指定
     'allowed_origins_patterns' => [],
     'allowed_headers' => ['*'],
     'exposed_headers' => [],
