@@ -26,7 +26,7 @@ const PasswordVertifivations: React.FC = () => {
       const token = localStorage.getItem('authToken');
 
       // Laravel APIにリクエストを送信
-      const response = await axios.post('http://localhost:8000/api/change/password/vertification', formData, {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/change/password/vertification`, formData, {
         headers: {
           'Authorization': `Bearer ${token}`, // Authorizationヘッダーを追加
         },
