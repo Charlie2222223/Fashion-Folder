@@ -1,75 +1,72 @@
-Fashion-Folder
+# Fashion-Folder
 
-このプロジェクトは、Next.js をフロントエンドに、Laravel をバックエンドに使用したフルスタックのウェブアプリケーションです。開発およびデプロイ環境は Docker を使用してコンテナ化されています。
+このプロジェクトは、**Next.js** をフロントエンドに、**Laravel** をバックエンドに使用したフルスタックのウェブアプリケーションです。開発およびデプロイ環境は **Docker** を使用してコンテナ化されています。
 
-前提条件
+---
 
-以下のソフトウェアがインストールされていることを確認してください：
+## 使用技術一覧
 
-・Docker と Docker Compose
-・Node.js、Yarn（オプション、フロントエンドパッケージ管理のため）
+<p style="display: inline">
+  <img src="https://img.shields.io/badge/-Node.js-000000.svg?logo=node.js&style=for-the-badge">
+  <img src="https://img.shields.io/badge/-Next.js-000000.svg?logo=next.js&style=for-the-badge">
+  <img src="https://img.shields.io/badge/-TailwindCSS-000000.svg?logo=tailwindcss&style=for-the-badge">
+  <img src="https://img.shields.io/badge/-React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB">
+  <img src="https://img.shields.io/badge/-Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white">
+  <img src="https://img.shields.io/badge/-Docker-1488C6.svg?logo=docker&style=for-the-badge">
+  <img src="https://img.shields.io/badge/-MySQL-4479A1.svg?logo=mysql&style=for-the-badge&logoColor=white">
+</p>
 
-開発環境のセットアップ
+---
 
-リポジトリのクローン
+## 目次
 
-まず、プロジェクトをクローンします：
+1. [プロジェクトについて](#プロジェクトについて)
+2. [環境](#環境)
+3. [ディレクトリ構成](#ディレクトリ構成)
+4. [開発環境構築](#開発環境構築)
+5. [トラブルシューティング](#トラブルシューティング)
+
+---
+
+## プロジェクトについて
+
+このプロジェクトは、ファッション管理システムとして、登録した服やコーディネートを管理・表示するウェブアプリケーションです。**Next.js** を使用してフロントエンドを開発し、**Laravel** を使用して API ベースのバックエンドを構築しています。**Docker** を使用して環境をコンテナ化し、簡単に開発環境を構築・デプロイできるようになっています。
+
+---
+
+## 環境
+
+| 言語・フレームワーク    | バージョン |
+| --------------------- | ---------- |
+| Laravel                | 10.x       |
+| PHP                    | 8.1.x      |
+| MySQL                  | 8.0        |
+| Node.js                | 16.17.0    |
+| Next.js                | 13.4.6     |
+| React                  | 18.2.0     |
+| Tailwind CSS           | 3.x        |
+
+その他のパッケージのバージョンについては、`composer.json` や `package.json` を参照してください。
+
+---
+
+## ディレクトリ構成
 
 ```bash
-git clone https://github.com/yourusername/fashion-folder.git
-cd fashion-folder
-```
-
-環境変数の設定
-
-.env.example ファイルを .env にコピーし、それぞれの値を設定します。
-
-```bash
-# バックエンド
-cp .env.example .env
-
-# フロントエンド
-cd frontend
-cp .env.local.example .env.local
-```
-
-.env ファイルの各値を必要に応じて更新してください。
-
-Docker コンテナのビルドと起動
-
-Docker が動作していることを確認し、次のコマンドで開発環境をセットアップします：
-
-```bash
-docker-compose up --build
-```
-このコマンドは、Laravel バックエンドと Next.js フロントエンド用のコンテナをビルドして起動します。
-
-アプリケーションにアクセス
-
-・フロントエンド: http://localhost:3000
-・バックエンド API: http://localhost:8000
-
-コンテナの停止
-
-コンテナを停止するには、次のコマンドを実行します：
-
-```bash
-docker-compose down
-```
-Docker サービス
-
-・フロントエンド: Next.js (ポート 3000)
-・バックエンド: Laravel (ポート 8000)
-・データベース: MySQL (ポート 3306)
-
-API ドキュメント
-
-バックエンド API は /api にあります。Postman などのツールを使用して、さまざまなエンドポイントをテストできます。
-
-使用技術
-
-・Next.js - Reactベースのフレームワーク
-・Laravel - バックエンドAPIの管理
-・Tailwind CSS - スタイリングに使用
-・Axios - API呼び出しに使用
-    
+❯ tree -a -I "node_modules|.next|.git|.pytest_cache|static" -L 2
+.
+├── .devcontainer
+│   └── devcontainer.json
+├── backend
+│   ├── app
+│   ├── config
+│   ├── database
+│   ├── public
+│   └── routes
+├── frontend
+│   ├── components
+│   ├── pages
+│   ├── styles
+│   └── public
+├── docker-compose.yml
+└── README.md
