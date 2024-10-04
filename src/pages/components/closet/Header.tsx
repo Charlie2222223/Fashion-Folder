@@ -15,9 +15,7 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
   };
 
   const handleSettingClick = (userData: any) => {
-    // 設定ボタンがクリックされたときの処理をここに追加
     console.log('設定クリック:', userData);
-    // 例えば、設定モーダルを開くなど
   };
 
   const handleClose = () => {
@@ -32,13 +30,13 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
         try {
           const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user`, {
             headers: {
-              'Authorization': `Bearer ${authToken}`
-            }
+              'Authorization': `Bearer ${authToken}`,
+            },
           });
 
           if (response.ok) {
             const userData = await response.json();
-            console.log('User Data:', userData);  // ここでレスポンスを確認
+            console.log('User Data:', userData);
             setUserData(userData); // 取得したユーザーデータを状態にセット
           } else {
             console.error('Failed to fetch user data');
@@ -53,7 +51,6 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
 
     fetchUserData();
   }, []);
-
 
   return (
     <>
@@ -87,14 +84,14 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
           {/* User Icon */}
           <div className="relative">
             <button
-              className="relative block w-16 h-16 overflow-hidden border-black rounded-full shadow focus:outline-none"
+              className="relative block w-16 h-16 overflow-hidden border-black rounded-full shadow border-1 focus:outline-none"
               onClick={handleUserClick}
             >
-            <img
-              src={userData?.avatar ? `http://localhost:8000/${userData.avatar}` : 'img/Icon2.png'}
-              alt="ユーザーアイコン"
-              className="object-cover w-20 h-20 rounded-full"
-            />
+              <img
+                src={userData?.avatar ? `http://localhost:8000/${userData.avatar}` : 'img/Icon2.png'}
+                alt="ユーザーアイコン"
+                className="object-cover w-20 h-20 rounded-full"
+              />
             </button>
           </div>
         </div>
