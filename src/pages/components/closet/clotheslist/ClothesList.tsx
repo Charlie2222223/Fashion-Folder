@@ -16,40 +16,40 @@ interface ClothingItem {
 interface Setup {
   id: number;
   setup_name: string;
-  items: ClothingItem[];
+  items: {
+    id: number;
+    clothes: ClothingItem; // ここで服の情報を取得
+  }[];
 }
 
 const ClothesList: React.FC = () => {
   const [clothingList, setClothingList] = useState<ClothingItem[]>([]);
-  const [setupList, setSetupList] = useState<Setup[]>([]); // デフォルト値として空の配列を設定
-  const [trashItems, setTrashItems] = useState<ClothingItem[]>([]); // ゴミ箱内のアイテム
+  const [setupList, setSetupList] = useState<Setup[]>([]);
+  const [trashItems, setTrashItems] = useState<ClothingItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [editingItem, setEditingItem] = useState<ClothingItem | null>(null);
   const [formData, setFormData] = useState<ClothingItem | null>(null);
   const [draggedItemId, setDraggedItemId] = useState<number | null>(null);
   const [isDragOverTrash, setIsDragOverTrash] = useState<boolean>(false);
-  const [isTrashModalOpen, setIsTrashModalOpen] = useState<boolean>(false); // ゴミ箱モーダルの表示状態
+  const [isTrashModalOpen, setIsTrashModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     fetchClothingList();
-    fetchSetupList(); // セットアップリストを取得
+    fetchSetupList();
   }, []);
 
   const fetchClothingList = async () => {
     try {
       const authToken = localStorage.getItem('authToken');
-
       if (!authToken) {
         console.error('認証トークンがありません。ログインしてください。');
         return;
       }
-
       const response = await axios.get('http://localhost:8000/api/user-closet', {
         headers: {
           Authorization: `Bearer ${authToken}`,
         },
       });
-
       setClothingList(response.data.clothes);
       setLoading(false);
     } catch (error) {
@@ -72,51 +72,42 @@ const ClothesList: React.FC = () => {
         },
       });
 
-      setSetupList(response.data.setups || []); // 万が一 `setups` が undefined の場合に空配列を設定
+      setSetupList(response.data.setups || []);
     } catch (error) {
       console.error('セットアップの取得に失敗しました', error);
     }
   };
 
-  // ドラッグ開始時のハンドラ
+  // ドラッグ操作
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>, itemId: number) => {
     setDraggedItemId(itemId);
     e.dataTransfer.effectAllowed = 'move';
   };
 
-  // ドラッグ終了時のハンドラ
-  const handleDragEnd = () => {
-    setDraggedItemId(null);
-  };
+  const handleDragEnd = () => setDraggedItemId(null);
 
-  // ゴミ箱上にドラッグしている間のハンドラ
   const handleDragOverTrash = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setIsDragOverTrash(true);
     e.dataTransfer.dropEffect = 'move';
   };
 
-  // ゴミ箱からドラッグが離れたときのハンドラ
-  const handleDragLeaveTrash = () => {
-    setIsDragOverTrash(false);
-  };
+  const handleDragLeaveTrash = () => setIsDragOverTrash(false);
 
-  // ゴミ箱にドロップしたときのハンドラ
   const handleDropOnTrash = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setIsDragOverTrash(false);
     if (draggedItemId !== null) {
-      // アイテムをゴミ箱に移動
       const itemToTrash = clothingList.find((item) => item.id === draggedItemId);
       if (itemToTrash) {
         setTrashItems((prevTrash) => [...prevTrash, itemToTrash]);
         setClothingList((prevList) => prevList.filter((item) => item.id !== draggedItemId));
       }
-      // 状態をリセット
       setDraggedItemId(null);
     }
   };
 
+  // フォーム操作
   const handleFormChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
@@ -162,17 +153,9 @@ const ClothesList: React.FC = () => {
     setFormData(null);
   };
 
-  // ゴミ箱アイコンをクリックしたときのハンドラ
-  const handleTrashIconClick = () => {
-    setIsTrashModalOpen(true);
-  };
+  const handleTrashIconClick = () => setIsTrashModalOpen(true);
+  const closeTrashModal = () => setIsTrashModalOpen(false);
 
-  // ゴミ箱モーダルを閉じる
-  const closeTrashModal = () => {
-    setIsTrashModalOpen(false);
-  };
-
-  // アイテムを完全に削除
   const handleDeletePermanently = async (itemId: number) => {
     try {
       const authToken = localStorage.getItem('authToken');
@@ -181,21 +164,18 @@ const ClothesList: React.FC = () => {
         return;
       }
 
-      // バックエンドで削除APIを呼び出す
       await axios.delete(`http://localhost:8000/api/user-closet/${itemId}`, {
         headers: {
           Authorization: `Bearer ${authToken}`,
         },
       });
 
-      // ゴミ箱からアイテムを削除
       setTrashItems((prevTrash) => prevTrash.filter((item) => item.id !== itemId));
     } catch (error) {
       console.error('アイテムの削除に失敗しました', error);
     }
   };
 
-  // アイテムを元に戻す
   const handleRestoreItem = (itemId: number) => {
     const itemToRestore = trashItems.find((item) => item.id === itemId);
     if (itemToRestore) {
@@ -210,7 +190,7 @@ const ClothesList: React.FC = () => {
 
   return (
     <div className="relative">
-      {/* ゴミ箱アイコン */}
+      {/* ゴミ箱 */}
       <div
         className={`fixed bottom-4 right-4 z-50 flex items-center justify-center w-20 h-20 rounded-full shadow-lg cursor-pointer ${
           isDragOverTrash ? 'bg-red-500' : 'bg-gray-200 dark:bg-gray-700'
@@ -226,9 +206,7 @@ const ClothesList: React.FC = () => {
       <h1 className="mb-6 text-xl font-bold text-gray-800 dark:text-white sm:text-2xl">クローゼットの服一覧</h1>
       {clothingList.length === 0 ? (
         <div className="flex items-center justify-center min-h-screen pb-40">
-          <p className="text-2xl text-center text-gray-800 dark:text-white">
-            クローゼットに服がありません。
-          </p>
+          <p className="text-2xl text-center text-gray-800 dark:text-white">クローゼットに服がありません。</p>
         </div>
       ) : (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
@@ -264,7 +242,6 @@ const ClothesList: React.FC = () => {
                   <p className="text-xs sm:text-sm">サイズ: {item.clothes_size}</p>
                   <p className="text-xs sm:text-sm">色: {item.clothes_color}</p>
                   <p className="text-xs sm:text-sm">価格: ¥{item.price}</p>
-                  {/* 詳細は省略またはモーダルで表示 */}
                 </div>
               </div>
             </div>
@@ -272,7 +249,7 @@ const ClothesList: React.FC = () => {
         </div>
       )}
 
-      {/* セットアップリストの表示 */}
+      {/* セットアップリスト */}
       <h1 className="mt-10 mb-6 text-xl font-bold text-gray-800 dark:text-white sm:text-2xl">セットアップ一覧</h1>
       {setupList.length === 0 ? (
         <div className="flex items-center justify-center min-h-screen pb-40">
@@ -286,10 +263,10 @@ const ClothesList: React.FC = () => {
               <div className="grid grid-cols-2 gap-4">
                 {setup.items.map((item) => (
                   <div key={item.id} className="flex flex-col items-center">
-                    {item.image ? (
+                    {item.clothes.image ? (
                       <img
-                        src={item.image}
-                        alt={item.clothes_name}
+                        src={item.clothes.image}
+                        alt={item.clothes.clothes_name}
                         className="object-cover w-full h-auto max-w-xs rounded-md"
                       />
                     ) : (
@@ -298,10 +275,10 @@ const ClothesList: React.FC = () => {
                       </div>
                     )}
                     <div className="mt-2 text-center text-gray-800 dark:text-white">
-                      <p className="text-sm font-bold">{item.clothes_name}</p>
-                      <p className="text-xs">カテゴリ: {item.clothes_category}</p>
-                      <p className="text-xs">サイズ: {item.clothes_size}</p>
-                      <p className="text-xs">色: {item.clothes_color}</p>
+                      <p className="text-sm font-bold">{item.clothes.clothes_name}</p>
+                      <p className="text-xs">カテゴリ: {item.clothes.clothes_category}</p>
+                      <p className="text-xs">サイズ: {item.clothes.clothes_size}</p>
+                      <p className="text-xs">色: {item.clothes.clothes_color}</p>
                     </div>
                   </div>
                 ))}
@@ -331,8 +308,6 @@ const ClothesList: React.FC = () => {
                   className="w-full px-2 py-1 text-gray-800 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
                 />
               </div>
-              {/* 他のフィールドも同様に調整 */}
-              {/* ボタン */}
               <div className="flex justify-end mt-4">
                 <button
                   type="button"
