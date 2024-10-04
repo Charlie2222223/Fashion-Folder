@@ -7,7 +7,7 @@ const SigninForm: React.FC = () => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const handleGoogleLogin = () => {
-    window.location.href = 'http://localhost:8000/auth/google';
+    window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/google`;
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -24,7 +24,7 @@ const SigninForm: React.FC = () => {
     };
   
     try {
-      const response = await axios.post('http://localhost:8000/api/register', formData);
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/register`, formData);
       console.log('Registration successful:', response.data);
   
       // 正常に登録された場合、次のページにPOSTリクエストでデータを渡す

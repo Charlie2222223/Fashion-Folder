@@ -38,7 +38,7 @@ const RandomSetup: React.FC = () => {
         return;
       }
 
-      const response = await axios.get('http://localhost:8000/api/random-setup', {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/random-setup`, {
         headers: {
           Authorization: `Bearer ${authToken}`,
         },

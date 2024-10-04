@@ -40,7 +40,7 @@ const OutfitSetup: React.FC = () => {
     }
 
     try {
-      const response = await axios.get('http://localhost:8000/api/user-closet', {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user-closet`, {
         headers: {
           Authorization: `Bearer ${authToken}`,
         },
@@ -61,7 +61,7 @@ const OutfitSetup: React.FC = () => {
     }
   
     try {
-      const response = await axios.get('http://localhost:8000/api/seasons', {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/seasons`, {
         headers: {
           Authorization: `Bearer ${authToken}`,
         },
@@ -118,7 +118,7 @@ const OutfitSetup: React.FC = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:8000/api/outfit/save', {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/outfit/save`, {
         setup_name: setupName,
         selectedItems: selectedItems.map((item) => item.id),
         selectedSeasons, // 季節データを送信

@@ -15,9 +15,7 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
   };
 
   const handleSettingClick = (userData: any) => {
-    // 設定ボタンがクリックされたときの処理をここに追加
     console.log('設定クリック:', userData);
-    // 例えば、設定モーダルを開くなど
   };
 
   const handleClose = () => {
@@ -30,15 +28,15 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
 
       if (authToken) {
         try {
-          const response = await fetch('http://127.0.0.1:8000/api/user', {
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user`, {
             headers: {
-              'Authorization': `Bearer ${authToken}`
-            }
+              'Authorization': `Bearer ${authToken}`,
+            },
           });
 
           if (response.ok) {
             const userData = await response.json();
-            console.log('User Data:', userData);  // ここでレスポンスを確認
+            console.log('User Data:', userData);
             setUserData(userData); // 取得したユーザーデータを状態にセット
           } else {
             console.error('Failed to fetch user data');
@@ -53,7 +51,6 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
 
     fetchUserData();
   }, []);
-
 
   return (
     <>
@@ -84,36 +81,17 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
           </div>
         </div>
         <div className="flex items-center space-x-4">
-          {/* Notification Icon */}
-          <button className="relative text-gray-500 focus:outline-none dark:text-gray-300">
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M15 17H20L18.595 15.595C18.214 15.214 18 14.697 18 14.158V11C18 8.388 16.33 6.165 14 5.341V5C14 3.895 13.105 3 12 3C10.895 3 10 3.895 10 5V5.341C7.67 6.165 6 8.388 6 11V14.158C6 14.697 5.786 15.214 5.405 15.595L4 17H9M15 17V18C15 19.657 13.657 21 12 21C10.343 21 9 19.657 9 18V17M15 17H9"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-              />
-            </svg>
-            <span className="absolute top-0 right-0 inline-block w-2 h-2 bg-red-600 rounded-full"></span>
-          </button>
-
           {/* User Icon */}
           <div className="relative">
             <button
-              className="relative block w-16 h-16 overflow-hidden rounded-full shadow focus:outline-none"
+              className="relative block w-16 h-16 overflow-hidden border-black rounded-full shadow border-1 focus:outline-none"
               onClick={handleUserClick}
             >
-            <img
-              src={userData?.avatar ? `http://localhost:8000/${userData.avatar}` : 'img/Icon2.png'}
-              alt="ユーザーアイコン"
-              className="object-cover w-20 h-20 rounded-full"
-            />
+              <img
+                src={userData?.avatar ? `http://localhost:8000/${userData.avatar}` : 'img/Icon2.png'}
+                alt="ユーザーアイコン"
+                className="object-cover w-20 h-20 rounded-full"
+              />
             </button>
           </div>
         </div>
