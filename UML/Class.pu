@@ -1,4 +1,4 @@
-@startuml
+@startuml クラス図
 
 class UserController {
     +getUserData(Request): JsonResponse
