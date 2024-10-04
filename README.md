@@ -6,8 +6,8 @@ Fashion-Folder
 
 以下のソフトウェアがインストールされていることを確認してください：
 
-	•	Docker と Docker Compose
-	•	Node.js、Yarn（オプション、フロントエンドパッケージ管理のため）
+・Docker と Docker Compose
+・Node.js、Yarn（オプション、フロントエンドパッケージ管理のため）
 
 開発環境のセットアップ
 
@@ -46,8 +46,8 @@ docker-compose up --build
 
 アプリケーションにアクセス
 
-	•	フロントエンド: http://localhost:3000
-	•	バックエンド API: http://localhost:8000
+・フロントエンド: http://localhost:3000
+・バックエンド API: http://localhost:8000
 
 コンテナの停止
 
@@ -58,9 +58,9 @@ docker-compose down
 ```
 Docker サービス
 
-	•	フロントエンド: Next.js (ポート 3000)
-	•	バックエンド: Laravel (ポート 8000)
-	•	データベース: MySQL (ポート 3306)
+・フロントエンド: Next.js (ポート 3000)
+・バックエンド: Laravel (ポート 8000)
+・データベース: MySQL (ポート 3306)
 
 API ドキュメント
 
@@ -68,8 +68,8 @@ API ドキュメント
 
 使用技術
 
-	•	Next.js - Reactベースのフレームワーク
-	•	Laravel - バックエンドAPIの管理
-	•	Tailwind CSS - スタイリングに使用
-	•	Axios - API呼び出しに使用
+・Next.js - Reactベースのフレームワーク
+・Laravel - バックエンドAPIの管理
+・Tailwind CSS - スタイリングに使用
+・Axios - API呼び出しに使用
     
