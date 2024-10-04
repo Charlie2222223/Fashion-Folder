@@ -13,6 +13,7 @@ use App\Http\Controllers\ClothesSizesController;
 use App\Http\Controllers\ClothesColorsController;
 use App\Http\Controllers\SetupController;
 use App\Http\Controllers\SeasonsController;
+use App\Http\Controllers\Clothes_SetupsController; // 修正
 
 // ユーザー登録関連
 Route::post('/register', [RegisterController::class, 'register']); // メールの送信
@@ -47,8 +48,13 @@ Route::middleware('auth:sanctum')->group(function () {
     // カテゴリー、サイズ、色の取得
     Route::get('/sizes', [ClothesSizesController::class, 'index']);  
     Route::get('/colors', [ClothesColorsController::class, 'index']);
-
     Route::get('/seasons', [SeasonsController::class, 'index']);
+
+    // セットアップ一覧の取得
+    Route::get('/setups',[Clothes_SetupsController::class, 'index']);
+
+    //ランダムでセットアップを取得
+    Route::get('/random-setup', [Clothes_SetupsController::class, 'getRandomSetup']);
 });
 
 Route::middleware('auth:sanctum')->post('/outfit/save', [SetupController::class, 'store']);
