@@ -13,8 +13,15 @@ interface ClothingItem {
   image: string | null;
 }
 
+interface Setup {
+  id: number;
+  setup_name: string;
+  items: ClothingItem[];
+}
+
 const ClothesList: React.FC = () => {
   const [clothingList, setClothingList] = useState<ClothingItem[]>([]);
+  const [setupList, setSetupList] = useState<Setup[]>([]); // デフォルト値として空の配列を設定
   const [trashItems, setTrashItems] = useState<ClothingItem[]>([]); // ゴミ箱内のアイテム
   const [loading, setLoading] = useState<boolean>(true);
   const [editingItem, setEditingItem] = useState<ClothingItem | null>(null);
@@ -25,6 +32,7 @@ const ClothesList: React.FC = () => {
 
   useEffect(() => {
     fetchClothingList();
+    fetchSetupList(); // セットアップリストを取得
   }, []);
 
   const fetchClothingList = async () => {
@@ -47,6 +55,26 @@ const ClothesList: React.FC = () => {
     } catch (error) {
       console.error('服のリストの取得に失敗しました', error);
       setLoading(false);
+    }
+  };
+
+  const fetchSetupList = async () => {
+    try {
+      const authToken = localStorage.getItem('authToken');
+      if (!authToken) {
+        console.error('認証トークンがありません。ログインしてください。');
+        return;
+      }
+
+      const response = await axios.get('http://localhost:8000/api/setups', {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+
+      setSetupList(response.data.setups || []); // 万が一 `setups` が undefined の場合に空配列を設定
+    } catch (error) {
+      console.error('セットアップの取得に失敗しました', error);
     }
   };
 
@@ -238,6 +266,45 @@ const ClothesList: React.FC = () => {
                   <p className="text-xs sm:text-sm">価格: ¥{item.price}</p>
                   {/* 詳細は省略またはモーダルで表示 */}
                 </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* セットアップリストの表示 */}
+      <h1 className="mt-10 mb-6 text-xl font-bold text-gray-800 dark:text-white sm:text-2xl">セットアップ一覧</h1>
+      {setupList.length === 0 ? (
+        <div className="flex items-center justify-center min-h-screen pb-40">
+          <p className="text-2xl text-center text-gray-800 dark:text-white">セットアップがありません。</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+          {setupList.map((setup) => (
+            <div key={setup.id} className="p-4 bg-gray-100 rounded-md shadow dark:bg-gray-700">
+              <h2 className="mb-2 text-lg font-bold text-gray-800 dark:text-white">{setup.setup_name}</h2>
+              <div className="grid grid-cols-2 gap-4">
+                {setup.items.map((item) => (
+                  <div key={item.id} className="flex flex-col items-center">
+                    {item.image ? (
+                      <img
+                        src={item.image}
+                        alt={item.clothes_name}
+                        className="object-cover w-full h-auto max-w-xs rounded-md"
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center w-full h-32 bg-gray-200 rounded-md">
+                        <span className="text-gray-500">No Image</span>
+                      </div>
+                    )}
+                    <div className="mt-2 text-center text-gray-800 dark:text-white">
+                      <p className="text-sm font-bold">{item.clothes_name}</p>
+                      <p className="text-xs">カテゴリ: {item.clothes_category}</p>
+                      <p className="text-xs">サイズ: {item.clothes_size}</p>
+                      <p className="text-xs">色: {item.clothes_color}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           ))}

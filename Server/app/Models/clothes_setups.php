@@ -17,5 +17,10 @@ class clothes_setups extends Model
         return $this->belongsToMany(Season::class, 'clothes_setup_season', 'clothes_setup_id', 'season_id');
     }
 
+    public function items()
+    {
+        return $this->hasMany(Clothes_setup_items::class, 'setup_id');
+    }
+
 }
 
