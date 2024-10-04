@@ -20,4 +20,18 @@ class Clothes_SetupsController extends Controller
         // 取得したデータをJSON形式で返す
         return response()->json(['setups' => $setups], 200);
     }
+
+        /**
+     * ランダムなセットアップを1つ取得して返す
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getRandomSetup()
+    {
+        // ランダムなセットアップを1つ取得
+        $setup = clothes_setups::with('items.clothes')->inRandomOrder()->first();
+
+        // 取得したデータをJSON形式で返す
+        return response()->json(['setup' => $setup], 200);
+    }
 }
