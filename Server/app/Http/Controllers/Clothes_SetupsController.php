@@ -15,7 +15,7 @@ class Clothes_SetupsController extends Controller
     public function index()
     {
         // 全てのセットアップとその関連するアイテムを取得
-        $setups = clothes_setups::with('items')->get();
+        $setups = clothes_setups::with('items.clothes')->get();
 
         // 取得したデータをJSON形式で返す
         return response()->json(['setups' => $setups], 200);

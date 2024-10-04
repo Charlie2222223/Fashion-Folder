@@ -10,4 +10,10 @@ class clothes_setup_items extends Model
     protected $table = 'clothes_setup_items';
 
     use HasFactory;
+
+
+    public function clothes()
+    {
+        return $this->belongsTo(UserCloset::class, 'clothes_id');
+    }
 }
