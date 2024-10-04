@@ -1,0 +1,202 @@
+@startuml
+
+class UserController {
+    +getUserData(Request): JsonResponse
+    +login(LoginRequest): JsonResponse
+    +updateProfile(Request): JsonResponse
+    +passwordVerification(NewPassword): JsonResponse
+}
+
+class Request {
+    -email: string
+    -password: string
+    -name: string
+    -avatar: string
+}
+
+class User {
+    -id: int
+    -name: string
+    -email: string
+    -password: string
+    -avatar: string
+    +save(): void
+    +createToken(name: string): string
+}
+
+class Auth {
+    +user(): User
+    +login(User $user): void
+}
+
+class Sanitizer {
+    +sanitizeString(value: string): string
+}
+
+class Token {
+    -token: string
+}
+
+class UserClosetController {
+    +index(Request $request): JsonResponse
+    +store(Request $request): JsonResponse
+    +update(Request $request, int $id): JsonResponse
+    +destroy(int $id): JsonResponse
+    -processImage(string $image, string $existingImage = null): string
+}
+
+class UserCloset {
+    +where(string $column, mixed $value): Collection
+    +get(): Collection
+    +create(array $data): UserCloset
+    +update(array $data): bool
+    +delete(): bool
+}
+
+class SetupController {
+    +store(Request $request): JsonResponse
+}
+
+class Clothes_setups {
+    +user_id: int
+    +setup_name: string
+    +save(): void
+}
+
+class Clothes_setup_items {
+    +setup_id: int
+    +clothes_id: int
+    +save(): void
+}
+
+class ClothesSetupSeason {
+    +clothes_setup_id: int
+    +season_id: int
+    +save(): void
+}
+
+class SeasonsController {
+    +index(): JsonResponse
+}
+
+class Season {
+    +all(): Collection
+}
+
+class ImageGenerationController {
+    +generateImage(Request $request): JsonResponse
+    +searchImage(Request $request): JsonResponse
+    -translateKeyword(string $keyword): string
+    -handleApiError(string $message, \Exception $e): JsonResponse
+}
+
+class Client {
+    +post(string $url, array $options): Response
+    +get(string $url, array $options): Response
+}
+
+class ClothesSizesController {
+    +index(): JsonResponse
+}
+
+class ClothesSizes {
+    +all(): Collection
+}
+
+class ClothesColorsController {
+    +index(): JsonResponse
+}
+
+class ClothesColors {
+    +all(): Collection
+}
+
+class ClothesCategoriesController {
+    +index(): JsonResponse
+}
+
+class ClothesCategories {
+    +all(): Collection
+}
+
+class CategoryController {
+    +index(): JsonResponse
+}
+
+class Category {
+    +all(): Collection
+}
+
+class RegisterController {
+    +handleRegistration(Request $request): JsonResponse
+    +pushUserInfo(Request $request): JsonResponse
+    +checkVerification(Request $request): JsonResponse
+    +register(Request $request): JsonResponse
+    +registerPassword(Request $request): JsonResponse
+    #sanitizeInput(string $input): string
+    #processRegistration(string $sanitizedEmail): void
+    #verifyTemporaryPassword(string $email, string $temporaryPassword): UserVerification|null
+    #registerUser(string $name, string $email, string $password): User
+    #generateTemporaryPassword(): string
+    #storeTemporaryPassword(string $email, string $temporaryPassword): void
+    #sendVerificationEmail(string $email, string $temporaryPassword): void
+    #deleteTemporaryPassword(UserVerification $userVerification): void
+}
+
+class UserVerification {
+    +where(string $column, mixed $value): Collection
+    +create(array $data): UserVerification
+    +first(): UserVerification
+    +delete(): bool
+}
+
+class Mail {
+    +to(string $email): Mail
+    +send(Mail $mailable): void
+}
+
+class Hash {
+    +make(string $password): string
+}
+
+class Str {
+    +random(int $length): string
+}
+
+class SocialController {
+    +redirectToGoogle(): RedirectResponse
+    +handleGoogleCallback(): RedirectResponse
+}
+
+class Socialite {
+    +driver(string $provider): Provider
+}
+
+SocialController o-- Socialite : uses
+SocialController o-- User : uses
+SocialController o-- Auth : uses
+SocialController o-- Str : uses
+SocialController o-- Sanitizer : uses
+SocialController o-- Log : uses
+
+RegisterController o-- User : uses
+RegisterController o-- UserVerification : uses
+RegisterController o-- Mail : uses
+RegisterController o-- Hash : uses
+RegisterController o-- Str : uses
+
+CategoryController o-- Category : uses
+ClothesCategoriesController o-- ClothesCategories : uses
+ClothesColorsController o-- ClothesColors : uses
+ClothesSizesController o-- ClothesSizes : uses
+ImageGenerationController o-- Client : uses
+SeasonsController o-- Season : uses
+SetupController o-- Clothes_setups : creates
+SetupController o-- Clothes_setup_items : creates
+SetupController o-- ClothesSetupSeason : creates
+UserClosetController o-- UserCloset : uses
+UserController o-- User : uses
+UserController o-- Auth : uses
+UserController o-- Sanitizer : uses
+
+@enduml
