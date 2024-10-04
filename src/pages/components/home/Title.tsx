@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 import { Oswald } from 'next/font/google';
 
 const RampartOneFont = Oswald({
@@ -8,24 +9,26 @@ const RampartOneFont = Oswald({
 
 const imageGroups = [
   [
-    { src: '/img/Wear_1.jpg', alt: 'Wear 1' },
-    { src: '/img/Wear_2.jpg', alt: 'Wear 2' },
-    { src: '/img/Wear_3.jpg', alt: 'Wear 3' },
+    { src: '/img/Wear_1.jpg', alt: 'Wear 1', width: 400, height: 600 },
+    { src: '/img/Wear_2.jpg', alt: 'Wear 2', width: 400, height: 600 },
+    { src: '/img/Wear_3.jpg', alt: 'Wear 3', width: 400, height: 600 },
   ],
   [
-    { src: '/img/Wear_4.jpg', alt: 'Wear 4' },
-    { src: '/img/Wear_5.jpg', alt: 'Wear 5' },
+    { src: '/img/Wear_4.jpg', alt: 'Wear 4', width: 400, height: 600 },
+    { src: '/img/Wear_5.jpg', alt: 'Wear 5', width: 400, height: 600 },
   ],
   [
-    { src: '/img/Wear_6.jpg', alt: 'Wear 6' },
-    { src: '/img/Wear_7.jpg', alt: 'Wear 7' },
-    { src: '/img/Wear_9.jpg', alt: 'Wear 9' },
+    { src: '/img/Wear_6.jpg', alt: 'Wear 6', width: 400, height: 600 },
+    { src: '/img/Wear_7.jpg', alt: 'Wear 7', width: 400, height: 600 },
+    { src: '/img/Wear_9.jpg', alt: 'Wear 9', width: 400, height: 600 },
   ],
   [
-    { src: '/img/Wear_8.jpg', alt: 'Wear 8' },
+    { src: '/img/Wear_8.jpg', alt: 'Wear 8', width: 400, height: 600 },
     {
-      src: 'https://images.unsplash.com/photo-1668584054035-f5ba7d426401?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=560&q=80',
-      alt: 'Unsplash Fashion',
+      src: '/img/Wear_10.jpg',
+      width: 400,
+      height: 800,
+      alt: undefined, // この画像には alt がない
     },
   ],
 ];
@@ -47,11 +50,13 @@ const Title: React.FC = () => {
         {imageGroups.map((group, groupIndex) => (
           <div key={groupIndex} className="space-y-2">
             {group.map((image, imageIndex) => (
-              <img
+              <Image
                 key={imageIndex}
                 className="object-cover w-full h-auto opacity-50"
                 src={image.src}
-                alt={image.alt}
+                alt={image.alt || 'Fashion Image'} // alt が undefined の場合デフォルト値を設定
+                width={image.width}
+                height={image.height}
               />
             ))}
           </div>
