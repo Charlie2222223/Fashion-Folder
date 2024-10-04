@@ -45,7 +45,7 @@ const ClothesList: React.FC = () => {
         console.error('認証トークンがありません。ログインしてください。');
         return;
       }
-      const response = await axios.get('http://localhost:8000/api/user-closet', {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user-closet`, {
         headers: {
           Authorization: `Bearer ${authToken}`,
         },
@@ -66,7 +66,7 @@ const ClothesList: React.FC = () => {
         return;
       }
 
-      const response = await axios.get('http://localhost:8000/api/setups', {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/setups`, {
         headers: {
           Authorization: `Bearer ${authToken}`,
         },
@@ -131,7 +131,7 @@ const ClothesList: React.FC = () => {
         return;
       }
 
-      await axios.put(`http://localhost:8000/api/user-closet/${formData.id}`, formData, {
+      await axios.put(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user-closet/${formData.id}`, formData, {
         headers: {
           Authorization: `Bearer ${authToken}`,
         },
@@ -164,7 +164,7 @@ const ClothesList: React.FC = () => {
         return;
       }
 
-      await axios.delete(`http://localhost:8000/api/user-closet/${itemId}`, {
+      await axios.delete(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user-closet/${itemId}`, {
         headers: {
           Authorization: `Bearer ${authToken}`,
         },

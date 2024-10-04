@@ -33,7 +33,7 @@ const User_Info: React.FC<User_InfoProps> = ({ onUserClick, onSettingClick, onCl
 
     if (token) {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/logout', {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/logout`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -60,7 +60,7 @@ const User_Info: React.FC<User_InfoProps> = ({ onUserClick, onSettingClick, onCl
 
       if (authToken) {
         try {
-          const response = await fetch('http://127.0.0.1:8000/api/user', {
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user`, {
             headers: {
               'Authorization': `Bearer ${authToken}`
             }

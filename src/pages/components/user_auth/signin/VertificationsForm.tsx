@@ -26,7 +26,7 @@ const VerificationsForm: React.FC = () => {
 
     try {
       // Laravel APIにリクエストを送信
-      const response = await axios.post('http://localhost:8000/api/register/vertification', formData);
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/register/vertification`, formData);
       console.log('Verification successful:', response.data);
 
       // 正常に処理された場合、次のステップに進むなどの処理を行います
