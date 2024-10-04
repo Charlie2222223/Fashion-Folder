@@ -67,7 +67,7 @@ const ClothingRegistration: React.FC = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/api/categories", {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/categories`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setCategories(response.data);
@@ -78,7 +78,7 @@ const ClothingRegistration: React.FC = () => {
 
   const fetchSizes = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/api/sizes", {
+      const response = await axios.get("${process.env.NEXT_PUBLIC_API_BASE_URL}/api/sizes", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setSizes(response.data);
@@ -89,7 +89,7 @@ const ClothingRegistration: React.FC = () => {
 
   const fetchColors = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/api/colors", {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/colors`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setColors(response.data);
@@ -127,7 +127,7 @@ const ClothingRegistration: React.FC = () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/generate-image",
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/generate-image`,
         {
           category: formData.category,
           color: formData.color,
@@ -161,7 +161,7 @@ const ClothingRegistration: React.FC = () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/search-image",
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/search-image`,
         {
           keyword: searchKeyword || "clothing",
         },
@@ -187,7 +187,7 @@ const ClothingRegistration: React.FC = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/user-closet",
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user-closet`,
         {
           clothes_name: formData.name,
           clothes_category: formData.category,

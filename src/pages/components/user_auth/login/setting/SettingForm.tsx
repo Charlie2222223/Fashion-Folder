@@ -23,7 +23,7 @@ const SettingForm: React.FC<{ onClose: () => void, userData: any }> = ({ onClose
                 throw new Error('Authentication token is missing');
             }
 
-            const response = await axios.post('http://localhost:8000/api/register/password', formData, {
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/register/password`, formData, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
@@ -61,7 +61,7 @@ const SettingForm: React.FC<{ onClose: () => void, userData: any }> = ({ onClose
         }
 
         try {
-            const response = await fetch('http://127.0.0.1:8000/api/upload/profile', {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/upload/profile`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('authToken')}`,

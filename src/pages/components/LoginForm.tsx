@@ -12,7 +12,7 @@ const SignInForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = 'http://localhost:8000/auth/google';
+    window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/google`;
   };
 
   return (
