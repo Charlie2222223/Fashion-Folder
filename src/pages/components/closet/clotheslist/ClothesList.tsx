@@ -48,10 +48,23 @@ const ClothesList: React.FC = () => {
   const [draggedItemId, setDraggedItemId] = useState<number | null>(null); // 服のアイテム用
   const [isDragOverTrash, setIsDragOverTrash] = useState<boolean>(false);
   const [isTrashModalOpen, setIsTrashModalOpen] = useState<boolean>(false);
+  const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 768);
+  const [selectedClothingItems, setSelectedClothingItems] = useState<number[]>([]);
+  const [selectedSetupItems, setSelectedSetupItems] = useState<number[]>([]);
 
   useEffect(() => {
     fetchClothingList();
     fetchSetupList();
+
+    // 画面のリサイズを監視し、モバイルかどうかを判定
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   const fetchClothingList = async () => {
@@ -91,6 +104,34 @@ const ClothesList: React.FC = () => {
       setSetupList(response.data.setups || []);
     } catch (error) {
       console.error('セットアップの取得に失敗しました', error);
+    }
+  };
+
+  const handleSelectClothingItem = (itemId: number) => {
+    setSelectedClothingItems((prev) =>
+      prev.includes(itemId) ? prev.filter((id) => id !== itemId) : [...prev, itemId]
+    );
+  };
+
+  const handleSelectSetupItem = (setupId: number) => {
+    setSelectedSetupItems((prev) =>
+      prev.includes(setupId) ? prev.filter((id) => id !== setupId) : [...prev, setupId]
+    );
+  };
+
+  const handleDeleteSelectedItems = async () => {
+    if (selectedClothingItems.length > 0) {
+      for (const itemId of selectedClothingItems) {
+        await handleDeletePermanently(itemId);
+      }
+      setSelectedClothingItems([]);
+    }
+
+    if (selectedSetupItems.length > 0) {
+      for (const setupId of selectedSetupItems) {
+        await handleDeleteSetupPermanently(setupId);
+      }
+      setSelectedSetupItems([]);
     }
   };
 
@@ -217,27 +258,105 @@ const ClothesList: React.FC = () => {
     return <div>読み込み中...</div>;
   }
 
-
   return (
     <div className="relative">
       {/* ゴミ箱 */}
-      <div
-        className={`fixed bottom-4 right-4 z-50 flex items-center justify-center w-20 h-20 rounded-full shadow-lg cursor-pointer ${
-          isDragOverTrash ? 'bg-red-500' : 'bg-gray-200 dark:bg-gray-700'
-        }`}
-        onDragOver={handleDragOverTrash}
-        onDragLeave={handleDragLeaveTrash}
-        onDrop={handleDropOnTrash}
-        onClick={handleTrashIconClick} // ゴミ箱をクリック可能にする
-      >
-        <FaTrashAlt className="text-xl text-gray-800 dark:text-white" />
-      </div>
+      {!isMobile && (
+        <div
+          className={`fixed bottom-4 right-4 z-50 flex items-center justify-center w-20 h-20 rounded-full shadow-lg cursor-pointer ${
+            isDragOverTrash ? 'bg-red-500' : 'bg-gray-200 dark:bg-gray-700'
+          }`}
+          onDragOver={handleDragOverTrash}
+          onDragLeave={handleDragLeaveTrash}
+          onDrop={handleDropOnTrash}
+          onClick={handleTrashIconClick} // ゴミ箱をクリック可能にする
+        >
+          <FaTrashAlt className="text-xl text-gray-800 dark:text-white" />
+        </div>
+      )}
 
       <h1 className="mb-6 text-xl font-bold text-gray-800 dark:text-white sm:text-2xl">クローゼットの服一覧</h1>
       {clothingList.length === 0 ? (
         <div className="flex items-center justify-center min-h-screen pb-40">
           <p className="text-2xl text-center text-gray-800 dark:text-white">クローゼットに服がありません。</p>
         </div>
+      ) : isMobile ? (
+        <>
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+            {clothingList.map((item) => (
+              <div key={item.id} className="p-2 bg-gray-100 rounded-md shadow cursor-pointer dark:bg-gray-700">
+                <input
+                  type="checkbox"
+                  checked={selectedClothingItems.includes(item.id)}
+                  onChange={() => handleSelectClothingItem(item.id)}
+                />
+                <div className="flex flex-col items-center">
+                  {item.image ? (
+                    <img
+                      src={item.image}
+                      alt={item.clothes_name}
+                      className="object-cover w-full h-auto max-w-xs rounded-md"
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center w-full h-32 bg-gray-200 rounded-md">
+                      <span className="text-gray-500">No Image</span>
+                    </div>
+                  )}
+                  <div className="mt-2 text-center text-gray-800 dark:text-white">
+                    <p className="text-sm font-bold sm:text-base">{item.clothes_name}</p>
+                    <p className="text-xs sm:text-sm">カテゴリ: {item.category.category_name}</p>
+                    <p className="text-xs sm:text-sm">サイズ: {item.size.size_name}</p>
+                    <p className="text-xs sm:text-sm">色: {item.color.color_name}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <h1 className="mt-10 mb-6 text-xl font-bold text-gray-800 dark:text-white sm:text-2xl">セットアップ一覧</h1>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+            {setupList.map((setup) => (
+              <div key={setup.id} className="p-4 bg-gray-100 rounded-md shadow dark:bg-gray-700">
+                <input
+                  type="checkbox"
+                  checked={selectedSetupItems.includes(setup.id)}
+                  onChange={() => handleSelectSetupItem(setup.id)}
+                />
+                <h2 className="mb-2 text-lg font-bold text-gray-800 dark:text-white">{setup.setup_name}</h2>
+                <div className="grid grid-cols-2 gap-4">
+                  {setup.items.map((item) => (
+                    <div key={item.id} className="flex flex-col items-center">
+                      {item.clothes.image ? (
+                        <img
+                          src={item.clothes.image}
+                          alt={item.clothes.clothes_name}
+                          className="object-cover w-full h-auto max-w-xs rounded-md"
+                        />
+                      ) : (
+                        <div className="flex items-center justify-center w-full h-32 bg-gray-200 rounded-md">
+                          <span className="text-gray-500">No Image</span>
+                        </div>
+                      )}
+                      <div className="mt-2 text-center text-gray-800 dark:text-white">
+                        <p className="text-sm font-bold">{item.clothes.clothes_name}</p>
+                        <p className="text-xs">カテゴリ: {item.clothes.category?.category_name || '不明'}</p>
+                        <p className="text-xs">サイズ: {item.clothes.size?.size_name || '不明'}</p>
+                        <p className="text-xs">色: {item.clothes.color?.color_name || '不明'}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <button
+            className="px-4 py-2 mt-4 text-white bg-red-500 rounded-md"
+            onClick={handleDeleteSelectedItems}
+          >
+            選択したアイテムを削除
+          </button>
+        </>
       ) : (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
           {clothingList.map((item) => (
@@ -267,55 +386,7 @@ const ClothesList: React.FC = () => {
                   <p className="text-xs sm:text-sm">カテゴリ: {item.category.category_name}</p>
                   <p className="text-xs sm:text-sm">サイズ: {item.size.size_name}</p>
                   <p className="text-xs sm:text-sm">色: {item.color.color_name}</p>
-                  <p className="text-xs sm:text-sm">価格: ¥{parseFloat(item.price).toFixed(2)}</p>
                 </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* セットアップリスト */}
-      <h1 className="mt-10 mb-6 text-xl font-bold text-gray-800 dark:text-white sm:text-2xl">セットアップ一覧</h1>
-      {setupList.length === 0 ? (
-        <div className="flex items-center justify-center min-h-screen pb-40">
-          <p className="text-2xl text-center text-gray-800 dark:text-white">セットアップがありません。</p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-          {setupList.map((setup) => (
-            <div
-              key={setup.id}
-              className={`p-4 bg-gray-100 rounded-md shadow dark:bg-gray-700 ${
-                draggedSetupId === setup.id ? 'opacity-50' : ''
-              }`}
-              draggable
-              onDragStart={(e) => handleDragStartSetup(e, setup.id)}
-              onDragEnd={handleDragEnd}
-            >
-              <h2 className="mb-2 text-lg font-bold text-gray-800 dark:text-white">{setup.setup_name}</h2>
-              <div className="grid grid-cols-2 gap-4">
-                {setup.items.map((item) => (
-                  <div key={item.id} className="flex flex-col items-center">
-                    {item.clothes.image ? (
-                      <img
-                        src={item.clothes.image}
-                        alt={item.clothes.clothes_name}
-                        className="object-cover w-full h-auto max-w-xs rounded-md"
-                      />
-                    ) : (
-                      <div className="flex items-center justify-center w-full h-32 bg-gray-200 rounded-md">
-                        <span className="text-gray-500">No Image</span>
-                      </div>
-                    )}
-                    <div className="mt-2 text-center text-gray-800 dark:text-white">
-                      <p className="text-sm font-bold">{item.clothes.clothes_name}</p>
-                      <p className="text-xs">カテゴリ: {item.clothes.category?.category_name || '不明'}</p>
-                      <p className="text-xs">サイズ: {item.clothes.size?.size_name || '不明'}</p>
-                      <p className="text-xs">色: {item.clothes.color?.color_name || '不明'}</p>
-                    </div>
-                  </div>
-                ))}
               </div>
             </div>
           ))}
