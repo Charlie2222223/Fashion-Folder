@@ -9,5 +9,7 @@ class ClothesSizes extends Model
 {
     protected $table = 'clothes_sizes';
 
+    protected $fillable = ['size_name'];
+
     use HasFactory;
 }
