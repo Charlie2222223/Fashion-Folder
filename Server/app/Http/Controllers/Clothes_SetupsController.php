@@ -14,13 +14,12 @@ class Clothes_SetupsController extends Controller
      */
     public function index()
     {
-        // 全てのセットアップとその関連するアイテムを取得
-        $setups = clothes_setups::with('items.clothes')->get();
+        // 全てのセットアップとその関連するアイテム、カラー、サイズ、カテゴリを取得
+        $setups = clothes_setups::with(['items.clothes.color', 'items.clothes.size', 'items.clothes.category'])->get();
 
         // 取得したデータをJSON形式で返す
         return response()->json(['setups' => $setups], 200);
     }
-
     /**
      * ランダムなセットアップを1つ取得して返す
      *
