@@ -27,7 +27,7 @@ class UserClosetController extends Controller
     
             return response()->json(['clothes' => $clothes], 200);
         } catch (\Exception $e) {
-            Log::error('Error fetching clothes: ' . $e->getMessage());
+            Log::error(message: 'Error fetching clothes: ' . $e->getMessage());
             return response()->json(['message' => 'Internal Server Error'], 500);
         }
     }
