@@ -2,14 +2,30 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { FaTrashAlt } from 'react-icons/fa';
 
+interface Category {
+  id: number;
+  category_name: string;
+}
+
+interface Size {
+  id: number;
+  size_name: string;
+}
+
+interface Color {
+  id: number;
+  color_name: string;
+  color_code: string;
+}
+
 interface ClothingItem {
   id: number;
   clothes_name: string;
-  clothes_category: string;
-  clothes_size: string;
-  clothes_color: string;
+  category: Category;
+  size: Size;
+  color: Color;
   clothes_detail: string | null;
-  price: number;
+  price: string;
   image: string | null;
 }
 
@@ -18,7 +34,7 @@ interface Setup {
   setup_name: string;
   items: {
     id: number;
-    clothes: ClothingItem; // ここで服の情報を取得
+    clothes: ClothingItem;
   }[];
 }
 
@@ -115,7 +131,7 @@ const ClothesList: React.FC = () => {
       setFormData({
         ...formData,
         [e.target.name]:
-          e.target.name === 'price' ? parseInt(e.target.value) : e.target.value,
+          e.target.name === 'price' ? parseFloat(e.target.value) : e.target.value,
       });
     }
   };
@@ -238,10 +254,10 @@ const ClothesList: React.FC = () => {
                 )}
                 <div className="mt-2 text-center text-gray-800 dark:text-white">
                   <p className="text-sm font-bold sm:text-base">{item.clothes_name}</p>
-                  <p className="text-xs sm:text-sm">カテゴリ: {item.clothes_category}</p>
-                  <p className="text-xs sm:text-sm">サイズ: {item.clothes_size}</p>
-                  <p className="text-xs sm:text-sm">色: {item.clothes_color}</p>
-                  <p className="text-xs sm:text-sm">価格: ¥{item.price}</p>
+                  <p className="text-xs sm:text-sm">カテゴリ: {item.category.category_name}</p>
+                  <p className="text-xs sm:text-sm">サイズ: {item.size.size_name}</p>
+                  <p className="text-xs sm:text-sm">色: {item.color.color_name}</p>
+                  <p className="text-xs sm:text-sm">価格: ¥{parseFloat(item.price).toFixed(2)}</p>
                 </div>
               </div>
             </div>
@@ -276,9 +292,9 @@ const ClothesList: React.FC = () => {
                     )}
                     <div className="mt-2 text-center text-gray-800 dark:text-white">
                       <p className="text-sm font-bold">{item.clothes.clothes_name}</p>
-                      <p className="text-xs">カテゴリ: {item.clothes.clothes_category}</p>
-                      <p className="text-xs">サイズ: {item.clothes.clothes_size}</p>
-                      <p className="text-xs">色: {item.clothes.clothes_color}</p>
+                      <p className="text-xs">カテゴリ: {item.clothes.category?.category_name || '不明'}</p>
+                      <p className="text-xs">サイズ: {item.clothes.size?.size_name || '不明'}</p>
+                      <p className="text-xs">色: {item.clothes.color?.color_name || '不明'}</p>
                     </div>
                   </div>
                 ))}
