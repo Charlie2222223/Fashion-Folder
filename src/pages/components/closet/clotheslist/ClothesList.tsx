@@ -2,14 +2,30 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { FaTrashAlt } from 'react-icons/fa';
 
+interface Category {
+  id: number;
+  category_name: string;
+}
+
+interface Size {
+  id: number;
+  size_name: string;
+}
+
+interface Color {
+  id: number;
+  color_name: string;
+  color_code: string;
+}
+
 interface ClothingItem {
   id: number;
   clothes_name: string;
-  clothes_category: string;
-  clothes_size: string;
-  clothes_color: string;
+  category: Category;
+  size: Size;
+  color: Color;
   clothes_detail: string | null;
-  price: number;
+  price: string;
   image: string | null;
 }
 
@@ -18,7 +34,7 @@ interface Setup {
   setup_name: string;
   items: {
     id: number;
-    clothes: ClothingItem; // ここで服の情報を取得
+    clothes: ClothingItem;
   }[];
 }
 
@@ -115,7 +131,7 @@ const ClothesList: React.FC = () => {
       setFormData({
         ...formData,
         [e.target.name]:
-          e.target.name === 'price' ? parseInt(e.target.value) : e.target.value,
+          e.target.name === 'price' ? parseFloat(e.target.value) : e.target.value,
       });
     }
   };
@@ -238,10 +254,10 @@ const ClothesList: React.FC = () => {
                 )}
                 <div className="mt-2 text-center text-gray-800 dark:text-white">
                   <p className="text-sm font-bold sm:text-base">{item.clothes_name}</p>
-                  <p className="text-xs sm:text-sm">カテゴリ: {item.clothes_category}</p>
-                  <p className="text-xs sm:text-sm">サイズ: {item.clothes_size}</p>
-                  <p className="text-xs sm:text-sm">色: {item.clothes_color}</p>
-                  <p className="text-xs sm:text-sm">価格: ¥{item.price}</p>
+                  <p className="text-xs sm:text-sm">カテゴリ: {item.category.category_name}</p>
+                  <p className="text-xs sm:text-sm">サイズ: {item.size.size_name}</p>
+                  <p className="text-xs sm:text-sm">色: {item.color.color_name}</p>
+                  <p className="text-xs sm:text-sm">価格: ¥{parseFloat(item.price).toFixed(2)}</p>
                 </div>
               </div>
             </div>
@@ -256,36 +272,44 @@ const ClothesList: React.FC = () => {
           <p className="text-2xl text-center text-gray-800 dark:text-white">セットアップがありません。</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-          {setupList.map((setup) => (
-            <div key={setup.id} className="p-4 bg-gray-100 rounded-md shadow dark:bg-gray-700">
-              <h2 className="mb-2 text-lg font-bold text-gray-800 dark:text-white">{setup.setup_name}</h2>
-              <div className="grid grid-cols-2 gap-4">
-                {setup.items.map((item) => (
-                  <div key={item.id} className="flex flex-col items-center">
-                    {item.clothes.image ? (
-                      <img
-                        src={item.clothes.image}
-                        alt={item.clothes.clothes_name}
-                        className="object-cover w-full h-auto max-w-xs rounded-md"
-                      />
-                    ) : (
-                      <div className="flex items-center justify-center w-full h-32 bg-gray-200 rounded-md">
-                        <span className="text-gray-500">No Image</span>
-                      </div>
-                    )}
-                    <div className="mt-2 text-center text-gray-800 dark:text-white">
-                      <p className="text-sm font-bold">{item.clothes.clothes_name}</p>
-                      <p className="text-xs">カテゴリ: {item.clothes.clothes_category}</p>
-                      <p className="text-xs">サイズ: {item.clothes.clothes_size}</p>
-                      <p className="text-xs">色: {item.clothes.clothes_color}</p>
-                    </div>
-                  </div>
-                ))}
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+        {clothingList.map((item) => (
+          <div
+            key={item.id}
+            className={`p-2 bg-gray-100 rounded-md shadow cursor-pointer dark:bg-gray-700 ${
+              draggedItemId === item.id ? 'opacity-50' : ''
+            }`}
+            onClick={() => {
+              setEditingItem(item);
+              setFormData({ ...item });
+            }}
+            draggable
+            onDragStart={(e) => handleDragStart(e, item.id)}
+            onDragEnd={handleDragEnd}
+          >
+            <div className="flex flex-col items-center">
+              {item.image ? (
+                <img
+                  src={item.image}
+                  alt={item.clothes_name}
+                  className="object-cover w-full h-auto max-w-xs rounded-md"
+                />
+              ) : (
+                <div className="flex items-center justify-center w-full h-32 bg-gray-200 rounded-md">
+                  <span className="text-gray-500">No Image</span>
+                </div>
+              )}
+              <div className="mt-2 text-center text-gray-800 dark:text-white">
+                <p className="text-sm font-bold sm:text-base">{item.clothes_name}</p>
+                <p className="text-xs sm:text-sm">カテゴリ: {item.category?.category_name || '不明'}</p>
+                <p className="text-xs sm:text-sm">サイズ: {item.size?.size_name || '不明'}</p>
+                <p className="text-xs sm:text-sm">色: {item.color?.color_name || '不明'}</p>
+                <p className="text-xs sm:text-sm">価格: ¥{parseFloat(item.price).toFixed(2)}</p>
               </div>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
+      </div>
       )}
 
       {/* 編集用モーダル */}
