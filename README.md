@@ -93,11 +93,11 @@
 
 ```bash
 # バックエンド
+cd Server
 cp .env.example .env
 
 # フロントエンド
-cd frontend
-cp .env.local.example .env.local
+cp .env.example .env
 ```
 
 .env ファイルの中身を以下に従って設定してください。
