@@ -41,8 +41,8 @@
 | Laravel                | 9.52.16    |
 | PHP                    | 8.0.2      |
 | MySQL                  | 8.0        |
-| Node.js                | 16.17.0    |
-| Next.js                | 13.4.6     |
+| Node.js                | 18.20.4    |
+| Next.js                | 14.2.5     |
 | React                  | 18.2.0     |
 | Tailwind CSS           | 3.4.10     |
 
