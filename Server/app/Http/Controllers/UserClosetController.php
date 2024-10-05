@@ -14,14 +14,17 @@ class UserClosetController extends Controller
     public function index(Request $request)
     {
         $user = Auth::guard('api')->user();
-
+    
         if (!$user) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
-
+    
         try {
-            // 認証ユーザーのクローゼット内の服を取得
-            $clothes = UserCloset::where('user_id', $user->id)->get();
+            // 認証ユーザーのクローゼット内の服を取得し、関連データをロード
+            $clothes = UserCloset::with(['category', 'size', 'color'])
+                ->where('user_id', $user->id)
+                ->get();
+    
             return response()->json(['clothes' => $clothes], 200);
         } catch (\Exception $e) {
             Log::error('Error fetching clothes: ' . $e->getMessage());

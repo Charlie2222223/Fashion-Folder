@@ -21,7 +21,7 @@ class Clothes_SetupsController extends Controller
         return response()->json(['setups' => $setups], 200);
     }
 
-        /**
+    /**
      * ランダムなセットアップを1つ取得して返す
      *
      * @return \Illuminate\Http\JsonResponse
