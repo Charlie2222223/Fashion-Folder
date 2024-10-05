@@ -28,7 +28,7 @@ class Clothes_SetupsController extends Controller
     public function getRandomSetup()
     {
         // ランダムなセットアップを1つ取得
-        $setup = clothes_setups::with('items.clothes')->inRandomOrder()->first();
+        $setup = clothes_setups::with('items.clothes.color', 'items.clothes.size', 'items.clothes.category')->inRandomOrder()->first();
 
         // 取得したデータをJSON形式で返す
         return response()->json(['setup' => $setup], 200);
