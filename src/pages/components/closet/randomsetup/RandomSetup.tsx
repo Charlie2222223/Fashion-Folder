@@ -1,12 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
+interface Category {
+  id: number;
+  category_name: string;
+}
+
+interface Size {
+  id: number;
+  size_name: string;
+}
+
+interface Color {
+  id: number;
+  color_name: string;
+  color_code: string;
+}
+
 interface ClothingItem {
   id: number;
   clothes_name: string;
-  clothes_category: string;
-  clothes_size: string;
-  clothes_color: string;
+  category: Category;
+  size: Size;
+  color: Color;
   clothes_detail: string | null;
   price: number;
   image: string | null;
@@ -62,7 +78,7 @@ const RandomSetup: React.FC = () => {
 
   return (
     <div className="p-4 bg-gray-100 rounded-md shadow dark:bg-gray-700">
-      <h1 className="mb-6 text-xl font-bold text-gray-800 dark:text-white sm:text-2xl">ランダムなセットアップ</h1>
+      <h1 className="mb-6 text-xl font-bold text-gray-800 dark:text-white sm:text-2xl">Random Wear</h1>
       <h2 className="mb-4 text-lg font-bold text-gray-800 dark:text-white">{randomSetup.setup_name}</h2>
       <div className="grid grid-cols-2 gap-4">
         {randomSetup.items.map((item) => (
@@ -80,9 +96,9 @@ const RandomSetup: React.FC = () => {
             )}
             <div className="mt-2 text-center text-gray-800 dark:text-white">
               <p className="text-sm font-bold">{item.clothes.clothes_name}</p>
-              <p className="text-xs">カテゴリ: {item.clothes.clothes_category}</p>
-              <p className="text-xs">サイズ: {item.clothes.clothes_size}</p>
-              <p className="text-xs">色: {item.clothes.clothes_color}</p>
+              <p className="text-xs">カテゴリ: {item.clothes.category.category_name}</p>
+              <p className="text-xs">サイズ: {item.clothes.size.size_name}</p>
+              <p className="text-xs">色: {item.clothes.color.color_name}</p>
             </div>
           </div>
         ))}
