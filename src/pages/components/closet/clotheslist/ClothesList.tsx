@@ -48,23 +48,29 @@ const ClothesList: React.FC = () => {
   const [draggedItemId, setDraggedItemId] = useState<number | null>(null); // 服のアイテム用
   const [isDragOverTrash, setIsDragOverTrash] = useState<boolean>(false);
   const [isTrashModalOpen, setIsTrashModalOpen] = useState<boolean>(false);
-  const [isMobile, setIsMobile] = useState<boolean>(false); // 初期値を false に設定
+  const [isMobile, setIsMobile] = useState<boolean>(false); // 初期値をfalseに設定
   const [selectedClothingItems, setSelectedClothingItems] = useState<number[]>([]);
   const [selectedSetupItems, setSelectedSetupItems] = useState<number[]>([]);
 
   useEffect(() => {
-    // クライアントサイドでのみ実行する処理
-    setIsMobile(window.innerWidth <= 768);
-
-    // 画面のリサイズを監視し、モバイルかどうかを判定
-    const handleResize = () => {
+    // クライアントサイドでのみ window にアクセス
+    if (typeof window !== 'undefined') {
       setIsMobile(window.innerWidth <= 768);
-    };
 
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
+      const handleResize = () => {
+        setIsMobile(window.innerWidth <= 768);
+      };
+
+      window.addEventListener('resize', handleResize);
+      return () => {
+        window.removeEventListener('resize', handleResize);
+      };
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchClothingList();
+    fetchSetupList();
   }, []);
 
   const fetchClothingList = async () => {
@@ -312,6 +318,8 @@ const ClothesList: React.FC = () => {
               </div>
             ))}
           </div>
+
+
           {/* 服の削除ボタン */}
           <button
             className="px-4 py-2 mt-4 text-white bg-red-500 rounded-md"
@@ -356,7 +364,6 @@ const ClothesList: React.FC = () => {
               </div>
             ))}
           </div>
-
           {/* セットアップの削除ボタン */}
           <button
             className="px-4 py-2 mt-4 text-white bg-red-500 rounded-md"
