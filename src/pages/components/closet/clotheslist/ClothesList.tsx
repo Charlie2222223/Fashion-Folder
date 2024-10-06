@@ -139,6 +139,11 @@ const ClothesList: React.FC = () => {
       }
       setSelectedSetupItems([]);
     }
+
+      // モバイル画面であればリロード
+    if (isMobile) {
+      window.location.reload();
+    }
   };
 
   // ドラッグ操作（セットアップ用）
@@ -216,6 +221,7 @@ const ClothesList: React.FC = () => {
       });
 
       setSetupTrashItems((prevTrash) => prevTrash.filter((setup) => setup.id !== setupId));
+      
     } catch (error) {
       console.error('セットアップの削除に失敗しました', error);
     }
