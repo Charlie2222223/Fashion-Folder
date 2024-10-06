@@ -53,6 +53,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // セットアップ一覧の取得
     Route::get('/setups',[Clothes_SetupsController::class, 'index']);
 
+    // セットアップを削除する
+    Route::delete('/setups/{id}', [Clothes_SetupsController::class, 'destroy']);
+
     //ランダムでセットアップを取得
     Route::get('/random-setup', [Clothes_SetupsController::class, 'getRandomSetup']);
 });
