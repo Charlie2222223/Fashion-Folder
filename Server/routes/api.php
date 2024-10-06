@@ -57,7 +57,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/setups/{id}', [Clothes_SetupsController::class, 'destroy']);
 
     //ランダムでセットアップを取得
-    Route::get('/random-setup', [Clothes_SetupsController::class, 'getRandomSetup']);
+    Route::get('/seasonal-setup', [Clothes_SetupsController::class, 'getSeasonalSetup']);
 });
 
 Route::middleware('auth:sanctum')->post('/outfit/save', [SetupController::class, 'store']);
