@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\clothes_setups; // モデル名を適切に修正
+use App\Models\Season;
 
 class Clothes_SetupsController extends Controller
 {
@@ -22,16 +23,33 @@ class Clothes_SetupsController extends Controller
     }
 
     /**
-     * ランダムなセットアップを1つ取得して返す
+     * 季節ごとにランダムでセットアップを取得する
      *
+     * @param  Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getRandomSetup()
+    public function getSeasonalSetup(Request $request)
     {
-        // ランダムなセットアップを1つ取得
-        $setup = clothes_setups::with('items.clothes.color', 'items.clothes.size', 'items.clothes.category')->inRandomOrder()->first();
-
-        // 取得したデータをJSON形式で返す
+        // パラメータの確認
+        \Log::info('Season: ' . $request->input('season'));
+    
+        $seasonName = $request->input('season');
+        $season = Season::where('season_name', $seasonName)->first();
+    
+        if (!$season) {
+            return response()->json(['message' => '指定された季節が見つかりません'], 404);
+        }
+    
+        $setup = clothes_setups::whereHas('seasons', function ($query) use ($season) {
+            $query->where('season_id', $season->id);
+        })->with(['items.clothes.color', 'items.clothes.size', 'items.clothes.category'])
+          ->inRandomOrder()
+          ->first();
+    
+        if (!$setup) {
+            return response()->json(['message' => '指定された季節のセットアップが見つかりませんでした'], 404);
+        }
+    
         return response()->json(['setup' => $setup], 200);
     }
 

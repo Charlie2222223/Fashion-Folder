@@ -40,7 +40,7 @@ interface Setup {
 const RandomSetup: React.FC = () => {
   const [randomSetup, setRandomSetup] = useState<Setup | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [selectedSeason, setSelectedSeason] = useState<string>('spring'); // 初期値として"spring"を設定
+  const [selectedSeason, setSelectedSeason] = useState<string>('春'); // 初期値として"春"を設定
 
   const fetchSeasonalSetup = async (season: string) => {
     setLoading(true); // ボタン押下でロード状態を設定
@@ -57,7 +57,7 @@ const RandomSetup: React.FC = () => {
           Authorization: `Bearer ${authToken}`,
         },
         params: {
-          season, // 選択された季節をAPIに渡す
+          season, // 選択された季節をAPIに渡す（春夏秋冬）
         },
       });
 
@@ -70,11 +70,11 @@ const RandomSetup: React.FC = () => {
   };
 
   const handleSeasonChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedSeason(event.target.value);
+    setSelectedSeason(event.target.value); // 季節の文字列をセット
   };
 
   const handleFetchSetup = () => {
-    fetchSeasonalSetup(selectedSeason);
+    fetchSeasonalSetup(selectedSeason); // 季節を元にセットアップを取得
   };
 
   return (
@@ -92,10 +92,10 @@ const RandomSetup: React.FC = () => {
           onChange={handleSeasonChange}
           className="p-2 text-gray-700 border rounded-md dark:text-white"
         >
-          <option value="spring">春</option>
-          <option value="summer">夏</option>
-          <option value="fall">秋</option>
-          <option value="winter">冬</option>
+          <option value="春">春</option>
+          <option value="夏">夏</option>
+          <option value="秋">秋</option>
+          <option value="冬">冬</option>
         </select>
         <button
           onClick={handleFetchSetup}
