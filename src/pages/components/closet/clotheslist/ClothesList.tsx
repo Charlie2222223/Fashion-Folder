@@ -48,13 +48,13 @@ const ClothesList: React.FC = () => {
   const [draggedItemId, setDraggedItemId] = useState<number | null>(null); // 服のアイテム用
   const [isDragOverTrash, setIsDragOverTrash] = useState<boolean>(false);
   const [isTrashModalOpen, setIsTrashModalOpen] = useState<boolean>(false);
-  const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 768);
+  const [isMobile, setIsMobile] = useState<boolean>(false); // 初期値を false に設定
   const [selectedClothingItems, setSelectedClothingItems] = useState<number[]>([]);
   const [selectedSetupItems, setSelectedSetupItems] = useState<number[]>([]);
 
   useEffect(() => {
-    fetchClothingList();
-    fetchSetupList();
+    // クライアントサイドでのみ実行する処理
+    setIsMobile(window.innerWidth <= 768);
 
     // 画面のリサイズを監視し、モバイルかどうかを判定
     const handleResize = () => {
