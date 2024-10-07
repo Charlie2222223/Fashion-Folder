@@ -22,16 +22,16 @@ const Gaide: React.FC <{ onUserClick: () => void }> = ({ onUserClick }) => {
             className={`max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto ${inView ? 'animate-fade-in-background' : 'opacity-0'}`}
         >
             <div className="max-w-2xl mx-auto mb-8 text-center lg:mb-14">
-                <h2 className="text-3xl font-bold text-gray-800 lg:text-4xl dark:text-neutral-200 mb-7">
+                <h2 className="text-3xl font-bold text-white lg:text-4xl dark:text-neutral-200 mb-7">
                     一歩先のファッションへ
                 </h2>
-                <p className="mt-５ text-gray-800 dark:text-neutral-200">
+                <p className="mt-５ text-white dark:text-neutral-200">
                     今までのアナログな管理をやめて新しいファッションの形に変化
                 </p>
             </div>
 
             <div className="flex justify-center mt-10 space-x-10">
-                <button className="px-10 py-4 text-white bg-blue-500 rounded-md hover:bg-blue-600" onClick={() =>{onUserClick()}}>
+                <button className="px-10 py-4 text-white bg-blue-500 rounded-md hover:bg-blue-600 dark:text-white" onClick={() =>{onUserClick()}}>
                     Login
                 </button>
                 <button className="px-10 py-4 text-white bg-blue-500 rounded-md hover:bg-blue-600" onClick={handleClick}>
