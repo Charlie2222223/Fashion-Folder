@@ -51,6 +51,12 @@ const ClothesList: React.FC = () => {
   const [isMobile, setIsMobile] = useState<boolean>(false); // 初期値をfalseに設定
   const [selectedClothingItems, setSelectedClothingItems] = useState<number[]>([]);
   const [selectedSetupItems, setSelectedSetupItems] = useState<number[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [sizes, setSizes] = useState<Size[]>([]);
+  const [colors, setColors] = useState<Color[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const [selectedSize, setSelectedSize] = useState<number | null>(null);
+  const [selectedColor, setSelectedColor] = useState<number | null>(null);
 
   useEffect(() => {
     // クライアントサイドでのみ window にアクセス
@@ -71,6 +77,7 @@ const ClothesList: React.FC = () => {
   useEffect(() => {
     fetchClothingList();
     fetchSetupList();
+    fetchFilters();
   }, []);
 
   const fetchClothingList = async () => {
@@ -236,6 +243,31 @@ const ClothesList: React.FC = () => {
     }
   };
 
+    // カテゴリ、サイズ、色のフィルタ情報取得
+    const fetchFilters = async () => {
+      try {
+        const authToken = localStorage.getItem('authToken');
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/filters`, {
+          headers: { Authorization: `Bearer ${authToken}` },
+        });
+        setCategories(response.data.categories);
+        setSizes(response.data.sizes);
+        setColors(response.data.colors);
+      } catch (error) {
+        console.error('フィルターの取得に失敗しました', error);
+      }
+    };
+  
+    // フィルタリングされたリスト
+    const filteredClothingList = clothingList.filter((item) => {
+      return (
+        (selectedCategory === null || item.category.id === selectedCategory) &&
+        (selectedSize === null || item.size.id === selectedSize) &&
+        (selectedColor === null || item.color.id === selectedColor)
+      );
+    });
+
+
   // 服のアイテムを完全に削除
   const handleDeletePermanently = async (itemId: number) => {
     try {
@@ -288,6 +320,46 @@ const ClothesList: React.FC = () => {
       )}
 
       <h1 className="mb-6 text-xl font-bold text-gray-800 dark:text-white sm:text-2xl">クローゼットの服一覧</h1>
+      <div className="mb-4 space-y-4 md:space-y-0 md:flex md:space-x-4">
+        <select
+          className="w-full p-2 text-black bg-gray-100 rounded-md"
+          value={selectedCategory || ''}
+          onChange={(e) => setSelectedCategory(e.target.value ? Number(e.target.value) : null)}
+        >
+          <option value="">カテゴリーでフィルター</option>
+          {categories.map((category) => (
+            <option key={category.id} value={category.id}>
+              {category.category_name}
+            </option>
+          ))}
+        </select>
+
+        <select
+          className="w-full p-2 text-black bg-gray-100 rounded-md"
+          value={selectedSize || ''}
+          onChange={(e) => setSelectedSize(e.target.value ? Number(e.target.value) : null)}
+        >
+          <option value="">サイズでフィルター</option>
+          {sizes.map((size) => (
+            <option key={size.id} value={size.id}>
+              {size.size_name}
+            </option>
+          ))}
+        </select>
+
+        <select
+          className="w-full p-2 text-black bg-gray-100 rounded-md"
+          value={selectedColor || ''}
+          onChange={(e) => setSelectedColor(e.target.value ? Number(e.target.value) : null)}
+        >
+          <option value="">色でフィルター</option>
+          {colors.map((color) => (
+            <option key={color.id} value={color.id}>
+              {color.color_name}
+            </option>
+          ))}
+        </select>
+      </div>
       {clothingList.length === 0 ? (
         <div className="flex items-center justify-center min-h-screen pb-40">
           <p className="text-2xl text-center text-gray-800 dark:text-white">クローゼットに服がありません。</p>
