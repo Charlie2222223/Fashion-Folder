@@ -13,7 +13,7 @@ interface User_InfoProps {
 const User_Info: React.FC<User_InfoProps> = ({ onUserClick, onSettingClick, onClose }) => {
   const router = useRouter();
   const [userData, setUserData] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(false); // ローディング状態を管理する状態
+  const [isLoading, setIsLoading] = useState(true); // ローディング状態を初期化
 
   const handleClick = () => {
     router.push('/auth/SignIn');
@@ -30,7 +30,6 @@ const User_Info: React.FC<User_InfoProps> = ({ onUserClick, onSettingClick, onCl
 
   const handleLogout = async () => {
     const token = localStorage.getItem('authToken');
-
     if (token) {
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/logout`, {
@@ -57,7 +56,6 @@ const User_Info: React.FC<User_InfoProps> = ({ onUserClick, onSettingClick, onCl
   useEffect(() => {
     const fetchUserData = async () => {
       const authToken = localStorage.getItem('authToken');
-
       if (authToken) {
         try {
           const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user`, {
@@ -75,9 +73,8 @@ const User_Info: React.FC<User_InfoProps> = ({ onUserClick, onSettingClick, onCl
         } catch (error) {
           console.error('Error occurred:', error);
         }
-      } else {
-        console.error('No token found');
       }
+      setIsLoading(false); // ローディング完了
     };
 
     fetchUserData();
@@ -138,7 +135,7 @@ const User_Info: React.FC<User_InfoProps> = ({ onUserClick, onSettingClick, onCl
         </h1>
         <div className="flex justify-center mb-6">
           <img
-            src={`http://localhost:8000/${userData.avatar}` || 'img/Icon2.png'}
+            src={userData.avatar || 'img/Icon2.png'}
             alt="ユーザーアイコン"
             className="object-cover w-20 h-20 rounded-full"
           />
@@ -148,7 +145,7 @@ const User_Info: React.FC<User_InfoProps> = ({ onUserClick, onSettingClick, onCl
         </p>
         <div
           className="flex items-center justify-between p-2 mb-3 text-xs text-left text-blue-600 rounded cursor-pointer md:text-sm hover:bg-blue-100"
-          onClick={handleCloset} // ローディング付きクローゼット遷移
+          onClick={handleCloset}
         >
           <p>MyClosetへ進む</p>
           <BiCloset className="ml-auto text-lg" />
@@ -167,7 +164,6 @@ const User_Info: React.FC<User_InfoProps> = ({ onUserClick, onSettingClick, onCl
           <p>ログアウト</p>
           <CiLogout className="ml-auto text-lg" />
         </div>
-
         <div className="flex justify-center mt-10 space-x-5">
           <button
             className="px-5 py-2 text-white bg-gray-500 rounded-md hover:bg-gray-600"
