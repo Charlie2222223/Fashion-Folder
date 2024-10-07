@@ -77,7 +77,9 @@ const ClothesList: React.FC = () => {
   useEffect(() => {
     fetchClothingList();
     fetchSetupList();
-    fetchFilters();
+    fetchCategories();
+    fetchSizes();
+    fetchColors();
   }, []);
 
   const fetchClothingList = async () => {
@@ -117,6 +119,42 @@ const ClothesList: React.FC = () => {
       setSetupList(response.data.setups || []);
     } catch (error) {
       console.error('セットアップの取得に失敗しました', error);
+    }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const authToken = localStorage.getItem('authToken');
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/categories`, {
+        headers: { Authorization: `Bearer ${authToken}` },
+      });
+      setCategories(response.data);
+    } catch (error) {
+      console.error("カテゴリの取得に失敗しました", error);
+    }
+  };
+
+  const fetchSizes = async () => {
+    try {
+      const authToken = localStorage.getItem('authToken');
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/sizes`, {
+        headers: { Authorization: `Bearer ${authToken}` },
+      });
+      setSizes(response.data);
+    } catch (error) {
+      console.error("サイズの取得に失敗しました", error);
+    }
+  };
+
+  const fetchColors = async () => {
+    try {
+      const authToken = localStorage.getItem('authToken');
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/colors`, {
+        headers: { Authorization: `Bearer ${authToken}` },
+      });
+      setColors(response.data);
+    } catch (error) {
+      console.error("色の取得に失敗しました", error);
     }
   };
 
@@ -359,6 +397,11 @@ const ClothesList: React.FC = () => {
             </option>
           ))}
         </select>
+        <button
+          className="px-8 py-2 text-center text-white bg-indigo-600 rounded-md"
+        >
+          適用
+        </button>
       </div>
       {clothingList.length === 0 ? (
         <div className="flex items-center justify-center min-h-screen pb-40">
