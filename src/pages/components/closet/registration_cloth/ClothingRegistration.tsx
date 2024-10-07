@@ -78,7 +78,7 @@ const ClothingRegistration: React.FC = () => {
 
   const fetchSizes = async () => {
     try {
-      const response = await axios.get("${process.env.NEXT_PUBLIC_API_BASE_URL}/api/sizes", {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/sizes`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setSizes(response.data);
