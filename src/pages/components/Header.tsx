@@ -58,16 +58,16 @@ const Header: React.FC<{ onUserClick: () => void }> = ({ onUserClick }) => {
         </h1>
       </div>
       <nav className="flex">
-        <button
-          className="relative z-50 block w-12 h-12 overflow-hidden rounded-full shadow focus:outline-none"
-          onClick={onUserClick}
-        >
-          <img
-            src={userData?.avatar ? `http://localhost:8000/${userData.avatar}` : 'img/Icon2.png'}
-            alt="ユーザーアイコン"
-            className="object-cover w-20 h-20 rounded-full"
-          />
-        </button>
+      <button
+        className="relative z-50 w-12 h-12 overflow-hidden rounded-full shadow focus:outline-none"
+        onClick={onUserClick}
+      >
+        <img
+          src={userData?.avatar || 'img/Icon2.png'}
+          alt="ユーザーアイコン"
+          className="object-cover object-center w-full h-full" // object-centerで画像を中央揃え
+        />
+      </button>
         <div className="hidden lg:flex">
           <a href="#home" className="flex items-center ml-6 text-white hover:text-gray-400">
             <FaHome size={28} />
