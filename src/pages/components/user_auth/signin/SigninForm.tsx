@@ -29,7 +29,7 @@ const SigninForm: React.FC = () => {
   
       // 正常に登録された場合、次のページにPOSTリクエストでデータを渡す
       router.push({
-        pathname: '/Verifications',
+        pathname: 'auth/Verifications',
         query: {
           name: formData.name,
           email: formData.email,
