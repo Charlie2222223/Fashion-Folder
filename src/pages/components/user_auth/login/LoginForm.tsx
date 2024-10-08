@@ -19,26 +19,27 @@ const SignInForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-
+  
     try {
       const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/login`, {
         email,
         password,
       });
-
-      const token = response.data.access_token;
-
+  
+      // サーバーから返ってきたトークンを取得
+      const token = response.data.token;
+  
       // トークンをローカルストレージに保存
       localStorage.setItem('authToken', token);
-
+  
       // Axiosのデフォルトヘッダーにトークンを設定
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-
-      // 必要に応じて他のユーザーデータを保存
+  
+      // ユーザーデータを保存
       localStorage.setItem('user', JSON.stringify(response.data.user));
-
+  
       // ログイン後にリダイレクト
-      router.push('/'); // Next.jsのルーターを使用
+      window.location.reload(); // ページをリロード
     } catch (error) {
       const err = error as any;
       if (err.response && err.response.data.errors) {
@@ -82,7 +83,7 @@ const SignInForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
           <div className="grid gap-y-4">
             {errors.general && <p className="text-sm text-red-500">{errors.general}</p>}
             <div>
-              <label className="block mb-2 text-sm dark:text-white" htmlFor="email">
+              <label className="block mb-2 text-sm text-black dark:text-white" htmlFor="email">
                 メールアドレス
               </label>
               <input
@@ -98,12 +99,12 @@ const SignInForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             </div>
             <div>
               <div className="flex items-center justify-between">
-                <label className="block mb-2 text-sm dark:text-white" htmlFor="password">
+                <label className="block mb-2 text-sm text-black dark:text-white" htmlFor="password">
                   パスワード
                 </label>
               </div>
               <input
-                className="block w-full px-4 py-3 text-sm border border-gray-200 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:placeholder-neutral-500 dark:focus:bg-neutral-800 dark:focus:ring-neutral-600"
+                className="block w-full px-4 py-3 text-sm text-black border border-gray-200 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:placeholder-neutral-500 dark:focus:bg-neutral-800 dark:focus:ring-neutral-600"
                 id="password"
                 name="password"
                 required
@@ -112,7 +113,7 @@ const SignInForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                 onChange={(e) => setPassword(e.target.value)}
               />
               {errors.password && <p className="mt-2 text-sm text-red-500">{errors.password}</p>}
-              <a className="inline-flex items-center mt-2 text-sm text-blue-600 gap-x-1 decoration-2 hover:underline dark:text-blue-500" href="#">
+              <a className="inline-flex items-center mt-2 text-sm text-blue-600 gap-x-1 decoration-2 hover:underline dark:text-blue-500" href="user-modal/PasswordChange">
                 パスワードをお忘れですか？
               </a>
             </div>
