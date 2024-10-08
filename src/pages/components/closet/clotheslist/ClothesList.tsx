@@ -640,13 +640,30 @@ const ClothesList: React.FC = () => {
                 {setupTrashItems.length > 0 && (
                   <>
                     <h3 className="mt-6 text-lg font-semibold text-gray-800 dark:text-white">セットアップ</h3>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
                       {setupTrashItems.map((setup) => (
                         <div
                           key={setup.id}
-                          className="p-2 bg-gray-100 rounded-md shadow dark:bg-gray-700"
+                          className="p-4 bg-gray-100 rounded-md shadow dark:bg-gray-700"
                         >
-                          <h4 className="text-sm font-bold text-center">{setup.setup_name}</h4>
+                          <h2 className="mb-2 text-lg font-bold text-gray-800 dark:text-white">{setup.setup_name}</h2>
+                          <div className="grid grid-cols-2 gap-4">
+                            {setup.items.map((item) => (
+                              <div key={item.id} className="flex flex-col items-center">
+                                {item.clothes.image ? (
+                                  <img
+                                    src={item.clothes.image}
+                                    alt={item.clothes.clothes_name}
+                                    className="object-cover w-full h-auto max-w-xs rounded-md"
+                                  />
+                                ) : (
+                                  <div className="flex items-center justify-center w-full h-32 bg-gray-200 rounded-md">
+                                    <span className="text-gray-500">No Image</span>
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+                          </div>
                           <div className="flex justify-center mt-2 space-x-2">
                             <button
                               onClick={() => handleRestoreSetup(setup.id)}
