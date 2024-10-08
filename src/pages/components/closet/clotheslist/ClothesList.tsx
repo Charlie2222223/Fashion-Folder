@@ -59,6 +59,7 @@ const ClothesList: React.FC = () => {
   const [selectedColor, setSelectedColor] = useState<number | null>(null);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState<boolean>(false);
   const [filteredClothingList, setFilteredClothingList] = useState<ClothingItem[]>([]);
+  const [viewMode, setViewMode] = useState<'clothes' | 'setups'>('clothes'); // 表示モードを追加
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -163,14 +164,14 @@ const ClothesList: React.FC = () => {
   };
 
   const handleDeleteSelectedItems = async () => {
-    if (selectedClothingItems.length > 0) {
+    if (viewMode === 'clothes' && selectedClothingItems.length > 0) {
       for (const itemId of selectedClothingItems) {
         await handleDeletePermanently(itemId);
       }
       setSelectedClothingItems([]);
     }
 
-    if (selectedSetupItems.length > 0) {
+    if (viewMode === 'setups' && selectedSetupItems.length > 0) {
       for (const setupId of selectedSetupItems) {
         await handleDeleteSetupPermanently(setupId);
       }
@@ -339,13 +340,35 @@ const ClothesList: React.FC = () => {
 
       <h1 className="mb-6 text-xl font-bold text-gray-800 dark:text-white sm:text-2xl">クローゼットの服一覧</h1>
 
-      {/* フィルターを開くボタン */}
-      <button
-        className="px-4 py-2 mb-4 text-white bg-indigo-600 rounded-md"
-        onClick={() => setIsFilterModalOpen(true)}
-      >
-        フィルター
-      </button>
+      {/* 表示モード切り替えボタン */}
+      <div className="mb-4">
+        <button
+          className={`px-4 py-2 mr-2 rounded-md ${
+            viewMode === 'clothes' ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-white'
+          }`}
+          onClick={() => setViewMode('clothes')}
+        >
+          服一覧
+        </button>
+        <button
+          className={`px-4 py-2 rounded-md ${
+            viewMode === 'setups' ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-white'
+          }`}
+          onClick={() => setViewMode('setups')}
+        >
+          セットアップ一覧
+        </button>
+      </div>
+
+      {/* フィルターを開くボタン（服一覧のみ表示） */}
+      {viewMode === 'clothes' && (
+        <button
+          className="px-4 py-2 mb-4 text-white bg-indigo-600 rounded-md"
+          onClick={() => setIsFilterModalOpen(true)}
+        >
+          フィルター
+        </button>
+      )}
 
       {/* フィルターモーダル */}
       {isFilterModalOpen && (
@@ -417,68 +440,28 @@ const ClothesList: React.FC = () => {
         </div>
       )}
 
-      {filteredClothingList.length === 0 ? (
-        <div className="flex items-center justify-center min-h-screen pb-40">
-          <p className="text-2xl text-center text-gray-800 dark:text-white">クローゼットに服がありません。</p>
-        </div>
-      ) : isMobile ? (
+      {/* 服一覧ビュー */}
+      {viewMode === 'clothes' && (
         <>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-            {filteredClothingList.map((item) => (
-              <div key={item.id} className="p-2 bg-gray-100 rounded-md shadow cursor-pointer dark:bg-gray-700">
-                <input
-                  type="checkbox"
-                  checked={selectedClothingItems.includes(item.id)}
-                  onChange={() => handleSelectClothingItem(item.id)}
-                />
-                <div className="flex flex-col items-center">
-                  {item.image ? (
-                    <img
-                      src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${item.image}`}
-                      alt={item.clothes_name}
-                      className="object-cover w-full h-auto max-w-xs rounded-md"
+          {filteredClothingList.length === 0 ? (
+            <div className="flex items-center justify-center min-h-screen pb-40">
+              <p className="text-2xl text-center text-gray-800 dark:text-white">クローゼットに服がありません。</p>
+            </div>
+          ) : isMobile ? (
+            <>
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+                {filteredClothingList.map((item) => (
+                  <div key={item.id} className="p-2 bg-gray-100 rounded-md shadow cursor-pointer dark:bg-gray-700">
+                    <input
+                      type="checkbox"
+                      checked={selectedClothingItems.includes(item.id)}
+                      onChange={() => handleSelectClothingItem(item.id)}
                     />
-                  ) : (
-                    <div className="flex items-center justify-center w-full h-32 bg-gray-200 rounded-md">
-                      <span className="text-gray-500">No Image</span>
-                    </div>
-                  )}
-                  <div className="mt-2 text-center text-gray-800 dark:text-white">
-                    <p className="text-sm font-bold sm:text-base">{item.clothes_name}</p>
-                    <p className="text-xs sm:text-sm">カテゴリ: {item.category.category_name}</p>
-                    <p className="text-xs sm:text-sm">サイズ: {item.size.size_name}</p>
-                    <p className="text-xs sm:text-sm">色: {item.color.color_name}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* 服の削除ボタン */}
-          <button
-            className="px-4 py-2 mt-4 text-white bg-red-500 rounded-md"
-            onClick={() => handleDeleteSelectedItems()}
-          >
-            選択した服を削除
-          </button>
-
-          <h1 className="mt-10 mb-6 text-xl font-bold text-gray-800 dark:text-white sm:text-2xl">セットアップ一覧</h1>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-            {setupList.map((setup) => (
-              <div key={setup.id} className="p-4 bg-gray-100 rounded-md shadow dark:bg-gray-700">
-                <input
-                  type="checkbox"
-                  checked={selectedSetupItems.includes(setup.id)}
-                  onChange={() => handleSelectSetupItem(setup.id)}
-                />
-                <h2 className="mb-2 text-lg font-bold text-gray-800 dark:text-white">{setup.setup_name}</h2>
-                <div className="grid grid-cols-2 gap-4">
-                  {setup.items.map((item) => (
-                    <div key={item.id} className="flex flex-col items-center">
-                      {item.clothes.image ? (
+                    <div className="flex flex-col items-center">
+                      {item.image ? (
                         <img
-                          src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${item.clothes.image}`}
-                          alt={item.clothes.clothes_name}
+                          src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${item.image}`}
+                          alt={item.clothes_name}
                           className="object-cover w-full h-auto max-w-xs rounded-md"
                         />
                       ) : (
@@ -487,100 +470,193 @@ const ClothesList: React.FC = () => {
                         </div>
                       )}
                       <div className="mt-2 text-center text-gray-800 dark:text-white">
-                        <p className="text-sm font-bold">{item.clothes.clothes_name}</p>
-                        <p className="text-xs">カテゴリ: {item.clothes.category?.category_name || '不明'}</p>
-                        <p className="text-xs">サイズ: {item.clothes.size?.size_name || '不明'}</p>
-                        <p className="text-xs">色: {item.clothes.color?.color_name || '不明'}</p>
+                        <p className="text-sm font-bold sm:text-base">{item.clothes_name}</p>
+                        <p className="text-xs sm:text-sm">カテゴリ: {item.category.category_name}</p>
+                        <p className="text-xs sm:text-sm">サイズ: {item.size.size_name}</p>
+                        <p className="text-xs sm:text-sm">色: {item.color.color_name}</p>
                       </div>
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-          {/* セットアップの削除ボタン */}
-          <button
-            className="px-4 py-2 mt-4 text-white bg-red-500 rounded-md"
-            onClick={() => handleDeleteSelectedItems()}
-          >
-            選択したセットアップを削除
-          </button>
+
+              {/* 服の削除ボタン */}
+              {selectedClothingItems.length > 0 && (
+                <button
+                  className="px-4 py-2 mt-4 text-white bg-red-500 rounded-md"
+                  onClick={handleDeleteSelectedItems}
+                >
+                  選択した服を削除
+                </button>
+              )}
+            </>
+          ) : (
+            <>
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+                {filteredClothingList.map((item) => (
+                  <div
+                    key={item.id}
+                    className={`p-2 bg-gray-100 rounded-md shadow cursor-pointer dark:bg-gray-700 ${
+                      draggedItemId === item.id ? 'opacity-50' : ''
+                    }`}
+                    draggable
+                    onDragStart={(e) => handleDragStartItem(e, item.id)}
+                    onDragEnd={handleDragEnd}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={selectedClothingItems.includes(item.id)}
+                      onChange={() => handleSelectClothingItem(item.id)}
+                    />
+                    <div className="flex flex-col items-center">
+                      {item.image ? (
+                        <img
+                          src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${item.image}`}
+                          alt={item.clothes_name}
+                          className="object-cover w-full h-auto max-w-xs rounded-md"
+                        />
+                      ) : (
+                        <div className="flex items-center justify-center w-full h-32 bg-gray-200 rounded-md">
+                          <span className="text-gray-500">No Image</span>
+                        </div>
+                      )}
+                      <div className="mt-2 text-center text-gray-800 dark:text-white">
+                        <p className="text-sm font-bold sm:text-base">{item.clothes_name}</p>
+                        <p className="text-xs sm:text-sm">カテゴリ: {item.category.category_name}</p>
+                        <p className="text-xs sm:text-sm">サイズ: {item.size.size_name}</p>
+                        <p className="text-xs sm:text-sm">色: {item.color.color_name}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* 服の削除ボタン */}
+              {selectedClothingItems.length > 0 && (
+                <button
+                  className="px-4 py-2 mt-4 text-white bg-red-500 rounded-md"
+                  onClick={handleDeleteSelectedItems}
+                >
+                  選択した服を削除
+                </button>
+              )}
+            </>
+          )}
         </>
-      ) : (
-        <>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-            {filteredClothingList.map((item) => (
-              <div
-                key={item.id}
-                className={`p-2 bg-gray-100 rounded-md shadow cursor-pointer dark:bg-gray-700 ${
-                  draggedItemId === item.id ? 'opacity-50' : ''
-                }`}
-                draggable
-                onDragStart={(e) => handleDragStartItem(e, item.id)}
-                onDragEnd={handleDragEnd}
-              >
-                <div className="flex flex-col items-center">
-                  {item.image ? (
-                    <img
-                      src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${item.image}`}
-                      alt={item.clothes_name}
-                      className="object-cover w-full h-auto max-w-xs rounded-md"
-                    />
-                  ) : (
-                    <div className="flex items-center justify-center w-full h-32 bg-gray-200 rounded-md">
-                      <span className="text-gray-500">No Image</span>
-                    </div>
-                  )}
-                  <div className="mt-2 text-center text-gray-800 dark:text-white">
-                    <p className="text-sm font-bold sm:text-base">{item.clothes_name}</p>
-                    <p className="text-xs sm:text-sm">カテゴリ: {item.category.category_name}</p>
-                    <p className="text-xs sm:text-sm">サイズ: {item.size.size_name}</p>
-                    <p className="text-xs sm:text-sm">色: {item.color.color_name}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+      )}
 
-          <h1 className="mt-10 mb-6 text-xl font-bold text-gray-800 dark:text-white sm:text-2xl">セットアップ一覧</h1>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-            {setupList.map((setup) => (
-              <div
-                key={setup.id}
-                className={`p-4 bg-gray-100 rounded-md shadow dark:bg-gray-700 ${
-                  draggedSetupId === setup.id ? 'opacity-50' : ''
-                }`}
-                draggable
-                onDragStart={(e) => handleDragStartSetup(e, setup.id)}
-                onDragEnd={handleDragEnd}
-              >
-                <h2 className="mb-2 text-lg font-bold text-gray-800 dark:text-white">{setup.setup_name}</h2>
-                <div className="grid grid-cols-2 gap-4">
-                  {setup.items.map((item) => (
-                    <div key={item.id} className="flex flex-col items-center">
-                      {item.clothes.image ? (
-                        <img
-                          src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${item.clothes.image}`}
-                          alt={item.clothes.clothes_name}
-                          className="object-cover w-full h-auto max-w-xs rounded-md"
-                        />
-                      ) : (
-                        <div className="flex items-center justify-center w-full h-32 bg-gray-200 rounded-md">
-                          <span className="text-gray-500">No Image</span>
+      {/* セットアップ一覧ビュー */}
+      {viewMode === 'setups' && (
+        <>
+          {setupList.length === 0 ? (
+            <div className="flex items-center justify-center min-h-screen pb-40">
+              <p className="text-2xl text-center text-gray-800 dark:text-white">セットアップがありません。</p>
+            </div>
+          ) : isMobile ? (
+            <>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+                {setupList.map((setup) => (
+                  <div key={setup.id} className="p-4 bg-gray-100 rounded-md shadow dark:bg-gray-700">
+                    <input
+                      type="checkbox"
+                      checked={selectedSetupItems.includes(setup.id)}
+                      onChange={() => handleSelectSetupItem(setup.id)}
+                    />
+                    <h2 className="mb-2 text-lg font-bold text-gray-800 dark:text-white">{setup.setup_name}</h2>
+                    <div className="grid grid-cols-2 gap-4">
+                      {setup.items.map((item) => (
+                        <div key={item.id} className="flex flex-col items-center">
+                          {item.clothes.image ? (
+                            <img
+                              src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${item.clothes.image}`}
+                              alt={item.clothes.clothes_name}
+                              className="object-cover w-full h-auto max-w-xs rounded-md"
+                            />
+                          ) : (
+                            <div className="flex items-center justify-center w-full h-32 bg-gray-200 rounded-md">
+                              <span className="text-gray-500">No Image</span>
+                            </div>
+                          )}
+                          <div className="mt-2 text-center text-gray-800 dark:text-white">
+                            <p className="text-sm font-bold">{item.clothes.clothes_name}</p>
+                            <p className="text-xs">カテゴリ: {item.clothes.category?.category_name || '不明'}</p>
+                            <p className="text-xs">サイズ: {item.clothes.size?.size_name || '不明'}</p>
+                            <p className="text-xs">色: {item.clothes.color?.color_name || '不明'}</p>
+                          </div>
                         </div>
-                      )}
-                      <div className="mt-2 text-center text-gray-800 dark:text-white">
-                        <p className="text-sm font-bold">{item.clothes.clothes_name}</p>
-                        <p className="text-xs">カテゴリ: {item.clothes.category?.category_name || '不明'}</p>
-                        <p className="text-xs">サイズ: {item.clothes.size?.size_name || '不明'}</p>
-                        <p className="text-xs">色: {item.clothes.color?.color_name || '不明'}</p>
-                      </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+
+              {/* セットアップの削除ボタン */}
+              {selectedSetupItems.length > 0 && (
+                <button
+                  className="px-4 py-2 mt-4 text-white bg-red-500 rounded-md"
+                  onClick={handleDeleteSelectedItems}
+                >
+                  選択したセットアップを削除
+                </button>
+              )}
+            </>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+                {setupList.map((setup) => (
+                  <div
+                    key={setup.id}
+                    className={`p-4 bg-gray-100 rounded-md shadow dark:bg-gray-700 ${
+                      draggedSetupId === setup.id ? 'opacity-50' : ''
+                    }`}
+                    draggable
+                    onDragStart={(e) => handleDragStartSetup(e, setup.id)}
+                    onDragEnd={handleDragEnd}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={selectedSetupItems.includes(setup.id)}
+                      onChange={() => handleSelectSetupItem(setup.id)}
+                    />
+                    <h2 className="mb-2 text-lg font-bold text-gray-800 dark:text-white">{setup.setup_name}</h2>
+                    <div className="grid grid-cols-2 gap-4">
+                      {setup.items.map((item) => (
+                        <div key={item.id} className="flex flex-col items-center">
+                          {item.clothes.image ? (
+                            <img
+                              src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${item.clothes.image}`}
+                              alt={item.clothes.clothes_name}
+                              className="object-cover w-full h-auto max-w-xs rounded-md"
+                            />
+                          ) : (
+                            <div className="flex items-center justify-center w-full h-32 bg-gray-200 rounded-md">
+                              <span className="text-gray-500">No Image</span>
+                            </div>
+                          )}
+                          <div className="mt-2 text-center text-gray-800 dark:text-white">
+                            <p className="text-sm font-bold">{item.clothes.clothes_name}</p>
+                            <p className="text-xs">カテゴリ: {item.clothes.category?.category_name || '不明'}</p>
+                            <p className="text-xs">サイズ: {item.clothes.size?.size_name || '不明'}</p>
+                            <p className="text-xs">色: {item.clothes.color?.color_name || '不明'}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* セットアップの削除ボタン */}
+              {selectedSetupItems.length > 0 && (
+                <button
+                  className="px-4 py-2 mt-4 text-white bg-red-500 rounded-md"
+                  onClick={handleDeleteSelectedItems}
+                >
+                  選択したセットアップを削除
+                </button>
+              )}
+            </>
+          )}
         </>
       )}
 
