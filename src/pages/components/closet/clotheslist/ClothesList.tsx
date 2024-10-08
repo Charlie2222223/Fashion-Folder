@@ -18,6 +18,11 @@ interface Color {
   color_code: string;
 }
 
+interface Season {
+  id: number;
+  season_name: string;
+}
+
 interface ClothingItem {
   id: number;
   clothes_name: string;
@@ -32,6 +37,7 @@ interface ClothingItem {
 interface Setup {
   id: number;
   setup_name: string;
+  season: Season; // Added season property
   items: {
     id: number;
     clothes: ClothingItem;
@@ -54,11 +60,14 @@ const ClothesList: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [sizes, setSizes] = useState<Size[]>([]);
   const [colors, setColors] = useState<Color[]>([]);
+  const [seasons, setSeasons] = useState<Season[]>([]); // Added seasons state
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [selectedSize, setSelectedSize] = useState<number | null>(null);
   const [selectedColor, setSelectedColor] = useState<number | null>(null);
+  const [selectedSeason, setSelectedSeason] = useState<number | null>(null); // Added selectedSeason state
   const [isFilterModalOpen, setIsFilterModalOpen] = useState<boolean>(false);
   const [filteredClothingList, setFilteredClothingList] = useState<ClothingItem[]>([]);
+  const [filteredSetupList, setFilteredSetupList] = useState<Setup[]>([]); // Added filteredSetupList
   const [viewMode, setViewMode] = useState<'clothes' | 'setups'>('clothes'); // 表示モードを追加
 
   useEffect(() => {
@@ -82,6 +91,7 @@ const ClothesList: React.FC = () => {
     fetchCategories();
     fetchSizes();
     fetchColors();
+    fetchSeasons(); // Fetch seasons
   }, []);
 
   const fetchClothingList = async () => {
@@ -110,6 +120,7 @@ const ClothesList: React.FC = () => {
         },
       });
       setSetupList(response.data.setups || []);
+      setFilteredSetupList(response.data.setups || []); // Initialize filteredSetupList
     } catch (error) {
       console.error('セットアップの取得に失敗しました', error);
     }
@@ -148,6 +159,18 @@ const ClothesList: React.FC = () => {
       setColors(response.data);
     } catch (error) {
       console.error("色の取得に失敗しました", error);
+    }
+  };
+
+  const fetchSeasons = async () => { // Fetch seasons from API
+    try {
+      const authToken = localStorage.getItem('authToken');
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/seasons`, {
+        headers: { Authorization: `Bearer ${authToken}` },
+      });
+      setSeasons(response.data);
+    } catch (error) {
+      console.error("季節の取得に失敗しました", error);
     }
   };
 
@@ -276,14 +299,23 @@ const ClothesList: React.FC = () => {
 
   // フィルターの適用
   const handleFilter = () => {
-    const filteredList = clothingList.filter((item) => {
-      return (
-        (selectedCategory === null || item.category.id === selectedCategory) &&
-        (selectedSize === null || item.size.id === selectedSize) &&
-        (selectedColor === null || item.color.id === selectedColor)
-      );
-    });
-    setFilteredClothingList(filteredList);
+    if (viewMode === 'clothes') {
+      const filteredList = clothingList.filter((item) => {
+        return (
+          (selectedCategory === null || item.category.id === selectedCategory) &&
+          (selectedSize === null || item.size.id === selectedSize) &&
+          (selectedColor === null || item.color.id === selectedColor)
+        );
+      });
+      setFilteredClothingList(filteredList);
+    } else if (viewMode === 'setups') {
+      const filteredList = setupList.filter((setup) => {
+        return (
+          (selectedSeason === null || setup.season.id === selectedSeason)
+        );
+      });
+      setFilteredSetupList(filteredList);
+    }
     setIsFilterModalOpen(false); // モーダルを閉じる
   };
 
@@ -338,13 +370,17 @@ const ClothesList: React.FC = () => {
         </div>
       )}
 
-      <h1 className="mb-6 text-xl font-bold text-gray-800 dark:text-white sm:text-2xl">クローゼットの服一覧</h1>
+      <h1 className="mb-6 text-xl font-bold text-gray-800 dark:text-white sm:text-2xl">
+        クローゼットの服一覧
+      </h1>
 
       {/* 表示モード切り替えボタン */}
       <div className="mb-4">
         <button
           className={`px-4 py-2 mr-2 rounded-md ${
-            viewMode === 'clothes' ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-white'
+            viewMode === 'clothes'
+              ? 'bg-indigo-600 text-white'
+              : 'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-white'
           }`}
           onClick={() => setViewMode('clothes')}
         >
@@ -352,7 +388,9 @@ const ClothesList: React.FC = () => {
         </button>
         <button
           className={`px-4 py-2 rounded-md ${
-            viewMode === 'setups' ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-white'
+            viewMode === 'setups'
+              ? 'bg-indigo-600 text-white'
+              : 'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-white'
           }`}
           onClick={() => setViewMode('setups')}
         >
@@ -360,70 +398,108 @@ const ClothesList: React.FC = () => {
         </button>
       </div>
 
-      {/* フィルターを開くボタン（服一覧のみ表示） */}
-      {viewMode === 'clothes' && (
-        <button
-          className="px-4 py-2 mb-4 text-white bg-indigo-600 rounded-md"
-          onClick={() => setIsFilterModalOpen(true)}
-        >
-          フィルター
-        </button>
-      )}
+      {/* フィルターを開くボタン */}
+      <div className="mb-4">
+        {viewMode === 'clothes' && (
+          <button
+            className="px-4 py-2 mb-4 text-white bg-indigo-600 rounded-md"
+            onClick={() => setIsFilterModalOpen(true)}
+          >
+            フィルター
+          </button>
+        )}
+        {viewMode === 'setups' && (
+          <button
+            className="px-4 py-2 mb-4 text-white bg-indigo-600 rounded-md"
+            onClick={() => setIsFilterModalOpen(true)}
+          >
+            フィルター（季節）
+          </button>
+        )}
+      </div>
 
       {/* フィルターモーダル */}
       {isFilterModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="w-full max-w-lg p-4 mx-auto bg-white rounded-md dark:bg-gray-800 sm:p-6">
             <h2 className="mb-4 text-xl font-semibold text-gray-800 dark:text-white">フィルター</h2>
-            <div className="mb-4 space-y-4 md:space-y-0 md:flex md:space-x-4">
-              <select
-                className="w-full p-2 text-black bg-gray-100 rounded-md"
-                value={selectedCategory || ''}
-                onChange={(e) => setSelectedCategory(e.target.value ? Number(e.target.value) : null)}
-              >
-                <option value="">Category</option>
-                {categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.category_name}
-                  </option>
-                ))}
-              </select>
+            {viewMode === 'clothes' && (
+              <div className="mb-4 space-y-4 md:space-y-0 md:flex md:space-x-4">
+                <select
+                  className="w-full p-2 text-black bg-gray-100 rounded-md"
+                  value={selectedCategory || ''}
+                  onChange={(e) =>
+                    setSelectedCategory(e.target.value ? Number(e.target.value) : null)
+                  }
+                >
+                  <option value="">カテゴリ</option>
+                  {categories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.category_name}
+                    </option>
+                  ))}
+                </select>
 
-              <select
-                className="w-full p-2 text-black bg-gray-100 rounded-md"
-                value={selectedSize || ''}
-                onChange={(e) => setSelectedSize(e.target.value ? Number(e.target.value) : null)}
-              >
-                <option value="">Size</option>
-                {sizes.map((size) => (
-                  <option key={size.id} value={size.id}>
-                    {size.size_name}
-                  </option>
-                ))}
-              </select>
+                <select
+                  className="w-full p-2 text-black bg-gray-100 rounded-md"
+                  value={selectedSize || ''}
+                  onChange={(e) => setSelectedSize(e.target.value ? Number(e.target.value) : null)}
+                >
+                  <option value="">サイズ</option>
+                  {sizes.map((size) => (
+                    <option key={size.id} value={size.id}>
+                      {size.size_name}
+                    </option>
+                  ))}
+                </select>
 
-              <select
-                className="w-full p-2 text-black bg-gray-100 rounded-md"
-                value={selectedColor || ''}
-                onChange={(e) => setSelectedColor(e.target.value ? Number(e.target.value) : null)}
-              >
-                <option value="">Color</option>
-                {colors.map((color) => (
-                  <option key={color.id} value={color.id}>
-                    {color.color_name}
-                  </option>
-                ))}
-              </select>
-            </div>
+                <select
+                  className="w-full p-2 text-black bg-gray-100 rounded-md"
+                  value={selectedColor || ''}
+                  onChange={(e) => setSelectedColor(e.target.value ? Number(e.target.value) : null)}
+                >
+                  <option value="">色</option>
+                  {colors.map((color) => (
+                    <option key={color.id} value={color.id}>
+                      {color.color_name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            {viewMode === 'setups' && (
+              <div className="mb-4 space-y-4 md:space-y-0 md:flex md:space-x-4">
+                <select
+                  className="w-full p-2 text-black bg-gray-100 rounded-md"
+                  value={selectedSeason || ''}
+                  onChange={(e) => setSelectedSeason(e.target.value ? Number(e.target.value) : null)}
+                >
+                  <option value="">季節</option>
+                  {seasons.map((season) => (
+                    <option key={season.id} value={season.id}>
+                      {season.season_name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
             <div className="flex justify-end mt-4 space-x-2">
               <button
                 className="px-4 py-2 text-sm text-gray-800 bg-gray-200 rounded-md hover:bg-gray-300"
                 onClick={() => {
-                  // フィルターをクリア
-                  setSelectedCategory(null);
-                  setSelectedSize(null);
-                  setSelectedColor(null);
-                  setFilteredClothingList(clothingList);
+                  if (viewMode === 'clothes') {
+                    // フィルターをクリア
+                    setSelectedCategory(null);
+                    setSelectedSize(null);
+                    setSelectedColor(null);
+                    setFilteredClothingList(clothingList);
+                  } else if (viewMode === 'setups') {
+                    // フィルターをクリア
+                    setSelectedSeason(null);
+                    setFilteredSetupList(setupList);
+                  }
                   setIsFilterModalOpen(false);
                 }}
               >
@@ -445,7 +521,9 @@ const ClothesList: React.FC = () => {
         <>
           {filteredClothingList.length === 0 ? (
             <div className="flex items-center justify-center min-h-screen pb-40">
-              <p className="text-2xl text-center text-gray-800 dark:text-white">クローゼットに服がありません。</p>
+              <p className="text-2xl text-center text-gray-800 dark:text-white">
+                クローゼットに服がありません。
+              </p>
             </div>
           ) : isMobile ? (
             <>
@@ -480,8 +558,8 @@ const ClothesList: React.FC = () => {
                 ))}
               </div>
 
-              {/* 服の削除ボタン */}
-              {selectedClothingItems.length > 0 && (
+              {/* 服の削除ボタン（モバイルのみ表示） */}
+              {isMobile && selectedClothingItems.length > 0 && (
                 <button
                   className="px-4 py-2 mt-4 text-white bg-red-500 rounded-md"
                   onClick={handleDeleteSelectedItems}
@@ -531,8 +609,8 @@ const ClothesList: React.FC = () => {
                 ))}
               </div>
 
-              {/* 服の削除ボタン */}
-              {selectedClothingItems.length > 0 && (
+              {/* 服の削除ボタン（モバイルのみ表示） */}
+              {isMobile && selectedClothingItems.length > 0 && (
                 <button
                   className="px-4 py-2 mt-4 text-white bg-red-500 rounded-md"
                   onClick={handleDeleteSelectedItems}
@@ -548,21 +626,28 @@ const ClothesList: React.FC = () => {
       {/* セットアップ一覧ビュー */}
       {viewMode === 'setups' && (
         <>
-          {setupList.length === 0 ? (
+          {filteredSetupList.length === 0 ? (
             <div className="flex items-center justify-center min-h-screen pb-40">
-              <p className="text-2xl text-center text-gray-800 dark:text-white">セットアップがありません。</p>
+              <p className="text-2xl text-center text-gray-800 dark:text-white">
+                セットアップがありません。
+              </p>
             </div>
           ) : isMobile ? (
             <>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-                {setupList.map((setup) => (
+                {filteredSetupList.map((setup) => (
                   <div key={setup.id} className="p-4 bg-gray-100 rounded-md shadow dark:bg-gray-700">
                     <input
                       type="checkbox"
                       checked={selectedSetupItems.includes(setup.id)}
                       onChange={() => handleSelectSetupItem(setup.id)}
                     />
-                    <h2 className="mb-2 text-lg font-bold text-gray-800 dark:text-white">{setup.setup_name}</h2>
+                    <h2 className="mb-2 text-lg font-bold text-gray-800 dark:text-white">
+                      {setup.setup_name}
+                    </h2>
+                    <p className="text-xs text-gray-600 dark:text-gray-300">
+                      季節: {setup.season.season_name}
+                    </p>
                     <div className="grid grid-cols-2 gap-4">
                       {setup.items.map((item) => (
                         <div key={item.id} className="flex flex-col items-center">
@@ -590,8 +675,8 @@ const ClothesList: React.FC = () => {
                 ))}
               </div>
 
-              {/* セットアップの削除ボタン */}
-              {selectedSetupItems.length > 0 && (
+              {/* セットアップの削除ボタン（モバイルのみ表示） */}
+              {isMobile && selectedSetupItems.length > 0 && (
                 <button
                   className="px-4 py-2 mt-4 text-white bg-red-500 rounded-md"
                   onClick={handleDeleteSelectedItems}
@@ -603,7 +688,7 @@ const ClothesList: React.FC = () => {
           ) : (
             <>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-                {setupList.map((setup) => (
+                {filteredSetupList.map((setup) => (
                   <div
                     key={setup.id}
                     className={`p-4 bg-gray-100 rounded-md shadow dark:bg-gray-700 ${
@@ -618,7 +703,12 @@ const ClothesList: React.FC = () => {
                       checked={selectedSetupItems.includes(setup.id)}
                       onChange={() => handleSelectSetupItem(setup.id)}
                     />
-                    <h2 className="mb-2 text-lg font-bold text-gray-800 dark:text-white">{setup.setup_name}</h2>
+                    <h2 className="mb-2 text-lg font-bold text-gray-800 dark:text-white">
+                      {setup.setup_name}
+                    </h2>
+                    <p className="text-xs text-gray-600 dark:text-gray-300">
+                      季節: {setup.season.season_name}
+                    </p>
                     <div className="grid grid-cols-2 gap-4">
                       {setup.items.map((item) => (
                         <div key={item.id} className="flex flex-col items-center">
@@ -646,8 +736,8 @@ const ClothesList: React.FC = () => {
                 ))}
               </div>
 
-              {/* セットアップの削除ボタン */}
-              {selectedSetupItems.length > 0 && (
+              {/* セットアップの削除ボタン（モバイルのみ表示） */}
+              {isMobile && selectedSetupItems.length > 0 && (
                 <button
                   className="px-4 py-2 mt-4 text-white bg-red-500 rounded-md"
                   onClick={handleDeleteSelectedItems}
@@ -722,7 +812,12 @@ const ClothesList: React.FC = () => {
                           key={setup.id}
                           className="p-4 bg-gray-100 rounded-md shadow dark:bg-gray-700"
                         >
-                          <h2 className="mb-2 text-lg font-bold text-gray-800 dark:text-white">{setup.setup_name}</h2>
+                          <h2 className="mb-2 text-lg font-bold text-gray-800 dark:text-white">
+                            {setup.setup_name}
+                          </h2>
+                          <p className="text-xs text-gray-600 dark:text-gray-300">
+                            季節: {setup.season.season_name}
+                          </p>
                           <div className="grid grid-cols-2 gap-4">
                             {setup.items.map((item) => (
                               <div key={item.id} className="flex flex-col items-center">
