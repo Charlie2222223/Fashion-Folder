@@ -434,7 +434,7 @@ const ClothesList: React.FC = () => {
                 <div className="flex flex-col items-center">
                   {item.image ? (
                     <img
-                      src={item.image}
+                      src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${item.image}`}
                       alt={item.clothes_name}
                       className="object-cover w-full h-auto max-w-xs rounded-md"
                     />
@@ -477,7 +477,7 @@ const ClothesList: React.FC = () => {
                     <div key={item.id} className="flex flex-col items-center">
                       {item.clothes.image ? (
                         <img
-                          src={item.clothes.image}
+                          src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${item.clothes.image}`}
                           alt={item.clothes.clothes_name}
                           className="object-cover w-full h-auto max-w-xs rounded-md"
                         />
@@ -522,7 +522,7 @@ const ClothesList: React.FC = () => {
                 <div className="flex flex-col items-center">
                   {item.image ? (
                     <img
-                      src={item.image}
+                      src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${item.image}`}
                       alt={item.clothes_name}
                       className="object-cover w-full h-auto max-w-xs rounded-md"
                     />
@@ -560,7 +560,7 @@ const ClothesList: React.FC = () => {
                     <div key={item.id} className="flex flex-col items-center">
                       {item.clothes.image ? (
                         <img
-                          src={item.clothes.image}
+                          src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${item.clothes.image}`}
                           alt={item.clothes.clothes_name}
                           className="object-cover w-full h-auto max-w-xs rounded-md"
                         />
@@ -605,7 +605,7 @@ const ClothesList: React.FC = () => {
                           <div className="flex flex-col items-center">
                             {item.image ? (
                               <img
-                                src={item.image}
+                                src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${item.image}`}
                                 alt={item.clothes_name}
                                 className="object-cover w-full h-auto max-w-xs rounded-md"
                               />
@@ -652,7 +652,7 @@ const ClothesList: React.FC = () => {
                               <div key={item.id} className="flex flex-col items-center">
                                 {item.clothes.image ? (
                                   <img
-                                    src={item.clothes.image}
+                                    src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${item.clothes.image}`}
                                     alt={item.clothes.clothes_name}
                                     className="object-cover w-full h-auto max-w-xs rounded-md"
                                   />
