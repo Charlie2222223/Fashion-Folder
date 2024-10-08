@@ -106,7 +106,7 @@ const RandomSetup: React.FC = () => {
       </div>
 
       {/* ローディング状態 */}
-      {loading && <div>読み込み中...</div>}
+      {loading && <div className='text-black'>読み込み中...</div>}
 
       {/* セットアップの表示 */}
       {!loading && randomSetup ? (
@@ -137,7 +137,7 @@ const RandomSetup: React.FC = () => {
           </div>
         </div>
       ) : (
-        !loading && <div>セットアップが見つかりません。</div>
+        !loading && <div className='text-black'>セットアップが見つかりません。</div>
       )}
     </div>
   );
