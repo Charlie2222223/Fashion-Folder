@@ -18,6 +18,7 @@ const User_Info: React.FC<User_InfoProps> = ({ onUserClick, onSettingClick, onCl
   ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${userData.avatar}` 
   : '/img/Icon2.png';
 
+
   const handleClick = () => {
     router.push('/auth/SignIn');
   };

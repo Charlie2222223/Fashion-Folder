@@ -10,7 +10,7 @@ const SignInForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const handleClick = () => {
-    router.push('/auth/SignUp'); // サインアップページへのパスを確認してください
+    router.push('/auth/SignUp');
   };
 
   const handleGoogleLogin = () => {
@@ -19,27 +19,28 @@ const SignInForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-  
+
     try {
       const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/login`, {
         email,
         password,
       });
-  
+
       // サーバーから返ってきたトークンを取得
       const token = response.data.token;
-  
+
       // トークンをローカルストレージに保存
       localStorage.setItem('authToken', token);
-  
+
       // Axiosのデフォルトヘッダーにトークンを設定
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-  
+
       // ユーザーデータを保存
       localStorage.setItem('user', JSON.stringify(response.data.user));
-  
-      // ログイン後にリダイレクト
-      window.location.reload(); // ページをリロード
+
+      // ログイン後にリダイレクトしてリロード
+      router.push('/');
+      window.location.reload();
     } catch (error) {
       const err = error as any;
       if (err.response && err.response.data.errors) {
@@ -54,17 +55,12 @@ const SignInForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="relative w-full max-w-md p-8 mx-4 bg-white border border-gray-200 shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-700 sm:mx-8 md:mx-16 lg:mx-24 xl:mx-32">
-        <button
-          onClick={onClose}
-          className="absolute text-gray-600 top-2 right-2 hover:text-gray-900"
-        >
+        <button onClick={onClose} className="absolute text-gray-600 top-2 right-2 hover:text-gray-900">
           ✖
         </button>
-        <h1 className="mb-4 text-2xl font-bold text-center text-gray-800 dark:text-white">
-          サインイン
-        </h1>
+        <h1 className="mb-4 text-2xl font-bold text-center text-gray-800 dark:text-white">サインイン</h1>
         <p className="mb-6 text-sm text-center text-gray-600 dark:text-neutral-400">
-          まだアカウントをお持ちでないですか？{" "}
+          まだアカウントをお持ちでないですか？{' '}
           <a className="text-blue-600 decoration-2 hover:underline dark:text-blue-500" href="#" onClick={handleClick}>
             こちらで登録
           </a>

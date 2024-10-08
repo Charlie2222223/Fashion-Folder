@@ -174,6 +174,8 @@ const ClothesList: React.FC = () => {
     }
   };
 
+
+  
   const handleSelectClothingItem = (itemId: number) => {
     setSelectedClothingItems((prev) =>
       prev.includes(itemId) ? prev.filter((id) => id !== itemId) : [...prev, itemId]
