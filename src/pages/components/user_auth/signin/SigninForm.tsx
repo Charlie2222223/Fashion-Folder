@@ -67,11 +67,11 @@ const SigninForm: React.FC = () => {
           <form onSubmit={handleSubmit}>
             <div className="grid gap-y-7">
               <div>
-                <label className="block mb-2 text-sm dark:text-white" htmlFor="name">
+                <label className="block mb-2 text-sm text-black dark:text-white" htmlFor="name">
                   アカウント名
                 </label>
                 <input
-                  className="block w-full px-4 py-3 text-sm border border-gray-200 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:placeholder-neutral-500 dark:focus:bg-neutral-800 dark:focus:ring-neutral-600"
+                  className="block w-full px-4 py-3 text-sm text-black border border-gray-200 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:placeholder-neutral-500 dark:focus:bg-neutral-800 dark:focus:ring-neutral-600"
                   id="name"
                   name="name"
                   required
@@ -80,11 +80,11 @@ const SigninForm: React.FC = () => {
                 {errors.name && <p className="mt-2 text-sm text-red-500">{errors.name}</p>}
               </div>
               <div>
-                <label className="block mb-2 text-sm dark:text-white" htmlFor="email">
+                <label className="block mb-2 text-sm text-black dark:text-white" htmlFor="email">
                   メールアドレス
                 </label>
                 <input
-                  className="block w-full px-4 py-3 text-sm border border-gray-200 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:placeholder-neutral-500 dark:focus:bg-neutral-800 dark:focus:ring-neutral-600"
+                  className="block w-full px-4 py-3 text-sm text-black border border-gray-200 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:placeholder-neutral-500 dark:focus:bg-neutral-800 dark:focus:ring-neutral-600"
                   id="email"
                   name="email"
                   required
@@ -94,12 +94,12 @@ const SigninForm: React.FC = () => {
               </div>
               <div>
                 <div className="flex items-center justify-between">
-                  <label className="block mb-2 text-sm dark:text-white" htmlFor="password">
+                  <label className="block mb-2 text-sm text-black dark:text-white" htmlFor="password">
                     パスワード
                   </label>
                 </div>
                 <input
-                  className="block w-full px-4 py-3 text-sm border border-gray-200 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:placeholder-neutral-500 dark:focus:bg-neutral-800 dark:focus:ring-neutral-600"
+                  className="block w-full px-4 py-3 text-sm text-black border border-gray-200 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:placeholder-neutral-500 dark:focus:bg-neutral-800 dark:focus:ring-neutral-600"
                   id="password"
                   name="password"
                   required
@@ -109,12 +109,12 @@ const SigninForm: React.FC = () => {
               </div>
               <div>
                 <div className="flex items-center justify-between">
-                  <label className="block mb-2 text-sm dark:text-white" htmlFor="password_check">
+                  <label className="block mb-2 text-sm text-black dark:text-white" htmlFor="password_check">
                     パスワード(確認)
                   </label>
                 </div>
                 <input
-                  className="block w-full px-4 py-3 text-sm border border-gray-200 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:placeholder-neutral-500 dark:focus:bg-neutral-800 dark:focus:ring-neutral-600"
+                  className="block w-full px-4 py-3 text-sm text-black border border-gray-200 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:placeholder-neutral-500 dark:focus:bg-neutral-800 dark:focus:ring-neutral-600"
                   id="password_check"
                   name="password_check"
                   required
@@ -124,7 +124,7 @@ const SigninForm: React.FC = () => {
               </div>
               <div className="flex items-center">
                 <input className="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 dark:bg-neutral-800 dark:border-neutral-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800" id="remember-me" name="remember-me" type="checkbox" />
-                <label className="text-sm ms-3 dark:text-white" htmlFor="remember-me">
+                <label className="text-sm text-black ms-3 dark:text-white" htmlFor="remember-me">
                   ログイン状態を維持する
                 </label>
               </div>
