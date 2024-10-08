@@ -10,6 +10,10 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
   const [isUserInfoVisible, setIsUserInfoVisible] = useState(false);
   const [isSettingFormVisible, setIsSettingFormVisible] = useState(false);
   const [userData, setUserData] = useState<any>(null);
+  const avatarUrl = userData?.avatar 
+  ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${userData.avatar}` 
+  : '/img/Icon2.png';
+  
 
   const handleUserClick = () => {
     setIsUserInfoVisible(true);
@@ -92,7 +96,7 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
               onClick={handleUserClick}
             >
               <img
-                src={userData?.avatar || 'img/Icon2.png'}
+                src={avatarUrl}
                 alt="ユーザーアイコン"
                 className="object-cover w-20 h-20 rounded-full"
               />

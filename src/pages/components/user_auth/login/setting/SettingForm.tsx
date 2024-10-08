@@ -11,6 +11,9 @@ const SettingForm: React.FC<{ onClose: () => void, userData: any }> = ({ onClose
     const [email, setEmail] = useState(userData?.email || '');
     const [isSaving, setIsSaving] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const avatarUrl = userData?.avatar 
+    ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${userData.avatar}` 
+    : '/img/Icon2.png';
 
     const handleClickPassword = async () => {
         setIsLoading(true);
@@ -95,7 +98,7 @@ const SettingForm: React.FC<{ onClose: () => void, userData: any }> = ({ onClose
                 <div className="flex justify-center">
                     {/* プレビュー画像またはデフォルトのアバター画像 */}
                     <img
-                        src={previewImage || (userData?.avatar || 'img/Icon2.png')}
+                        src={previewImage || avatarUrl}
                         alt="ユーザーアイコン"
                         className="object-cover w-20 h-20 rounded-full dark:bg-neutral-700"
                         style={{ cursor: 'pointer' }}

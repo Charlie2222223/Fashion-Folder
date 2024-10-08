@@ -10,7 +10,7 @@ const SignInForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const handleClick = () => {
-    router.push('/auth/SignUp'); // サインアップページへのパスを確認してください
+    router.push('/auth/SignUp');
   };
 
   const handleGoogleLogin = () => {
@@ -26,7 +26,8 @@ const SignInForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         password,
       });
 
-      const token = response.data.access_token;
+      // サーバーから返ってきたトークンを取得
+      const token = response.data.token;
 
       // トークンをローカルストレージに保存
       localStorage.setItem('authToken', token);
@@ -34,11 +35,12 @@ const SignInForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
       // Axiosのデフォルトヘッダーにトークンを設定
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-      // 必要に応じて他のユーザーデータを保存
+      // ユーザーデータを保存
       localStorage.setItem('user', JSON.stringify(response.data.user));
 
-      // ログイン後にリダイレクト
-      router.push('/'); // Next.jsのルーターを使用
+      // ログイン後にリダイレクトしてリロード
+      router.push('/');
+      window.location.reload();
     } catch (error) {
       const err = error as any;
       if (err.response && err.response.data.errors) {
@@ -53,17 +55,12 @@ const SignInForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="relative w-full max-w-md p-8 mx-4 bg-white border border-gray-200 shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-700 sm:mx-8 md:mx-16 lg:mx-24 xl:mx-32">
-        <button
-          onClick={onClose}
-          className="absolute text-gray-600 top-2 right-2 hover:text-gray-900"
-        >
+        <button onClick={onClose} className="absolute text-gray-600 top-2 right-2 hover:text-gray-900">
           ✖
         </button>
-        <h1 className="mb-4 text-2xl font-bold text-center text-gray-800 dark:text-white">
-          サインイン
-        </h1>
+        <h1 className="mb-4 text-2xl font-bold text-center text-gray-800 dark:text-white">サインイン</h1>
         <p className="mb-6 text-sm text-center text-gray-600 dark:text-neutral-400">
-          まだアカウントをお持ちでないですか？{" "}
+          まだアカウントをお持ちでないですか？{' '}
           <a className="text-blue-600 decoration-2 hover:underline dark:text-blue-500" href="#" onClick={handleClick}>
             こちらで登録
           </a>
@@ -82,7 +79,7 @@ const SignInForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
           <div className="grid gap-y-4">
             {errors.general && <p className="text-sm text-red-500">{errors.general}</p>}
             <div>
-              <label className="block mb-2 text-sm dark:text-white" htmlFor="email">
+              <label className="block mb-2 text-sm text-black dark:text-white" htmlFor="email">
                 メールアドレス
               </label>
               <input
@@ -98,12 +95,12 @@ const SignInForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             </div>
             <div>
               <div className="flex items-center justify-between">
-                <label className="block mb-2 text-sm dark:text-white" htmlFor="password">
+                <label className="block mb-2 text-sm text-black dark:text-white" htmlFor="password">
                   パスワード
                 </label>
               </div>
               <input
-                className="block w-full px-4 py-3 text-sm border border-gray-200 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:placeholder-neutral-500 dark:focus:bg-neutral-800 dark:focus:ring-neutral-600"
+                className="block w-full px-4 py-3 text-sm text-black border border-gray-200 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:placeholder-neutral-500 dark:focus:bg-neutral-800 dark:focus:ring-neutral-600"
                 id="password"
                 name="password"
                 required
@@ -112,7 +109,7 @@ const SignInForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                 onChange={(e) => setPassword(e.target.value)}
               />
               {errors.password && <p className="mt-2 text-sm text-red-500">{errors.password}</p>}
-              <a className="inline-flex items-center mt-2 text-sm text-blue-600 gap-x-1 decoration-2 hover:underline dark:text-blue-500" href="#">
+              <a className="inline-flex items-center mt-2 text-sm text-blue-600 gap-x-1 decoration-2 hover:underline dark:text-blue-500" href="user-modal/PasswordChange">
                 パスワードをお忘れですか？
               </a>
             </div>

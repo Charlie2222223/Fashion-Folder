@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('clothes_color');
             $table->text('clothes_detail')->nullable();
             $table->decimal('price', 8, 2);
-            $table->string('image');
+            $table->string('image')->nullable();
             $table->timestamps();
         
             // 外部キー制約
