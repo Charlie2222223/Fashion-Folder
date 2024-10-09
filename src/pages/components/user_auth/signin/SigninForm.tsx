@@ -36,9 +36,7 @@ const SigninForm: React.FC = () => {
         query: {
           name: formData.name,
           email: formData.email,
-          // セキュリティ上、パスワードをクエリパラメータとして渡すのは避けるべきです
-          // 代わりにセッションやトークンを使用してください
-          // password: formData.password,
+          password: formData.password,
           remember: formData.remember,
         },
       });
