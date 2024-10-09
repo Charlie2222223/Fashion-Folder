@@ -45,11 +45,10 @@
 <body>  
     <div class="email-container">
         <h1>仮メールのご案内</h1>
-        <p>以下は仮パスワードです。ログイン後、必ずパスワードを変更してください。</p>
+        <p>以下は仮パスワードです。</p>
         <div class="password-box">
             {{$temporary_password}}
         </div>
-        <p>ご不明な点がございましたら、サポートまでお問い合わせください。</p>
     </div>
 </body>
 </html>
