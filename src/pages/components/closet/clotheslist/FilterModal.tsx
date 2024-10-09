@@ -1,25 +1,25 @@
 import React from 'react';
 
 interface Category {
-    id: number;
-    category_name: string;
-  }
-  
-  interface Size {
-    id: number;
-    size_name: string;
-  }
-  
-  interface Color {
-    id: number;
-    color_name: string;
-    color_code: string;
-  }
-  
-  interface Season {
-    id: number;
-    season_name: string;
-  }
+  id: number;
+  category_name: string;
+}
+
+interface Size {
+  id: number;
+  size_name: string;
+}
+
+interface Color {
+  id: number;
+  color_name: string;
+  color_code: string;
+}
+
+interface Season {
+  id: number;
+  season_name: string;
+}
 
 interface FilterModalProps {
   viewMode: 'clothes' | 'setups';

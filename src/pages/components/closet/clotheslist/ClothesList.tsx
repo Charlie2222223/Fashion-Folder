@@ -71,6 +71,10 @@ const ClothesList: React.FC = () => {
   const [selectedSize, setSelectedSize] = useState<number | null>(null);
   const [selectedColor, setSelectedColor] = useState<number | null>(null);
   const [selectedSeason, setSelectedSeason] = useState<number | null>(null);
+  const [activeCategory, setActiveCategory] = useState<number | null>(null);
+  const [activeSize, setActiveSize] = useState<number | null>(null);
+  const [activeColor, setActiveColor] = useState<number | null>(null);
+  const [activeSeason, setActiveSeason] = useState<number | null>(null);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState<boolean>(false);
   const [viewMode, setViewMode] = useState<'clothes' | 'setups'>('clothes');
 
@@ -302,8 +306,27 @@ const ClothesList: React.FC = () => {
   };
 
   // フィルターの適用
-  const handleFilter = () => {
+  const handleApplyFilter = () => {
+    setActiveCategory(selectedCategory);
+    setActiveSize(selectedSize);
+    setActiveColor(selectedColor);
+    setActiveSeason(selectedSeason);
     setIsFilterModalOpen(false);
+  };
+
+  // フィルターのクリア
+  const handleClearFilters = () => {
+    if (viewMode === 'clothes') {
+      setSelectedCategory(null);
+      setSelectedSize(null);
+      setSelectedColor(null);
+      setActiveCategory(null);
+      setActiveSize(null);
+      setActiveColor(null);
+    } else if (viewMode === 'setups') {
+      setSelectedSeason(null);
+      setActiveSeason(null);
+    }
   };
 
   // 服のアイテムを完全に削除
@@ -340,21 +363,21 @@ const ClothesList: React.FC = () => {
   const filteredClothingList = useMemo(() => {
     return clothingList.filter((item) => {
       return (
-        (selectedCategory === null || item.category.id === selectedCategory) &&
-        (selectedSize === null || item.size.id === selectedSize) &&
-        (selectedColor === null || item.color.id === selectedColor)
+        (activeCategory === null || item.category.id === activeCategory) &&
+        (activeSize === null || item.size.id === activeSize) &&
+        (activeColor === null || item.color.id === activeColor)
       );
     });
-  }, [clothingList, selectedCategory, selectedSize, selectedColor]);
+  }, [clothingList, activeCategory, activeSize, activeColor]);
 
   // フィルタリングされたセットアップのリストを useMemo で計算
   const filteredSetupList = useMemo(() => {
     return setupList.filter((setup) => {
       return (
-        (selectedSeason === null || setup.season.id === selectedSeason)
+        (activeSeason === null || setup.season.id === activeSeason)
       );
     });
-  }, [setupList, selectedSeason]);
+  }, [setupList, activeSeason]);
 
   if (loading) {
     return <div>読み込み中...</div>;
@@ -399,16 +422,8 @@ const ClothesList: React.FC = () => {
           setSelectedSize={setSelectedSize}
           setSelectedColor={setSelectedColor}
           setSelectedSeason={setSelectedSeason}
-          applyFilter={handleFilter}
-          clearFilter={() => {
-            if (viewMode === 'clothes') {
-              setSelectedCategory(null);
-              setSelectedSize(null);
-              setSelectedColor(null);
-            } else if (viewMode === 'setups') {
-              setSelectedSeason(null);
-            }
-          }}
+          applyFilter={handleApplyFilter}
+          clearFilter={handleClearFilters}
           closeModal={() => setIsFilterModalOpen(false)}
         />
       )}
