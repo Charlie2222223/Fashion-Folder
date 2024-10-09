@@ -14,10 +14,6 @@ const User_Info: React.FC<User_InfoProps> = ({ onUserClick, onSettingClick, onCl
   const router = useRouter();
   const [userData, setUserData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true); // ローディング状態を初期化
-  const avatarUrl = userData?.avatar 
-  ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${userData.avatar}` 
-  : '/img/Icon2.png';
-
 
   const handleClick = () => {
     router.push('/auth/SignIn');
@@ -139,7 +135,7 @@ const User_Info: React.FC<User_InfoProps> = ({ onUserClick, onSettingClick, onCl
         </h1>
         <div className="flex justify-center mb-6">
           <img
-            src={avatarUrl}
+            src={userData?.avatar || "Icon2.png"}
             alt="ユーザーアイコン"
             className="object-cover w-20 h-20 rounded-full"
           />

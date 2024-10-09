@@ -98,7 +98,7 @@ const SettingForm: React.FC<{ onClose: () => void, userData: any }> = ({ onClose
                 <div className="flex justify-center">
                     {/* プレビュー画像またはデフォルトのアバター画像 */}
                     <img
-                        src={previewImage || avatarUrl}
+                        src={previewImage || userData?.avatar || "Icon2.png"}
                         alt="ユーザーアイコン"
                         className="object-cover w-20 h-20 rounded-full dark:bg-neutral-700"
                         style={{ cursor: 'pointer' }}
