@@ -37,7 +37,7 @@ interface ClothingItem {
 interface Setup {
   id: number;
   setup_name: string;
-  season: Season; // Added season property
+  season: Season;
   items: {
     id: number;
     clothes: ClothingItem;
@@ -64,11 +64,11 @@ const ClothesList: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [selectedSize, setSelectedSize] = useState<number | null>(null);
   const [selectedColor, setSelectedColor] = useState<number | null>(null);
-  const [selectedSeason, setSelectedSeason] = useState<number | null>(null); // Added selectedSeason state
+  const [selectedSeason, setSelectedSeason] = useState<number | null>(null);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState<boolean>(false);
   const [filteredClothingList, setFilteredClothingList] = useState<ClothingItem[]>([]);
-  const [filteredSetupList, setFilteredSetupList] = useState<Setup[]>([]); // Added filteredSetupList
-  const [viewMode, setViewMode] = useState<'clothes' | 'setups'>('clothes'); // 表示モードを追加
+  const [filteredSetupList, setFilteredSetupList] = useState<Setup[]>([]);
+  const [viewMode, setViewMode] = useState<'clothes' | 'setups'>('clothes');
 
   useEffect(() => {
     if (typeof window !== 'undefined') {

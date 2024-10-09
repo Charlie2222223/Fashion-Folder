@@ -152,7 +152,7 @@ const OutfitSetup: React.FC = () => {
             onDragStart={(e) => handleDragStart(e, item)}
             onDragEnd={handleDragEnd}
           >
-            <img src={item.image || ''} alt={item.clothes_name} className="object-cover w-32 h-32 rounded-md" />
+            <img src={`${process.env.NEXT_PUBLIC_API_BASE_URL}item.image` || ''} alt={item.clothes_name} className="object-cover w-32 h-32 rounded-md" />
             <div className="mt-2 text-center text-gray-800 dark:text-white">
               <p className="font-bold">{item.clothes_name}</p>
               <p>カテゴリ: {item.clothes_category}</p>
@@ -205,7 +205,7 @@ const OutfitSetup: React.FC = () => {
                 key={item.id}
                 className="relative flex flex-col items-center justify-center p-4 bg-gray-300 rounded-md dark:bg-gray-600"
               >
-                <img src={item.image || ''} alt={item.clothes_name} className="object-cover w-24 h-24 rounded-md" />
+                <img src={`${process.env.NEXT_PUBLIC_API_BASE_URL}item.image` || ''} alt={item.clothes_name} className="object-cover w-24 h-24 rounded-md" />
                 <button
                   className="absolute text-red-500 top-1 right-1"
                   onClick={() => handleRemoveItem(item.id)}
