@@ -1,7 +1,48 @@
 // src/components/closet/clotheslist/TrashModal.tsx
 
 import React from 'react';
-import { ClothingItem, Setup } from './ClothesList'; // 必要に応じてインポートパスを調整
+
+interface Category {
+    id: number;
+    category_name: string;
+  }
+  
+  interface Size {
+    id: number;
+    size_name: string;
+  }
+  
+  interface Color {
+    id: number;
+    color_name: string;
+    color_code: string;
+  }
+  
+  interface Season {
+    id: number;
+    season_name: string;
+  }
+  
+  interface ClothingItem {
+    id: number;
+    clothes_name: string;
+    category: Category;
+    size: Size;
+    color: Color;
+    clothes_detail: string | null;
+    price: string;
+    image: string | null;
+  }
+  
+  interface Setup {
+    id: number;
+    setup_name: string;
+    season: Season;
+    items: {
+      id: number;
+      clothes: ClothingItem;
+    }[];
+  }
 
 interface TrashModalProps {
   isOpen: boolean;
