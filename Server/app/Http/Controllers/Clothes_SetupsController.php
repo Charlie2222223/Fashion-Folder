@@ -30,8 +30,7 @@ class Clothes_SetupsController extends Controller
      */
     public function getSeasonalSetup(Request $request)
     {
-        // パラメータの確認
-        \Log::info('Season: ' . $request->input('season'));
+
     
         $seasonName = $request->input('season');
         $season = Season::where('season_name', $seasonName)->first();
