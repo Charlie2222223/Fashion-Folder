@@ -85,14 +85,14 @@ const SetupsGrid: React.FC<SetupsGridProps> = ({
                 {setup.setup_name}
               </h2>
               <p className="text-xs text-gray-600 dark:text-gray-300">
-                季節: {setup.season.season_name}
+                季節: {setup?.season?.season_name || '不明'}
               </p>
               <div className="grid grid-cols-2 gap-4 mt-2">
                 {setup.items.map((item) => (
                   <div key={item.id} className="flex flex-col items-center">
                     {item.clothes.image ? (
                       <img
-                        src={item.clothes.image}
+                        src={item?.clothes.image || 'img/Image2.png'}
                         alt={item.clothes.clothes_name}
                         className="object-cover w-full h-auto max-w-xs rounded-md"
                       />
