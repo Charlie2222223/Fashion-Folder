@@ -1,5 +1,3 @@
-// src/components/closet/clotheslist/ClothesGrid.tsx
-
 import React from 'react';
 
 interface Category {
@@ -70,7 +68,11 @@ const ClothesGrid: React.FC<ClothesGridProps> = ({
           <div className="flex flex-col items-center">
             {item.image ? (
               <img
-                src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${item.image}`}
+                src={
+                    item.image
+                    ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${item.image}`
+                    : `${process.env.NEXT_PUBLIC_API_BASE_URL}/path/to/default/image.jpg`
+                }                
                 alt={item.clothes_name}
                 className="object-cover w-full h-auto max-w-xs rounded-md"
               />

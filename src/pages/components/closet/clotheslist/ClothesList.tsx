@@ -1,5 +1,3 @@
-// src/components/closet/clotheslist/ClothesList.tsx
-
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import ModeToggle from './ModeToggle';
@@ -9,7 +7,6 @@ import ClothesGrid from './ClothesGrid';
 import SetupsGrid from './SetupsGrid';
 import TrashIcon from './TrashIcon';
 import TrashModal from './TrashModal';
-import { FaTrashAlt } from 'react-icons/fa';
 
 interface Category {
   id: number;

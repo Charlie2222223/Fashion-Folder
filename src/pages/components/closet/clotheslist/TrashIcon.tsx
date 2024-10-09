@@ -1,5 +1,3 @@
-// src/components/closet/clotheslist/TrashIcon.tsx
-
 import React from 'react';
 import { FaTrashAlt } from 'react-icons/fa';
 

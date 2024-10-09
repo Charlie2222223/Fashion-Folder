@@ -1,5 +1,3 @@
-// src/components/closet/clotheslist/SetupsGrid.tsx
-
 import React from 'react';
 
 interface Category {
@@ -93,7 +91,11 @@ const SetupsGrid: React.FC<SetupsGridProps> = ({
               <div key={item.id} className="flex flex-col items-center">
                 {item.clothes.image ? (
                   <img
-                    src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${item.clothes.image}`}
+                    src={
+                        item.clothes.image
+                        ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${item.clothes.image}`
+                        : `${process.env.NEXT_PUBLIC_API_BASE_URL}/path/to/default/image.jpg`
+                    }
                     alt={item.clothes.clothes_name}
                     className="object-cover w-full h-auto max-w-xs rounded-md"
                   />

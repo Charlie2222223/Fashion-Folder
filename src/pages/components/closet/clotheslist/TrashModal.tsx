@@ -1,48 +1,46 @@
-// src/components/closet/clotheslist/TrashModal.tsx
-
 import React from 'react';
 
 interface Category {
+  id: number;
+  category_name: string;
+}
+
+interface Size {
+  id: number;
+  size_name: string;
+}
+
+interface Color {
+  id: number;
+  color_name: string;
+  color_code: string;
+}
+
+interface Season {
+  id: number;
+  season_name: string;
+}
+
+interface ClothingItem {
+  id: number;
+  clothes_name: string;
+  category: Category;
+  size: Size;
+  color: Color;
+  clothes_detail: string | null;
+  price: string;
+  image: string | null;
+}
+
+interface Setup {
+  id: number;
+  setup_name: string;
+  season: Season;
+  items: {
     id: number;
-    category_name: string;
-  }
-  
-  interface Size {
-    id: number;
-    size_name: string;
-  }
-  
-  interface Color {
-    id: number;
-    color_name: string;
-    color_code: string;
-  }
-  
-  interface Season {
-    id: number;
-    season_name: string;
-  }
-  
-  interface ClothingItem {
-    id: number;
-    clothes_name: string;
-    category: Category;
-    size: Size;
-    color: Color;
-    clothes_detail: string | null;
-    price: string;
-    image: string | null;
-  }
-  
-  interface Setup {
-    id: number;
-    setup_name: string;
-    season: Season;
-    items: {
-      id: number;
-      clothes: ClothingItem;
-    }[];
-  }
+    clothes: ClothingItem;
+  }[];
+}
 
 interface TrashModalProps {
   isOpen: boolean;
@@ -85,17 +83,15 @@ const TrashModal: React.FC<TrashModalProps> = ({
                       className="p-2 bg-gray-100 rounded-md shadow dark:bg-gray-700"
                     >
                       <div className="flex flex-col items-center">
-                        {item.image ? (
-                          <img
-                            src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${item.image}`}
-                            alt={item.clothes_name}
-                            className="object-cover w-full h-auto max-w-xs rounded-md"
-                          />
-                        ) : (
-                          <div className="flex items-center justify-center w-full h-32 bg-gray-200 rounded-md">
-                            <span className="text-gray-500">No Image</span>
-                          </div>
-                        )}
+                        <img
+                          src={
+                            item.image
+                              ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${item.image}`
+                              : `${process.env.NEXT_PUBLIC_API_BASE_URL}/path/to/default/image.jpg`
+                          }
+                          alt={item.clothes_name}
+                          className="object-cover w-full h-auto max-w-xs rounded-md"
+                        />
                         <div className="mt-2 text-center text-gray-800 dark:text-white">
                           <p className="text-sm font-bold">{item.clothes_name}</p>
                           <div className="flex mt-2 space-x-2">
@@ -137,17 +133,15 @@ const TrashModal: React.FC<TrashModalProps> = ({
                       <div className="grid grid-cols-2 gap-4 mt-2">
                         {setup.items.map((item) => (
                           <div key={item.id} className="flex flex-col items-center">
-                            {item.clothes.image ? (
-                              <img
-                                src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${item.clothes.image}`}
-                                alt={item.clothes.clothes_name}
-                                className="object-cover w-full h-auto max-w-xs rounded-md"
-                              />
-                            ) : (
-                              <div className="flex items-center justify-center w-full h-32 bg-gray-200 rounded-md">
-                                <span className="text-gray-500">No Image</span>
-                              </div>
-                            )}
+                            <img
+                              src={
+                                item.clothes.image
+                                  ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${item.clothes.image}`
+                                  : `${process.env.NEXT_PUBLIC_API_BASE_URL}/path/to/default/image.jpg`
+                              }
+                              alt={item.clothes.clothes_name}
+                              className="object-cover w-full h-auto max-w-xs rounded-md"
+                            />
                           </div>
                         ))}
                       </div>

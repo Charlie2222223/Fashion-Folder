@@ -1,5 +1,3 @@
-// src/components/closet/clotheslist/FilterModal.tsx
-
 import React from 'react';
 
 interface Category {

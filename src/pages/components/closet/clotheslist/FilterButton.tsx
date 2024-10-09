@@ -1,5 +1,3 @@
-// src/components/closet/clotheslist/FilterButton.tsx
-
 import React from 'react';
 
 interface FilterButtonProps {
