@@ -1,5 +1,14 @@
+// src/components/closet/clotheslist/ClothesList.tsx
+
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import ModeToggle from './ModeToggle';
+import FilterButton from './FilterButton';
+import FilterModal from './FilterModal';
+import ClothesGrid from './ClothesGrid';
+import SetupsGrid from './SetupsGrid';
+import TrashIcon from './TrashIcon';
+import TrashModal from './TrashModal';
 import { FaTrashAlt } from 'react-icons/fa';
 
 interface Category {
@@ -37,7 +46,7 @@ interface ClothingItem {
 interface Setup {
   id: number;
   setup_name: string;
-  season: Season; // Added season property
+  season: Season;
   items: {
     id: number;
     clothes: ClothingItem;
@@ -60,15 +69,15 @@ const ClothesList: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [sizes, setSizes] = useState<Size[]>([]);
   const [colors, setColors] = useState<Color[]>([]);
-  const [seasons, setSeasons] = useState<Season[]>([]); // Added seasons state
+  const [seasons, setSeasons] = useState<Season[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [selectedSize, setSelectedSize] = useState<number | null>(null);
   const [selectedColor, setSelectedColor] = useState<number | null>(null);
-  const [selectedSeason, setSelectedSeason] = useState<number | null>(null); // Added selectedSeason state
+  const [selectedSeason, setSelectedSeason] = useState<number | null>(null);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState<boolean>(false);
   const [filteredClothingList, setFilteredClothingList] = useState<ClothingItem[]>([]);
-  const [filteredSetupList, setFilteredSetupList] = useState<Setup[]>([]); // Added filteredSetupList
-  const [viewMode, setViewMode] = useState<'clothes' | 'setups'>('clothes'); // 表示モードを追加
+  const [filteredSetupList, setFilteredSetupList] = useState<Setup[]>([]);
+  const [viewMode, setViewMode] = useState<'clothes' | 'setups'>('clothes');
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -91,7 +100,7 @@ const ClothesList: React.FC = () => {
     fetchCategories();
     fetchSizes();
     fetchColors();
-    fetchSeasons(); // Fetch seasons
+    fetchSeasons();
   }, []);
 
   const fetchClothingList = async () => {
@@ -120,7 +129,7 @@ const ClothesList: React.FC = () => {
         },
       });
       setSetupList(response.data.setups || []);
-      setFilteredSetupList(response.data.setups || []); // Initialize filteredSetupList
+      setFilteredSetupList(response.data.setups || []);
     } catch (error) {
       console.error('セットアップの取得に失敗しました', error);
     }
@@ -162,7 +171,7 @@ const ClothesList: React.FC = () => {
     }
   };
 
-  const fetchSeasons = async () => { // Fetch seasons from API
+  const fetchSeasons = async () => {
     try {
       const authToken = localStorage.getItem('authToken');
       const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/seasons`, {
@@ -174,8 +183,6 @@ const ClothesList: React.FC = () => {
     }
   };
 
-
-  
   const handleSelectClothingItem = (itemId: number) => {
     setSelectedClothingItems((prev) =>
       prev.includes(itemId) ? prev.filter((id) => id !== itemId) : [...prev, itemId]
@@ -228,19 +235,19 @@ const ClothesList: React.FC = () => {
 
   const handleDragOverTrash = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-    e.stopPropagation(); // 他のイベントに影響を与えない
+    e.stopPropagation();
     setIsDragOverTrash(true);
     e.dataTransfer.dropEffect = 'move';
   };
 
   const handleDragLeaveTrash = (e: React.DragEvent<HTMLDivElement>) => {
-    e.stopPropagation(); // 他のイベントに影響を与えない
+    e.stopPropagation();
     setIsDragOverTrash(false);
   };
 
   const handleDropOnTrash = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-    e.stopPropagation(); // 他のイベントに影響を与えない
+    e.stopPropagation();
     setIsDragOverTrash(false);
 
     // セットアップをゴミ箱に移動
@@ -265,7 +272,7 @@ const ClothesList: React.FC = () => {
   };
 
   const handleTrashIconClick = () => {
-    setIsTrashModalOpen(true); // ゴミ箱を開く
+    setIsTrashModalOpen(true);
   };
 
   // セットアップを完全に削除
@@ -318,7 +325,7 @@ const ClothesList: React.FC = () => {
       });
       setFilteredSetupList(filteredList);
     }
-    setIsFilterModalOpen(false); // モーダルを閉じる
+    setIsFilterModalOpen(false);
   };
 
   // 服のアイテムを完全に削除
@@ -357,19 +364,15 @@ const ClothesList: React.FC = () => {
 
   return (
     <div className="relative">
-      {/* ゴミ箱 */}
+      {/* ゴミ箱アイコン */}
       {!isMobile && (
-        <div
-          className={`fixed bottom-4 right-4 z-50 flex items-center justify-center w-20 h-20 rounded-full shadow-lg cursor-pointer ${
-            isDragOverTrash ? 'bg-red-500' : 'bg-gray-200 dark:bg-gray-700'
-          }`}
-          onDragOver={handleDragOverTrash}
-          onDragLeave={handleDragLeaveTrash}
-          onDrop={handleDropOnTrash}
-          onClick={handleTrashIconClick} // ゴミ箱をクリック可能にする
-        >
-          <FaTrashAlt className="text-xl text-gray-800 dark:text-white" />
-        </div>
+        <TrashIcon
+          isDragOverTrash={isDragOverTrash}
+          handleDragOverTrash={handleDragOverTrash}
+          handleDragLeaveTrash={handleDragLeaveTrash}
+          handleDropOnTrash={handleDropOnTrash}
+          openTrashModal={handleTrashIconClick}
+        />
       )}
 
       <h1 className="mb-6 text-xl font-bold text-gray-800 dark:text-white sm:text-2xl">
@@ -377,145 +380,41 @@ const ClothesList: React.FC = () => {
       </h1>
 
       {/* 表示モード切り替えボタン */}
-      <div className="mb-4">
-        <button
-          className={`px-4 py-2 mr-2 rounded-md ${
-            viewMode === 'clothes'
-              ? 'bg-indigo-600 text-white'
-              : 'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-white'
-          }`}
-          onClick={() => setViewMode('clothes')}
-        >
-          服一覧
-        </button>
-        <button
-          className={`px-4 py-2 rounded-md ${
-            viewMode === 'setups'
-              ? 'bg-indigo-600 text-white'
-              : 'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-white'
-          }`}
-          onClick={() => setViewMode('setups')}
-        >
-          セットアップ一覧
-        </button>
-      </div>
+      <ModeToggle viewMode={viewMode} setViewMode={setViewMode} />
 
-      {/* フィルターを開くボタン */}
-      <div className="mb-4">
-        {viewMode === 'clothes' && (
-          <button
-            className="px-4 py-2 mb-4 text-white bg-indigo-600 rounded-md"
-            onClick={() => setIsFilterModalOpen(true)}
-          >
-            フィルター
-          </button>
-        )}
-        {viewMode === 'setups' && (
-          <button
-            className="px-4 py-2 mb-4 text-white bg-indigo-600 rounded-md"
-            onClick={() => setIsFilterModalOpen(true)}
-          >
-            フィルター（季節）
-          </button>
-        )}
-      </div>
+      {/* フィルターボタン */}
+      <FilterButton viewMode={viewMode} openFilterModal={() => setIsFilterModalOpen(true)} />
 
       {/* フィルターモーダル */}
       {isFilterModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="w-full max-w-lg p-4 mx-auto bg-white rounded-md dark:bg-gray-800 sm:p-6">
-            <h2 className="mb-4 text-xl font-semibold text-gray-800 dark:text-white">フィルター</h2>
-            {viewMode === 'clothes' && (
-              <div className="mb-4 space-y-4 md:space-y-0 md:flex md:space-x-4">
-                <select
-                  className="w-full p-2 text-black bg-gray-100 rounded-md"
-                  value={selectedCategory || ''}
-                  onChange={(e) =>
-                    setSelectedCategory(e.target.value ? Number(e.target.value) : null)
-                  }
-                >
-                  <option value="">カテゴリ</option>
-                  {categories.map((category) => (
-                    <option key={category.id} value={category.id}>
-                      {category.category_name}
-                    </option>
-                  ))}
-                </select>
-
-                <select
-                  className="w-full p-2 text-black bg-gray-100 rounded-md"
-                  value={selectedSize || ''}
-                  onChange={(e) => setSelectedSize(e.target.value ? Number(e.target.value) : null)}
-                >
-                  <option value="">サイズ</option>
-                  {sizes.map((size) => (
-                    <option key={size.id} value={size.id}>
-                      {size.size_name}
-                    </option>
-                  ))}
-                </select>
-
-                <select
-                  className="w-full p-2 text-black bg-gray-100 rounded-md"
-                  value={selectedColor || ''}
-                  onChange={(e) => setSelectedColor(e.target.value ? Number(e.target.value) : null)}
-                >
-                  <option value="">色</option>
-                  {colors.map((color) => (
-                    <option key={color.id} value={color.id}>
-                      {color.color_name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
-
-            {viewMode === 'setups' && (
-              <div className="mb-4 space-y-4 md:space-y-0 md:flex md:space-x-4">
-                <select
-                  className="w-full p-2 text-black bg-gray-100 rounded-md"
-                  value={selectedSeason || ''}
-                  onChange={(e) => setSelectedSeason(e.target.value ? Number(e.target.value) : null)}
-                >
-                  <option value="">季節</option>
-                  {seasons.map((season) => (
-                    <option key={season.id} value={season.id}>
-                      {season.season_name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
-
-            <div className="flex justify-end mt-4 space-x-2">
-              <button
-                className="px-4 py-2 text-sm text-gray-800 bg-gray-200 rounded-md hover:bg-gray-300"
-                onClick={() => {
-                  if (viewMode === 'clothes') {
-                    // フィルターをクリア
-                    setSelectedCategory(null);
-                    setSelectedSize(null);
-                    setSelectedColor(null);
-                    setFilteredClothingList(clothingList);
-                  } else if (viewMode === 'setups') {
-                    // フィルターをクリア
-                    setSelectedSeason(null);
-                    setFilteredSetupList(setupList);
-                  }
-                  setIsFilterModalOpen(false);
-                }}
-              >
-                クリア
-              </button>
-              <button
-                className="px-4 py-2 text-sm text-white bg-indigo-600 rounded-md hover:bg-indigo-700"
-                onClick={handleFilter}
-              >
-                適用
-              </button>
-            </div>
-          </div>
-        </div>
+        <FilterModal
+          viewMode={viewMode}
+          categories={categories}
+          sizes={sizes}
+          colors={colors}
+          seasons={seasons}
+          selectedCategory={selectedCategory}
+          selectedSize={selectedSize}
+          selectedColor={selectedColor}
+          selectedSeason={selectedSeason}
+          setSelectedCategory={setSelectedCategory}
+          setSelectedSize={setSelectedSize}
+          setSelectedColor={setSelectedColor}
+          setSelectedSeason={setSelectedSeason}
+          applyFilter={handleFilter}
+          clearFilter={() => {
+            if (viewMode === 'clothes') {
+              setSelectedCategory(null);
+              setSelectedSize(null);
+              setSelectedColor(null);
+              setFilteredClothingList(clothingList);
+            } else if (viewMode === 'setups') {
+              setSelectedSeason(null);
+              setFilteredSetupList(setupList);
+            }
+          }}
+          closeModal={() => setIsFilterModalOpen(false)}
+        />
       )}
 
       {/* 服一覧ビュー */}
@@ -527,100 +426,26 @@ const ClothesList: React.FC = () => {
                 クローゼットに服がありません。
               </p>
             </div>
-          ) : isMobile ? (
-            <>
-              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-                {filteredClothingList.map((item) => (
-                  <div key={item.id} className="p-2 bg-gray-100 rounded-md shadow cursor-pointer dark:bg-gray-700">
-                    <input
-                      type="checkbox"
-                      checked={selectedClothingItems.includes(item.id)}
-                      onChange={() => handleSelectClothingItem(item.id)}
-                    />
-                    <div className="flex flex-col items-center">
-                      {item.image ? (
-                        <img
-                          src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${item.image}`}
-                          alt={item.clothes_name}
-                          className="object-cover w-full h-auto max-w-xs rounded-md"
-                        />
-                      ) : (
-                        <div className="flex items-center justify-center w-full h-32 bg-gray-200 rounded-md">
-                          <span className="text-gray-500">No Image</span>
-                        </div>
-                      )}
-                      <div className="mt-2 text-center text-gray-800 dark:text-white">
-                        <p className="text-sm font-bold sm:text-base">{item.clothes_name}</p>
-                        <p className="text-xs sm:text-sm">カテゴリ: {item.category.category_name}</p>
-                        <p className="text-xs sm:text-sm">サイズ: {item.size.size_name}</p>
-                        <p className="text-xs sm:text-sm">色: {item.color.color_name}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* 服の削除ボタン（モバイルのみ表示） */}
-              {isMobile && selectedClothingItems.length > 0 && (
-                <button
-                  className="px-4 py-2 mt-4 text-white bg-red-500 rounded-md"
-                  onClick={handleDeleteSelectedItems}
-                >
-                  選択した服を削除
-                </button>
-              )}
-            </>
           ) : (
-            <>
-              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-                {filteredClothingList.map((item) => (
-                  <div
-                    key={item.id}
-                    className={`p-2 bg-gray-100 rounded-md shadow cursor-pointer dark:bg-gray-700 ${
-                      draggedItemId === item.id ? 'opacity-50' : ''
-                    }`}
-                    draggable
-                    onDragStart={(e) => handleDragStartItem(e, item.id)}
-                    onDragEnd={handleDragEnd}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={selectedClothingItems.includes(item.id)}
-                      onChange={() => handleSelectClothingItem(item.id)}
-                    />
-                    <div className="flex flex-col items-center">
-                      {item.image ? (
-                        <img
-                          src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${item.image}`}
-                          alt={item.clothes_name}
-                          className="object-cover w-full h-auto max-w-xs rounded-md"
-                        />
-                      ) : (
-                        <div className="flex items-center justify-center w-full h-32 bg-gray-200 rounded-md">
-                          <span className="text-gray-500">No Image</span>
-                        </div>
-                      )}
-                      <div className="mt-2 text-center text-gray-800 dark:text-white">
-                        <p className="text-sm font-bold sm:text-base">{item.clothes_name}</p>
-                        <p className="text-xs sm:text-sm">カテゴリ: {item.category.category_name}</p>
-                        <p className="text-xs sm:text-sm">サイズ: {item.size.size_name}</p>
-                        <p className="text-xs sm:text-sm">色: {item.color.color_name}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+            <ClothesGrid
+              clothingList={filteredClothingList}
+              isMobile={isMobile}
+              selectedClothingItems={selectedClothingItems}
+              handleSelectClothingItem={handleSelectClothingItem}
+              draggedItemId={draggedItemId}
+              handleDragStartItem={handleDragStartItem}
+              handleDragEnd={handleDragEnd}
+            />
+          )}
 
-              {/* 服の削除ボタン（モバイルのみ表示） */}
-              {isMobile && selectedClothingItems.length > 0 && (
-                <button
-                  className="px-4 py-2 mt-4 text-white bg-red-500 rounded-md"
-                  onClick={handleDeleteSelectedItems}
-                >
-                  選択した服を削除
-                </button>
-              )}
-            </>
+          {/* 服の削除ボタン（モバイルのみ表示） */}
+          {isMobile && selectedClothingItems.length > 0 && (
+            <button
+              className="px-4 py-2 mt-4 text-white bg-red-500 rounded-md"
+              onClick={handleDeleteSelectedItems}
+            >
+              選択した服を削除
+            </button>
           )}
         </>
       )}
@@ -634,241 +459,41 @@ const ClothesList: React.FC = () => {
                 セットアップがありません。
               </p>
             </div>
-          ) : isMobile ? (
-            <>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-                {filteredSetupList.map((setup) => (
-                  <div key={setup.id} className="p-4 bg-gray-100 rounded-md shadow dark:bg-gray-700">
-                    <input
-                      type="checkbox"
-                      checked={selectedSetupItems.includes(setup.id)}
-                      onChange={() => handleSelectSetupItem(setup.id)}
-                    />
-                    <h2 className="mb-2 text-lg font-bold text-gray-800 dark:text-white">
-                      {setup.setup_name}
-                    </h2>
-                    <p className="text-xs text-gray-600 dark:text-gray-300">
-                      季節: {setup.season.season_name}
-                    </p>
-                    <div className="grid grid-cols-2 gap-4">
-                      {setup.items.map((item) => (
-                        <div key={item.id} className="flex flex-col items-center">
-                          {item.clothes.image ? (
-                            <img
-                              src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${item.clothes.image}`}
-                              alt={item.clothes.clothes_name}
-                              className="object-cover w-full h-auto max-w-xs rounded-md"
-                            />
-                          ) : (
-                            <div className="flex items-center justify-center w-full h-32 bg-gray-200 rounded-md">
-                              <span className="text-gray-500">No Image</span>
-                            </div>
-                          )}
-                          <div className="mt-2 text-center text-gray-800 dark:text-white">
-                            <p className="text-sm font-bold">{item.clothes.clothes_name}</p>
-                            <p className="text-xs">カテゴリ: {item.clothes.category?.category_name || '不明'}</p>
-                            <p className="text-xs">サイズ: {item.clothes.size?.size_name || '不明'}</p>
-                            <p className="text-xs">色: {item.clothes.color?.color_name || '不明'}</p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* セットアップの削除ボタン（モバイルのみ表示） */}
-              {isMobile && selectedSetupItems.length > 0 && (
-                <button
-                  className="px-4 py-2 mt-4 text-white bg-red-500 rounded-md"
-                  onClick={handleDeleteSelectedItems}
-                >
-                  選択したセットアップを削除
-                </button>
-              )}
-            </>
           ) : (
-            <>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-                {filteredSetupList.map((setup) => (
-                  <div
-                    key={setup.id}
-                    className={`p-4 bg-gray-100 rounded-md shadow dark:bg-gray-700 ${
-                      draggedSetupId === setup.id ? 'opacity-50' : ''
-                    }`}
-                    draggable
-                    onDragStart={(e) => handleDragStartSetup(e, setup.id)}
-                    onDragEnd={handleDragEnd}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={selectedSetupItems.includes(setup.id)}
-                      onChange={() => handleSelectSetupItem(setup.id)}
-                    />
-                    <h2 className="mb-2 text-lg font-bold text-gray-800 dark:text-white">
-                      {setup.setup_name}
-                    </h2>
-                    <p className="text-xs text-gray-600 dark:text-gray-300">
-                      季節: {setup.season.season_name}
-                    </p>
-                    <div className="grid grid-cols-2 gap-4">
-                      {setup.items.map((item) => (
-                        <div key={item.id} className="flex flex-col items-center">
-                          {item.clothes.image ? (
-                            <img
-                              src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${item.clothes.image}`}
-                              alt={item.clothes.clothes_name}
-                              className="object-cover w-full h-auto max-w-xs rounded-md"
-                            />
-                          ) : (
-                            <div className="flex items-center justify-center w-full h-32 bg-gray-200 rounded-md">
-                              <span className="text-gray-500">No Image</span>
-                            </div>
-                          )}
-                          <div className="mt-2 text-center text-gray-800 dark:text-white">
-                            <p className="text-sm font-bold">{item.clothes.clothes_name}</p>
-                            <p className="text-xs">カテゴリ: {item.clothes.category?.category_name || '不明'}</p>
-                            <p className="text-xs">サイズ: {item.clothes.size?.size_name || '不明'}</p>
-                            <p className="text-xs">色: {item.clothes.color?.color_name || '不明'}</p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
+            <SetupsGrid
+              setupList={filteredSetupList}
+              isMobile={isMobile}
+              selectedSetupItems={selectedSetupItems}
+              handleSelectSetupItem={handleSelectSetupItem}
+              draggedSetupId={draggedSetupId}
+              handleDragStartSetup={handleDragStartSetup}
+              handleDragEnd={handleDragEnd}
+            />
+          )}
 
-              {/* セットアップの削除ボタン（モバイルのみ表示） */}
-              {isMobile && selectedSetupItems.length > 0 && (
-                <button
-                  className="px-4 py-2 mt-4 text-white bg-red-500 rounded-md"
-                  onClick={handleDeleteSelectedItems}
-                >
-                  選択したセットアップを削除
-                </button>
-              )}
-            </>
+          {/* セットアップの削除ボタン（モバイルのみ表示） */}
+          {isMobile && selectedSetupItems.length > 0 && (
+            <button
+              className="px-4 py-2 mt-4 text-white bg-red-500 rounded-md"
+              onClick={handleDeleteSelectedItems}
+            >
+              選択したセットアップを削除
+            </button>
           )}
         </>
       )}
 
       {/* ゴミ箱モーダル */}
-      {isTrashModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="w-full max-w-lg p-4 mx-auto bg-white rounded-md dark:bg-gray-800 sm:p-6">
-            <h2 className="mb-4 text-xl font-semibold text-gray-800 dark:text-white">ゴミ箱</h2>
-            {trashItems.length === 0 && setupTrashItems.length === 0 ? (
-              <p className="text-gray-800 dark:text-white">ゴミ箱は空です。</p>
-            ) : (
-              <div>
-                {trashItems.length > 0 && (
-                  <>
-                    <h3 className="text-lg font-semibold text-gray-800 dark:text-white">服</h3>
-                    <div className="grid grid-cols-2 gap-4">
-                      {trashItems.map((item) => (
-                        <div
-                          key={item.id}
-                          className="p-2 bg-gray-100 rounded-md shadow dark:bg-gray-700"
-                        >
-                          <div className="flex flex-col items-center">
-                            {item.image ? (
-                              <img
-                                src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${item.image}`}
-                                alt={item.clothes_name}
-                                className="object-cover w-full h-auto max-w-xs rounded-md"
-                              />
-                            ) : (
-                              <div className="flex items-center justify-center w-full h-32 bg-gray-200 rounded-md">
-                                <span className="text-gray-500">No Image</span>
-                              </div>
-                            )}
-                            <div className="mt-2 text-center text-gray-800 dark:text-white">
-                              <p className="text-sm font-bold">{item.clothes_name}</p>
-                              <div className="flex mt-2 space-x-2">
-                                <button
-                                  onClick={() => handleRestoreItem(item.id)}
-                                  className="px-2 py-1 text-xs text-white bg-green-500 rounded hover:bg-green-600"
-                                >
-                                  復元
-                                </button>
-                                <button
-                                  onClick={() => handleDeletePermanently(item.id)}
-                                  className="px-2 py-1 text-xs text-white bg-red-500 rounded hover:bg-red-600"
-                                >
-                                  削除
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </>
-                )}
-                {setupTrashItems.length > 0 && (
-                  <>
-                    <h3 className="mt-6 text-lg font-semibold text-gray-800 dark:text-white">セットアップ</h3>
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-                      {setupTrashItems.map((setup) => (
-                        <div
-                          key={setup.id}
-                          className="p-4 bg-gray-100 rounded-md shadow dark:bg-gray-700"
-                        >
-                          <h2 className="mb-2 text-lg font-bold text-gray-800 dark:text-white">
-                            {setup.setup_name}
-                          </h2>
-                          <p className="text-xs text-gray-600 dark:text-gray-300">
-                            季節: {setup.season.season_name}
-                          </p>
-                          <div className="grid grid-cols-2 gap-4">
-                            {setup.items.map((item) => (
-                              <div key={item.id} className="flex flex-col items-center">
-                                {item.clothes.image ? (
-                                  <img
-                                    src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${item.clothes.image}`}
-                                    alt={item.clothes.clothes_name}
-                                    className="object-cover w-full h-auto max-w-xs rounded-md"
-                                  />
-                                ) : (
-                                  <div className="flex items-center justify-center w-full h-32 bg-gray-200 rounded-md">
-                                    <span className="text-gray-500">No Image</span>
-                                  </div>
-                                )}
-                              </div>
-                            ))}
-                          </div>
-                          <div className="flex justify-center mt-2 space-x-2">
-                            <button
-                              onClick={() => handleRestoreSetup(setup.id)}
-                              className="px-2 py-1 text-xs text-white bg-green-500 rounded hover:bg-green-600"
-                            >
-                              復元
-                            </button>
-                            <button
-                              onClick={() => handleDeleteSetupPermanently(setup.id)}
-                              className="px-2 py-1 text-xs text-white bg-red-500 rounded hover:bg-red-600"
-                            >
-                              削除
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </>
-                )}
-              </div>
-            )}
-            <div className="flex justify-end mt-4">
-              <button
-                onClick={() => setIsTrashModalOpen(false)}
-                className="px-4 py-2 text-sm text-white bg-indigo-600 rounded-md hover:bg-indigo-700"
-              >
-                閉じる
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <TrashModal
+        isOpen={isTrashModalOpen}
+        closeModal={() => setIsTrashModalOpen(false)}
+        trashItems={trashItems}
+        setupTrashItems={setupTrashItems}
+        handleRestoreItem={handleRestoreItem}
+        handleDeletePermanently={handleDeletePermanently}
+        handleRestoreSetup={handleRestoreSetup}
+        handleDeleteSetupPermanently={handleDeleteSetupPermanently}
+      />
     </div>
   );
 };
