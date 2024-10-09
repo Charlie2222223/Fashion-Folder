@@ -89,7 +89,7 @@ class UserController extends Controller
         if ($request->hasFile('avatar')) {
             // 既存のアバター画像を削除
             if ($user->avatar) {
-                Storage::delete('public/avatars/' . $user->avatar);
+                Storage::delete(env('BACKEND_URL') . '/' . 'public/avatars/' . $user->avatar);
             }
 
             // 新しい画像を保存

@@ -142,37 +142,41 @@ class UserClosetController extends Controller
     }
 
     // 画像処理関数
-    private function processImage($image, $existingImage = null)
-    {
-        if (!$image) {
-            return $existingImage;
-        }
+// 画像処理関数
+private function processImage($image, $existingImage = null)
+{
+    $backendUrl = env('BACKEND_URL'); // .envからBACKEND_URLを取得
 
-        if (preg_match('/^data:image\/(\w+);base64,/', $image, $type)) {
-            $data = substr($image, strpos($image, ',') + 1);
-            $type = strtolower($type[1]); // jpg, png, gif
-
-            $data = base64_decode($data);
-            if ($data === false) {
-                throw new \Exception('Invalid image data');
-            }
-
-            $fileName = uniqid() . '.' . $type;
-            $directory = public_path('images/clothes/');
-            if (!file_exists($directory)) {
-                mkdir($directory, 0755, true);
-            }
-
-            $path = $directory . $fileName;
-            file_put_contents($path, $data);
-
-            return 'images/clothes/' . $fileName;
-        }
-
-        if (filter_var($image, FILTER_VALIDATE_URL)) {
-            return $image;
-        }
-
-        throw new \Exception('Invalid image format');
+    if (!$image) {
+        return $existingImage ? $backendUrl . '/' . $existingImage : null;
     }
+
+    if (preg_match('/^data:image\/(\w+);base64,/', $image, $type)) {
+        $data = substr($image, strpos($image, ',') + 1);
+        $type = strtolower($type[1]); // jpg, png, gif
+
+        $data = base64_decode($data);
+        if ($data === false) {
+            throw new \Exception('Invalid image data');
+        }
+
+        $fileName = uniqid() . '.' . $type;
+        $directory = public_path('images/clothes/');
+        if (!file_exists($directory)) {
+            mkdir($directory, 0755, true);
+        }
+
+        $path = $directory . $fileName;
+        file_put_contents($path, $data);
+
+        // BACKEND_URLを付与
+        return $backendUrl . '/images/clothes/' . $fileName;
+    }
+
+    if (filter_var($image, FILTER_VALIDATE_URL)) {
+        return $image;
+    }
+
+    throw new \Exception('Invalid image format');
+ }
 }
