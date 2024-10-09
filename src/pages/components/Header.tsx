@@ -59,7 +59,7 @@ const Header: React.FC<{ onUserClick: () => void }> = ({ onUserClick }) => {
         onClick={onUserClick}
       >
         <img
-          src={userData?.avatar || "Icon2.png"}  // デフォルト画像を追加
+          src={userData?.avatar || "img/Icon2.png"}  // デフォルト画像を追加
           alt="ユーザーアイコン"
           className="object-cover object-center w-full h-full"
         />
