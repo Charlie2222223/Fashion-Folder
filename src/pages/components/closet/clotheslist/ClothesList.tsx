@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import axios from 'axios';
 import ModeToggle from './ModeToggle';
 import FilterButton from './FilterButton';
@@ -72,8 +72,6 @@ const ClothesList: React.FC = () => {
   const [selectedColor, setSelectedColor] = useState<number | null>(null);
   const [selectedSeason, setSelectedSeason] = useState<number | null>(null);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState<boolean>(false);
-  const [filteredClothingList, setFilteredClothingList] = useState<ClothingItem[]>([]);
-  const [filteredSetupList, setFilteredSetupList] = useState<Setup[]>([]);
   const [viewMode, setViewMode] = useState<'clothes' | 'setups'>('clothes');
 
   useEffect(() => {
@@ -109,7 +107,6 @@ const ClothesList: React.FC = () => {
         },
       });
       setClothingList(response.data.clothes);
-      setFilteredClothingList(response.data.clothes);
       setLoading(false);
     } catch (error) {
       console.error('服のリストの取得に失敗しました', error);
@@ -126,7 +123,6 @@ const ClothesList: React.FC = () => {
         },
       });
       setSetupList(response.data.setups || []);
-      setFilteredSetupList(response.data.setups || []);
     } catch (error) {
       console.error('セットアップの取得に失敗しました', error);
     }
@@ -242,7 +238,7 @@ const ClothesList: React.FC = () => {
     setIsDragOverTrash(false);
   };
 
-  const handleDropOnTrash = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDropOnTrash = async (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragOverTrash(false);
@@ -253,6 +249,7 @@ const ClothesList: React.FC = () => {
       if (setupToTrash) {
         setSetupTrashItems((prevTrash) => [...prevTrash, setupToTrash]);
         setSetupList((prevList) => prevList.filter((setup) => setup.id !== draggedSetupId));
+        // バックエンドへの更新が必要な場合はここで行います
       }
       setDraggedSetupId(null);
     }
@@ -263,6 +260,7 @@ const ClothesList: React.FC = () => {
       if (itemToTrash) {
         setTrashItems((prevTrash) => [...prevTrash, itemToTrash]);
         setClothingList((prevList) => prevList.filter((item) => item.id !== draggedItemId));
+        // バックエンドへの更新が必要な場合はここで行います
       }
       setDraggedItemId(null);
     }
@@ -305,23 +303,6 @@ const ClothesList: React.FC = () => {
 
   // フィルターの適用
   const handleFilter = () => {
-    if (viewMode === 'clothes') {
-      const filteredList = clothingList.filter((item) => {
-        return (
-          (selectedCategory === null || item.category.id === selectedCategory) &&
-          (selectedSize === null || item.size.id === selectedSize) &&
-          (selectedColor === null || item.color.id === selectedColor)
-        );
-      });
-      setFilteredClothingList(filteredList);
-    } else if (viewMode === 'setups') {
-      const filteredList = setupList.filter((setup) => {
-        return (
-          (selectedSeason === null || setup.season.id === selectedSeason)
-        );
-      });
-      setFilteredSetupList(filteredList);
-    }
     setIsFilterModalOpen(false);
   };
 
@@ -354,6 +335,26 @@ const ClothesList: React.FC = () => {
       setTrashItems((prevTrash) => prevTrash.filter((item) => item.id !== itemId));
     }
   };
+
+  // フィルタリングされた服のリストを useMemo で計算
+  const filteredClothingList = useMemo(() => {
+    return clothingList.filter((item) => {
+      return (
+        (selectedCategory === null || item.category.id === selectedCategory) &&
+        (selectedSize === null || item.size.id === selectedSize) &&
+        (selectedColor === null || item.color.id === selectedColor)
+      );
+    });
+  }, [clothingList, selectedCategory, selectedSize, selectedColor]);
+
+  // フィルタリングされたセットアップのリストを useMemo で計算
+  const filteredSetupList = useMemo(() => {
+    return setupList.filter((setup) => {
+      return (
+        (selectedSeason === null || setup.season.id === selectedSeason)
+      );
+    });
+  }, [setupList, selectedSeason]);
 
   if (loading) {
     return <div>読み込み中...</div>;
@@ -404,10 +405,8 @@ const ClothesList: React.FC = () => {
               setSelectedCategory(null);
               setSelectedSize(null);
               setSelectedColor(null);
-              setFilteredClothingList(clothingList);
             } else if (viewMode === 'setups') {
               setSelectedSeason(null);
-              setFilteredSetupList(setupList);
             }
           }}
           closeModal={() => setIsFilterModalOpen(false)}

@@ -5,18 +5,6 @@ import { FaHome } from "react-icons/fa";
 const Header: React.FC<{ onUserClick: () => void }> = ({ onUserClick }) => {
   const router = useRouter(); 
   const [userData, setUserData] = useState<any>(null);
-  const avatarUrl = userData?.avatar 
-  ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${userData.avatar}` 
-  : '/img/Icon2.png';
-  useEffect(() => {
-    console.log("Header component mounted");
-    console.log("Avatar URL:", avatarUrl);
-  }, []);
-
-  useEffect(() => {
-    console.log("User Data:", userData);  // userDataの内容を確認
-    console.log("Avatar URL:", avatarUrl); // avatarUrlの確認
-  }, [userData]);
 
   const IconClick = () => {
     console.log("Icon clicked");
@@ -71,9 +59,9 @@ const Header: React.FC<{ onUserClick: () => void }> = ({ onUserClick }) => {
         onClick={onUserClick}
       >
         <img
-          src={avatarUrl}
+          src={userData?.avatar || "Icon2.png"}  // デフォルト画像を追加
           alt="ユーザーアイコン"
-          className="object-cover object-center w-full h-full" // object-centerで画像を中央揃え
+          className="object-cover object-center w-full h-full"
         />
       </button>
         <div className="hidden lg:flex">

@@ -78,9 +78,9 @@ class UserController extends Controller
         $user = Auth::user();
 
         // 名前がリクエストに含まれている場合
-        if ($request->has('name')) {
+        if ($request->filled('name')) {
             // 名前のサニタイジング
-            $sanitizedName = Sanitizer::sanitizeString($request->name);
+            $sanitizedName = e($request->name); // ララベルのe()関数でサニタイジング
             // ユーザーの名前を更新
             $user->name = $sanitizedName;
         }
@@ -93,14 +93,11 @@ class UserController extends Controller
             }
 
             // 新しい画像を保存
-            $avatarName = $user->id . '_avatar.' . $request->avatar->extension();
-            $request->avatar->storeAs('public/avatars', $avatarName);
+            $avatarName = $user->id . '_avatar.' . $request->file('avatar')->extension();
+            $request->file('avatar')->storeAs('public/avatars', $avatarName);
 
-            // アバターURLのサニタイジング
-            $sanitizedAvatarPath = Sanitizer::sanitizeString('storage/avatars/' . $avatarName);
-
-            // ユーザーのアバター情報を更新
-            $user->avatar = $sanitizedAvatarPath;
+            // フルURLを使用してアバターのパスを更新
+            $user->avatar = env('BACKEND_URL') . '/storage/avatars/' . $avatarName;
         }
 
         // ユーザー情報を保存

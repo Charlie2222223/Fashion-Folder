@@ -60,16 +60,10 @@ const ClothesGrid: React.FC<ClothesGridProps> = ({
         onDragStart={(e) => handleDragStartItem(e, item.id)}
         onDragEnd={handleDragEnd}
       >
-        <input
-          type="checkbox"
-          checked={selectedClothingItems.includes(item.id)}
-          onChange={() => handleSelectClothingItem(item.id)}
-          className="mb-2"
-        />
         <div className="flex flex-col items-center">
           {item.image ? (
             <img
-              src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${item.image}`}
+              src={item.image}
               alt={item.clothes_name}
               className="object-cover w-full h-auto max-w-xs rounded-md"
             />

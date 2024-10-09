@@ -1,3 +1,4 @@
+import { Underdog } from 'next/font/google';
 import React from 'react';
 
 interface Category {
@@ -84,11 +85,7 @@ const TrashModal: React.FC<TrashModalProps> = ({
                     >
                       <div className="flex flex-col items-center">
                         <img
-                          src={
-                            item.image
-                              ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${item.image}`
-                              : `${process.env.NEXT_PUBLIC_API_BASE_URL}/path/to/default/image.jpg`
-                          }
+                          src={item.image ?? undefined}
                           alt={item.clothes_name}
                           className="object-cover w-full h-auto max-w-xs rounded-md"
                         />
@@ -134,11 +131,7 @@ const TrashModal: React.FC<TrashModalProps> = ({
                         {setup.items.map((item) => (
                           <div key={item.id} className="flex flex-col items-center">
                             <img
-                              src={
-                                item.clothes.image
-                                  ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${item.clothes.image}`
-                                  : `${process.env.NEXT_PUBLIC_API_BASE_URL}/path/to/default/image.jpg`
-                              }
+                              src={item.clothes.image || undefined}
                               alt={item.clothes.clothes_name}
                               className="object-cover w-full h-auto max-w-xs rounded-md"
                             />
