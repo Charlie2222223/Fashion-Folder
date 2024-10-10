@@ -1,6 +1,6 @@
 import React from 'react'
 import Background from '../Background'
-import VerificationForm from '../user_auth/signin/VertificationsForm'
+import VerificationForm from '../userAuth/signin/VertificationsForm'
 
 const Verifications: React.FC = () => {
   return (

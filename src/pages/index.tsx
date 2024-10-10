@@ -6,9 +6,9 @@ import Section from '../components/home/Section';
 import PrelineScript from "../components/home/PrelineScript";
 import Explanation from "../components/home/Explanation";
 import Gaide from "../components/home/Gaide";
-import LoginForm from '../components/user_auth/login/LoginForm';
-import User_Info from '../components/user_auth/User_Info';
-import SettingForm from '../components/user_auth/login/setting/SettingForm';
+import LoginForm from '../components/userAuth/login/LoginForm';
+import User_Info from '../components/userAuth/User_Info';
+import SettingForm from '../components/userAuth/login/setting/SettingForm';
 
 const Home: React.FC = () => {
   const [isSignInFormVisible, setSignInFormVisible] = useState(false);

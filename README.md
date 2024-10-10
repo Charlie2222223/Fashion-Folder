@@ -56,14 +56,11 @@
 ├── .git
 ├── public
 │
-├── Server
+├── server
 │   ├── app
 │   ├── bootstrap
 │   ├── config
 │   ├── database
-│   │   ├── migrations
-│   │   ├── seeders
-│   │   └── factories
 │   ├── lang
 │   ├── public
 │   ├── routes
@@ -71,15 +68,19 @@
 │   └── tests
 │
 ├── src
-│   ├── pages
-│   │   ├── api
+│   ├── components
 │   │   ├── auth
-│   │   ├── components
+│   │   ├── closet
+│   │   ├── home
+│   │   └── userAuth
+│   ├── pages
 │   │   ├── dashboard
-│   │   └── user-modal
+│   │   └── userModal
 │   ├── styles
+│   └── types
+│       └── closet
 │
-├── UML
+└── uml
 
 ```
 

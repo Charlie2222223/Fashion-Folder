@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import User_Info from '../user_auth/User_Info';
-import SettingForm from '../user_auth/login/setting/SettingForm';
+import User_Info from '../userAuth/User_Info';
+import SettingForm from '../userAuth/login/setting/SettingForm';
 
 interface HeaderProps {
   onToggleSidebar: () => void;
