@@ -12,11 +12,10 @@ class Clothes_SetupsController extends Controller
      * 全てのセットアップと関連する服のアイテムを取得して返す
      *
      * @return \Illuminate\Http\JsonResponse
-     */
-    public function index()
+     */    public function index()
     {
-        // 全てのセットアップとその関連するアイテム、カラー、サイズ、カテゴリを取得
-        $setups = clothes_setups::with(['items.clothes.color', 'items.clothes.size', 'items.clothes.category'])->get();
+        // 全てのセットアップとその関連するアイテム、カラー、サイズ、カテゴリ、季節を取得
+        $setups = clothes_setups::with(['items.clothes.color', 'items.clothes.size', 'items.clothes.category', 'seasons'])->get();
 
         // 取得したデータをJSON形式で返す
         return response()->json(['setups' => $setups], 200);

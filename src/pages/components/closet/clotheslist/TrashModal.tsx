@@ -1,47 +1,6 @@
-import { Underdog } from 'next/font/google';
+// TrashModal.tsx
 import React from 'react';
-
-interface Category {
-  id: number;
-  category_name: string;
-}
-
-interface Size {
-  id: number;
-  size_name: string;
-}
-
-interface Color {
-  id: number;
-  color_name: string;
-  color_code: string;
-}
-
-interface Season {
-  id: number;
-  season_name: string;
-}
-
-interface ClothingItem {
-  id: number;
-  clothes_name: string;
-  category: Category;
-  size: Size;
-  color: Color;
-  clothes_detail: string | null;
-  price: string;
-  image: string | null;
-}
-
-interface Setup {
-  id: number;
-  setup_name: string;
-  season: Season;
-  items: {
-    id: number;
-    clothes: ClothingItem;
-  }[];
-}
+import { Setup, ClothingItem } from './types'; // 正しいパスに変更
 
 interface TrashModalProps {
   isOpen: boolean;
@@ -85,7 +44,7 @@ const TrashModal: React.FC<TrashModalProps> = ({
                     >
                       <div className="flex flex-col items-center">
                         <img
-                          src={item.image ?? undefined}
+                          src={item.image || 'img/Image2.png'} // プレースホルダー画像を設定
                           alt={item.clothes_name}
                           className="object-cover w-full h-auto max-w-xs rounded-md"
                         />
@@ -125,16 +84,22 @@ const TrashModal: React.FC<TrashModalProps> = ({
                         {setup.setup_name}
                       </h2>
                       <p className="text-xs text-gray-600 dark:text-gray-300">
-                        季節: {setup.season.season_name}
+                        季節: {setup.seasons.map(season => season.season_name).join(', ') || '不明'}
                       </p>
                       <div className="grid grid-cols-2 gap-4 mt-2">
                         {setup.items.map((item) => (
                           <div key={item.id} className="flex flex-col items-center">
-                            <img
-                              src={item.clothes.image || undefined}
-                              alt={item.clothes.clothes_name}
-                              className="object-cover w-full h-auto max-w-xs rounded-md"
-                            />
+                            {item.clothes.image ? (
+                              <img
+                                src={item.clothes.image || 'img/Image2.png'}
+                                alt={item.clothes.clothes_name}
+                                className="object-cover w-full h-auto max-w-xs rounded-md"
+                              />
+                            ) : (
+                              <div className="flex items-center justify-center w-full h-32 bg-gray-200 rounded-md">
+                                <span className="text-gray-500">No Image</span>
+                              </div>
+                            )}
                           </div>
                         ))}
                       </div>

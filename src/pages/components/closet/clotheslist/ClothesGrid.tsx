@@ -1,32 +1,5 @@
 import React from 'react';
-
-interface Category {
-    id: number;
-    category_name: string;
-  }
-  
-  interface Size {
-    id: number;
-    size_name: string;
-  }
-  
-  interface Color {
-    id: number;
-    color_name: string;
-    color_code: string;
-  }
-
-interface ClothingItem {
-    id: number;
-    clothes_name: string;
-    category: Category;
-    size: Size;
-    color: Color;
-    clothes_detail: string | null;
-    price: string;
-    image: string | null;
-  }
-  
+import {ClothingItem} from './types'; // 正しいパスに変更  
 
 interface ClothesGridProps {
   clothingList: ClothingItem[];

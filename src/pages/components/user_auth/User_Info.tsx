@@ -135,7 +135,7 @@ const User_Info: React.FC<User_InfoProps> = ({ onUserClick, onSettingClick, onCl
         </h1>
         <div className="flex justify-center mb-6">
           <img
-            src={userData?.avatar || "Icon2.png"}
+            src={userData?.avatar || "img/Icon2.png"}
             alt="ユーザーアイコン"
             className="object-cover w-20 h-20 rounded-full"
           />

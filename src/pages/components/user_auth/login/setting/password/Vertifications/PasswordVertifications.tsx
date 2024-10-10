@@ -71,11 +71,11 @@ const PasswordVertifivations: React.FC = () => {
           <div className="grid gap-y-7">
             <div className="flex flex-col items-center gap-y-7">
               <div className="w-full max-w-md">
-                <label className="block mb-2 text-sm text-center dark:text-white" htmlFor="Vertification">
+                <label className="block mb-2 text-sm text-center text-black dark:text-white" htmlFor="Vertification">
                   確認コード入力
                 </label>
                 <input
-                  className="w-full px-4 py-3 text-sm border border-gray-200 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:placeholder-neutral-500 dark:focus:bg-neutral-800 dark:focus:ring-neutral-600"
+                  className="w-full px-4 py-3 text-sm text-black border border-gray-200 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:placeholder-neutral-500 dark:focus:bg-neutral-800 dark:focus:ring-neutral-600"
                   id="Vertification"
                   name="Vertification"
                   required

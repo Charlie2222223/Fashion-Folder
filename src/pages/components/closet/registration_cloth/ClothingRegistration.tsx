@@ -50,6 +50,9 @@ const ClothingRegistration: React.FC = () => {
   const [colors, setColors] = useState<Color[]>([]);
   const [token, setToken] = useState<string | null>(null);
 
+  const [successMessage, setSuccessMessage] = useState<string | null>(null); // 成功メッセージ用ステート
+  const [errorMessage, setErrorMessage] = useState<string | null>(null); // 一般的なエラーメッセージ用ステート
+
   useEffect(() => {
     const storedToken = localStorage.getItem("authToken");
     if (storedToken) {
@@ -146,6 +149,7 @@ const ClothingRegistration: React.FC = () => {
       }));
     } catch (error) {
       console.error("AI画像生成に失敗しました", error);
+      setErrorMessage("AI画像生成に失敗しました。もう一度お試しください。");
     } finally {
       setAiGenerating(false);
       setLoading(false);
@@ -172,6 +176,7 @@ const ClothingRegistration: React.FC = () => {
       setImageResults(response.data.images);
     } catch (error) {
       console.error("画像検索に失敗しました", error);
+      setErrorMessage("画像検索に失敗しました。もう一度お試しください。");
     } finally {
       setLoading(false);
     }
@@ -182,6 +187,7 @@ const ClothingRegistration: React.FC = () => {
 
     if (!token) {
       console.error("認証トークンがありません。ログインしてください。");
+      setErrorMessage("認証トークンがありません。ログインしてください。");
       return;
     }
 
@@ -205,8 +211,15 @@ const ClothingRegistration: React.FC = () => {
       );
       setClothingList((prevList) => [...prevList, response.data.clothes]);
       setFormData({ name: "", category: "", size: "", color: "", price: "", description: null, image: null });
+      setSuccessMessage("服の登録が完了しました！"); // 成功メッセージを設定
+
+      // 成功メッセージを5秒後に自動で非表示にする
+      setTimeout(() => {
+        setSuccessMessage(null);
+      }, 5000);
     } catch (error) {
       console.error("服の登録に失敗しました", error);
+      setErrorMessage("服の登録に失敗しました。もう一度お試しください。");
     }
   };
 
@@ -216,6 +229,20 @@ const ClothingRegistration: React.FC = () => {
 
   return (
     <div>
+      {/* 成功メッセージの表示 */}
+      {successMessage && (
+        <div className="fixed p-4 text-white bg-green-500 rounded shadow-lg top-4 right-4">
+          {successMessage}
+        </div>
+      )}
+
+      {/* 一般的なエラーメッセージの表示 */}
+      {errorMessage && (
+        <div className="fixed p-4 text-white bg-red-500 rounded shadow-lg top-4 right-4">
+          {errorMessage}
+        </div>
+      )}
+
       <div className="max-w-4xl p-4 mx-auto mt-6 bg-white rounded-lg shadow-md dark:bg-gray-800 dark:text-white sm:p-6">
         <h1 className="mb-4 text-xl font-bold sm:text-2xl">服を登録する</h1>
 
@@ -412,8 +439,35 @@ const ClothingRegistration: React.FC = () => {
             <button
               type="submit"
               className="w-full px-4 py-2 mb-4 text-white bg-indigo-600 rounded-md hover:bg-indigo-700 dark:bg-gray-700 dark:hover:bg-gray-600"
+              disabled={loading} // ローディング中は無効化
             >
-              登録する
+              {loading ? (
+                <div className="flex items-center justify-center">
+                  <svg
+                    className="w-5 h-5 mr-3 text-white animate-spin"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                    ></path>
+                  </svg>
+                  登録中...
+                </div>
+              ) : (
+                "登録する"
+              )}
             </button>
           </div>
         </form>
