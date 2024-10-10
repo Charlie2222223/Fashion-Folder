@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import Sidebar from '../components/closet/Sidebar';
-import Header from '../components/closet/Header';
+import Sidebar from '../../components/closet/Sidebar';
+import Header from '../../components/closet/Header';
 
 const Index: React.FC = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
