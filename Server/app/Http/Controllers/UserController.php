@@ -111,7 +111,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function passwordVertification(NewPassword $request)
+    public function passwordVerification(NewPassword $request)
     {
         // 現在認証されているユーザーを取得
         $user = Auth::user();
