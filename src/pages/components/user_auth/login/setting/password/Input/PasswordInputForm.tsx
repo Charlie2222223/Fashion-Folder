@@ -82,7 +82,7 @@ const PasswordInputForm: React.FC = () => {
             <div className="flex flex-col items-center gap-y-7">
               <div className="w-full max-w-md">
                 <div className="flex items-center justify-between">
-                  <label className="block mb-2 text-sm dark:text-white" htmlFor="password">
+                  <label className="block mb-2 text-sm text-black dark:text-white" htmlFor="password">
                     パスワード
                   </label>
                 </div>
@@ -97,12 +97,12 @@ const PasswordInputForm: React.FC = () => {
               </div>
               <div className="w-full max-w-md">
                 <div className="flex items-center justify-between">
-                  <label className="block mb-2 text-sm dark:text-white" htmlFor="password_check">
+                  <label className="block mb-2 text-sm text-black dark:text-white" htmlFor="password_check">
                     パスワード（確認）
                   </label>
                 </div>
                 <input
-                  className="block w-full px-4 py-3 text-sm border border-gray-200 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:placeholder-neutral-500 dark:focus:bg-neutral-800 dark:focus:ring-neutral-600"
+                  className="block w-full px-4 py-3 text-sm text-black border border-gray-200 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:placeholder-neutral-500 dark:focus:bg-neutral-800 dark:focus:ring-neutral-600"
                   id="password_check"
                   name="password_check"
                   required
