@@ -1,48 +1,8 @@
 // src/pages/components/closet/clotheslist/SetupsGrid.tsx
 
 import React from 'react';
+import { Setup } from './types'; // 正しいパスに変更
 
-interface Category {
-    id: number;
-    category_name: string;
-}
-  
-interface Size {
-    id: number;
-    size_name: string;
-}
-  
-interface Color {
-    id: number;
-    color_name: string;
-    color_code: string;
-}
-
-interface Season {
-    id: number;
-    season_name: string;
-}
-
-interface ClothingItem {
-    id: number;
-    clothes_name: string;
-    category: Category;
-    size: Size;
-    color: Color;
-    clothes_detail: string | null;
-    price: string;
-    image: string | null;
-}
-
-interface Setup {
-    id: number;
-    setup_name: string;
-    seasons: Season[];
-    items: {
-        id: number;
-        clothes: ClothingItem;
-    }[];
-}
 
 interface SetupsGridProps {
     setupList: Setup[];

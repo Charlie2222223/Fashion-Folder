@@ -1,56 +1,16 @@
-import React, { useState } from 'react';
-
-interface Category {
-  id: number;
-  category_name: string;
-}
-
-interface Size {
-  id: number;
-  size_name: string;
-}
-
-interface Color {
-  id: number;
-  color_name: string;
-  color_code: string;
-}
-
-interface Season {
-  id: number;
-  season_name: string;
-}
-
-interface ClothingItem {
-  id: number;
-  clothes_name: string;
-  category: Category;
-  size: Size;
-  color: Color;
-  clothes_detail: string | null;
-  price: string;
-  image: string | null;
-}
-
-interface Setup {
-  id: number;
-  setup_name: string;
-  seasons: Season[]; // 複数の季節を保持
-  items: {
-    id: number;
-    clothes: ClothingItem;
-  }[];
-}
+// TrashModal.tsx
+import React from 'react';
+import { Setup, ClothingItem } from './types'; // 正しいパスに変更
 
 interface TrashModalProps {
   isOpen: boolean;
   closeModal: () => void;
   trashItems: ClothingItem[];
   setupTrashItems: Setup[];
-  handleRestoreItem: (id: number) => Promise<void>;
-  handleDeletePermanently: (id: number) => Promise<void>;
-  handleRestoreSetup: (id: number) => Promise<void>;
-  handleDeleteSetupPermanently: (id: number) => Promise<void>;
+  handleRestoreItem: (id: number) => void;
+  handleDeletePermanently: (id: number) => void;
+  handleRestoreSetup: (id: number) => void;
+  handleDeleteSetupPermanently: (id: number) => void;
 }
 
 const TrashModal: React.FC<TrashModalProps> = ({
@@ -63,72 +23,11 @@ const TrashModal: React.FC<TrashModalProps> = ({
   handleRestoreSetup,
   handleDeleteSetupPermanently,
 }) => {
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
   if (!isOpen) return null;
-
-  // ハンドラー関数内でメッセージを設定
-  const onRestoreItem = async (id: number) => {
-    try {
-      await handleRestoreItem(id);
-      setSuccessMessage('服が復元されました。');
-      setTimeout(() => setSuccessMessage(null), 5000);
-    } catch (error) {
-      setErrorMessage('服の復元に失敗しました。');
-      setTimeout(() => setErrorMessage(null), 5000);
-    }
-  };
-
-  const onDeleteItem = async (id: number) => {
-    try {
-      await handleDeletePermanently(id);
-      setSuccessMessage('服が削除されました。');
-      setTimeout(() => setSuccessMessage(null), 5000);
-    } catch (error) {
-      setErrorMessage('服の削除に失敗しました。');
-      setTimeout(() => setErrorMessage(null), 5000);
-    }
-  };
-
-  const onRestoreSetup = async (id: number) => {
-    try {
-      await handleRestoreSetup(id);
-      setSuccessMessage('セットアップが復元されました。');
-      setTimeout(() => setSuccessMessage(null), 5000);
-    } catch (error) {
-      setErrorMessage('セットアップの復元に失敗しました。');
-      setTimeout(() => setErrorMessage(null), 5000);
-    }
-  };
-
-  const onDeleteSetup = async (id: number) => {
-    try {
-      await handleDeleteSetupPermanently(id);
-      setSuccessMessage('セットアップが削除されました。');
-      setTimeout(() => setSuccessMessage(null), 5000);
-    } catch (error) {
-      setErrorMessage('セットアップの削除に失敗しました。');
-      setTimeout(() => setErrorMessage(null), 5000);
-    }
-  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="w-full max-w-lg p-4 mx-auto bg-white rounded-md dark:bg-gray-800 sm:p-6">
-        {/* 成功メッセージの表示 */}
-        {successMessage && (
-          <div className="p-2 mb-4 text-green-800 bg-green-100 border border-green-300 rounded">
-            {successMessage}
-          </div>
-        )}
-        {/* エラーメッセージの表示 */}
-        {errorMessage && (
-          <div className="p-2 mb-4 text-red-800 bg-red-100 border border-red-300 rounded">
-            {errorMessage}
-          </div>
-        )}
-
         <h2 className="mb-4 text-xl font-semibold text-gray-800 dark:text-white">ゴミ箱</h2>
         {trashItems.length === 0 && setupTrashItems.length === 0 ? (
           <p className="text-gray-800 dark:text-white">ゴミ箱は空です。</p>
@@ -153,13 +52,13 @@ const TrashModal: React.FC<TrashModalProps> = ({
                           <p className="text-sm font-bold">{item.clothes_name}</p>
                           <div className="flex mt-2 space-x-2">
                             <button
-                              onClick={() => onRestoreItem(item.id)}
+                              onClick={() => handleRestoreItem(item.id)}
                               className="px-2 py-1 text-xs text-white bg-green-500 rounded hover:bg-green-600"
                             >
                               復元
                             </button>
                             <button
-                              onClick={() => onDeleteItem(item.id)}
+                              onClick={() => handleDeletePermanently(item.id)}
                               className="px-2 py-1 text-xs text-white bg-red-500 rounded hover:bg-red-600"
                             >
                               削除
@@ -206,13 +105,13 @@ const TrashModal: React.FC<TrashModalProps> = ({
                       </div>
                       <div className="flex justify-center mt-2 space-x-2">
                         <button
-                          onClick={() => onRestoreSetup(setup.id)}
+                          onClick={() => handleRestoreSetup(setup.id)}
                           className="px-2 py-1 text-xs text-white bg-green-500 rounded hover:bg-green-600"
                         >
                           復元
                         </button>
                         <button
-                          onClick={() => onDeleteSetup(setup.id)}
+                          onClick={() => handleDeleteSetupPermanently(setup.id)}
                           className="px-2 py-1 text-xs text-white bg-red-500 rounded hover:bg-red-600"
                         >
                           削除

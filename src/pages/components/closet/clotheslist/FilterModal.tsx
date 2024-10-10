@@ -1,25 +1,5 @@
 import React from 'react';
-
-interface Category {
-  id: number;
-  category_name: string;
-}
-
-interface Size {
-  id: number;
-  size_name: string;
-}
-
-interface Color {
-  id: number;
-  color_name: string;
-  color_code: string;
-}
-
-interface Season {
-  id: number;
-  season_name: string;
-}
+import { Category, Size, Color, Season} from './types'; // 正しいパスに変更
 
 interface FilterModalProps {
   viewMode: 'clothes' | 'setups';

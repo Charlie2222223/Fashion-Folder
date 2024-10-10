@@ -7,48 +7,7 @@ import ClothesGrid from './ClothesGrid';
 import SetupsGrid from './SetupsGrid';
 import TrashIcon from './TrashIcon';
 import TrashModal from './TrashModal';
-
-interface Category {
-  id: number;
-  category_name: string;
-}
-
-interface Size {
-  id: number;
-  size_name: string;
-}
-
-interface Color {
-  id: number;
-  color_name: string;
-  color_code: string;
-}
-
-interface Season {
-  id: number;
-  season_name: string;
-}
-
-interface ClothingItem {
-  id: number;
-  clothes_name: string;
-  category: Category;
-  size: Size;
-  color: Color;
-  clothes_detail: string | null;
-  price: string;
-  image: string | null;
-}
-
-interface Setup {
-  id: number;
-  setup_name: string;
-  season: Season;
-  items: {
-    id: number;
-    clothes: ClothingItem;
-  }[];
-}
+import { Category, Size, Color, Season, ClothingItem, Setup } from './types'; // 正しいパスに変更
 
 const ClothesList: React.FC = () => {
   const [clothingList, setClothingList] = useState<ClothingItem[]>([]);
@@ -67,14 +26,19 @@ const ClothesList: React.FC = () => {
   const [sizes, setSizes] = useState<Size[]>([]);
   const [colors, setColors] = useState<Color[]>([]);
   const [seasons, setSeasons] = useState<Season[]>([]);
+  
+  // フィルターの選択状態
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [selectedSize, setSelectedSize] = useState<number | null>(null);
   const [selectedColor, setSelectedColor] = useState<number | null>(null);
   const [selectedSeason, setSelectedSeason] = useState<number | null>(null);
+  
+  // フィルターの適用状態
   const [activeCategory, setActiveCategory] = useState<number | null>(null);
   const [activeSize, setActiveSize] = useState<number | null>(null);
   const [activeColor, setActiveColor] = useState<number | null>(null);
   const [activeSeason, setActiveSeason] = useState<number | null>(null);
+  
   const [isFilterModalOpen, setIsFilterModalOpen] = useState<boolean>(false);
   const [viewMode, setViewMode] = useState<'clothes' | 'setups'>('clothes');
 
@@ -305,30 +269,6 @@ const ClothesList: React.FC = () => {
     }
   };
 
-  // フィルターの適用
-  const handleApplyFilter = () => {
-    setActiveCategory(selectedCategory);
-    setActiveSize(selectedSize);
-    setActiveColor(selectedColor);
-    setActiveSeason(selectedSeason);
-    setIsFilterModalOpen(false);
-  };
-
-  // フィルターのクリア
-  const handleClearFilters = () => {
-    if (viewMode === 'clothes') {
-      setSelectedCategory(null);
-      setSelectedSize(null);
-      setSelectedColor(null);
-      setActiveCategory(null);
-      setActiveSize(null);
-      setActiveColor(null);
-    } else if (viewMode === 'setups') {
-      setSelectedSeason(null);
-      setActiveSeason(null);
-    }
-  };
-
   // 服のアイテムを完全に削除
   const handleDeletePermanently = async (itemId: number) => {
     try {
@@ -359,6 +299,30 @@ const ClothesList: React.FC = () => {
     }
   };
 
+  // フィルターの適用
+  const handleApplyFilter = () => {
+    setActiveCategory(selectedCategory);
+    setActiveSize(selectedSize);
+    setActiveColor(selectedColor);
+    setActiveSeason(selectedSeason);
+    setIsFilterModalOpen(false);
+  };
+
+  // フィルターのクリア
+  const handleClearFilters = () => {
+    if (viewMode === 'clothes') {
+      setSelectedCategory(null);
+      setSelectedSize(null);
+      setSelectedColor(null);
+      setActiveCategory(null);
+      setActiveSize(null);
+      setActiveColor(null);
+    } else if (viewMode === 'setups') {
+      setSelectedSeason(null);
+      setActiveSeason(null);
+    }
+  };
+
   // フィルタリングされた服のリストを useMemo で計算
   const filteredClothingList = useMemo(() => {
     return clothingList.filter((item) => {
@@ -374,7 +338,7 @@ const ClothesList: React.FC = () => {
   const filteredSetupList = useMemo(() => {
     return setupList.filter((setup) => {
       return (
-        (activeSeason === null || setup.season.id === activeSeason)
+        (activeSeason === null || setup.seasons.some(season => season.id === activeSeason))
       );
     });
   }, [setupList, activeSeason]);
