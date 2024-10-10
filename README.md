@@ -55,6 +55,7 @@
 ```bash
 ├── .git
 ├── public
+│   └── img
 │
 ├── server
 │   ├── app
