@@ -1,6 +1,6 @@
 // TrashModal.tsx
 import React from 'react';
-import { Setup, ClothingItem } from '../../../types/clotheslist'; // 正しいパスに変更
+import { Setup, ClothingItem } from '../../../types/closet/clotheslist'; // 正しいパスに変更
 
 interface TrashModalProps {
   isOpen: boolean;

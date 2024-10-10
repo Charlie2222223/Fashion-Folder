@@ -1,5 +1,5 @@
 import React from 'react';
-import { Category, Size, Color, Season} from '../../../types/clotheslist'; // 正しいパスに変更
+import { Category, Size, Color, Season} from '../../../types/closet/clotheslist'; // 正しいパスに変更
 
 interface FilterModalProps {
   viewMode: 'clothes' | 'setups';

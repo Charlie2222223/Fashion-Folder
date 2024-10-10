@@ -1,7 +1,7 @@
 // src/pages/components/closet/clotheslist/SetupsGrid.tsx
 
 import React from 'react';
-import { Setup } from '../../../types/clotheslist'; // 正しいパスに変更
+import { Setup } from '../../../types/closet/clotheslist'; // 正しいパスに変更
 
 
 interface SetupsGridProps {

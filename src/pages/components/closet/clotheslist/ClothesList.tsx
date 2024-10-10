@@ -7,7 +7,7 @@ import ClothesGrid from './ClothesGrid';
 import SetupsGrid from './SetupsGrid';
 import TrashIcon from './TrashIcon';
 import TrashModal from './TrashModal';
-import { Category, Size, Color, Season, ClothingItem, Setup } from './types'; // 正しいパスに変更
+import { Category, Size, Color, Season, ClothingItem, Setup } from '../../../../types/closet/clotheslist';
 
 const ClothesList: React.FC = () => {
   const [clothingList, setClothingList] = useState<ClothingItem[]>([]);

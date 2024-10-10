@@ -1,5 +1,5 @@
 import React from 'react';
-import {ClothingItem} from '../../../types/clotheslist'; 
+import {ClothingItem} from '../../../types/closet/clotheslist'; 
 
 interface ClothesGridProps {
   clothingList: ClothingItem[];

@@ -31,7 +31,7 @@ const SettingForm: React.FC<{ onClose: () => void, userData: any }> = ({ onClose
 
             console.log('Registration successful:', response.data);
             router.push({
-                pathname: '/user/PasswordChange',
+                pathname: '/user-modal/PasswordChange',
                 query: { email: email },
             });
         } catch (error: any) {

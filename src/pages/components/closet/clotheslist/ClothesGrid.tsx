@@ -1,5 +1,5 @@
 import React from 'react';
-import {ClothingItem} from './types'; // 正しいパスに変更  
+import {ClothingItem} from '../../../../types/closet/clotheslist';
 
 interface ClothesGridProps {
   clothingList: ClothingItem[];
