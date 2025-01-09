@@ -14,6 +14,8 @@ class ClothesColorSeeder extends Seeder
      */
     public function run()
     {
+        DB::table('clothes_colors')->truncate();
+
         DB::table('clothes_colors')->insert([
             ['color_name' => '赤色', 'color_code' => '#FF0000'],
             ['color_name' => '青色', 'color_code' => '#0000FF'],
