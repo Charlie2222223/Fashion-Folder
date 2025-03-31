@@ -14,8 +14,16 @@ class ClothesColorSeeder extends Seeder
      */
     public function run()
     {
+        // 外部キー制約を一時的に無効化
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+
+        // テーブルをクリア
         DB::table('clothes_colors')->truncate();
 
+        // 外部キー制約を再有効化
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
+        // データを挿入
         DB::table('clothes_colors')->insert([
             ['color_name' => '赤色', 'color_code' => '#FF0000'],
             ['color_name' => '青色', 'color_code' => '#0000FF'],

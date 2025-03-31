@@ -1,17 +1,26 @@
 #!/bin/bash
 
-# 必要なコマンドを自動実行
-php artisan storage:link || true
-php artisan migrate --force
-php artisan db:seed --force
-
-# 既存のコマンドを実行（CMDの部分）
-exec "$@"
-
-# MySQLが起動するのを待つ
-until nc -z -v -w30 mysql 3306; do
-  echo 'Waiting for MySQL...'
-  sleep 1
+# MySQLが起動するまで待機
+until mysqladmin ping -h"$DB_HOST" --silent; do
+    echo "Waiting for MySQL..."
+    sleep 2
 done
 
 echo "MySQL is up and running"
+
+# public/storage シンボリックリンクの作成
+if [ -L /var/www/public/storage ]; then
+    rm /var/www/public/storage
+fi
+php artisan storage:link
+
+# マイグレーションとシーディングを実行
+php artisan migrate --force
+php artisan db:seed --force
+
+# キャッシュのクリア
+php artisan config:clear
+php artisan cache:clear
+php artisan route:clear
+
+exec "$@"

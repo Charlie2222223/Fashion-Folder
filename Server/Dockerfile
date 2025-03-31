@@ -3,6 +3,7 @@ FROM php:8.2-fpm
 
 # 必要なパッケージのインストール
 RUN apt-get update && apt-get install -y \
+    netcat-openbsd \
     git \
     unzip \
     curl \
@@ -11,6 +12,7 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     zip \
     libzip-dev \
+    default-mysql-client \ 
     && docker-php-ext-install pdo_mysql mbstring zip exif pcntl
 
 # Composerのインストール
